@@ -24,6 +24,7 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 -  [Basi di architettura](doc%2FBASI.md)
 -  [MVC](doc%2FMVC.md)
 -  [Mapstruct](doc%2FMapstruct.md)
+-  [Openapi](doc%2FOpenapi.md)
 
 ---
 
@@ -54,7 +55,7 @@ per passare alla prossima lezione segui i branch in ordine
 ## Passa a un altra lezione
 
 ```shell script
-    git checkout <3_Gestione_errori>
+    git checkout <4_Openapi>
 ```
 
 
