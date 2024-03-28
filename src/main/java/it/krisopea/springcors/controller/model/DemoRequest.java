@@ -19,4 +19,8 @@ public class DemoRequest {
     @NotBlank
     @Pattern(regexp = "([A-Z]{2})")
     private String nation;
+
+    @NotBlank
+    @Size(max = 70)
+    private String noticeId;
 }

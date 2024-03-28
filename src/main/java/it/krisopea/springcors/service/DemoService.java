@@ -5,18 +5,17 @@ import it.krisopea.springcors.repository.model.DemoEntity;
 import it.krisopea.springcors.service.dto.DemoRequestDto;
 import it.krisopea.springcors.service.dto.DemoResponseDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class DemoService {
 
-
     private final DemoRepository demoRepository;
 
     public DemoResponseDto callDemoService(DemoRequestDto requestDto){
 
+        validazioneSintattica(requestDto.getIuv());
         validazioneSemantica(requestDto.getIuv());
 
         DemoEntity entity = new DemoEntity();
