@@ -1,5 +1,7 @@
 package it.krisopea.springcors.service;
 
+import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
+import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.DemoRepository;
 import it.krisopea.springcors.repository.mapper.MapperDemoEntity;
 import it.krisopea.springcors.repository.model.DemoEntity;
@@ -7,6 +9,8 @@ import it.krisopea.springcors.service.dto.DemoRequestDto;
 import it.krisopea.springcors.service.dto.DemoResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +38,10 @@ public class DemoService {
 
     private void validazioneSemantica(String iuv) {
         //Implementazione validazione semantica e logica (a db)
+        Optional<DemoEntity> byIuv = demoRepository.findByIuv(iuv);
+        if(byIuv.isPresent()){
+            throw new AppException(AppErrorCodeMessageEnum.IUV_DUPLICATE);
+        }
     }
 
     private void validazioneSintattica(String iuv) {
