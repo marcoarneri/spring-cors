@@ -28,7 +28,8 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 
 ## Passa alla prossima lezione
 
-- [Lezione MVC](tree/1_MVC)
+- [Lezione 0 - Basi](https://github.com/marcoarneri/spring-cors/tree/main)
+- Lezione 1 - MVC
 - []()
 - []()
 - []()
