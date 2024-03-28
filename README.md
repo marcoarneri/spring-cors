@@ -28,6 +28,7 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 -  [Openapi](doc%2FOpenapi.md)
 -  [Docker](doc%2FDocker.md)
 -  [Jpa](doc%2FJpa.md)
+-  [Log](doc%2FLog.md)
 
 ---
 
@@ -58,7 +59,7 @@ per passare alla prossima lezione segui i branch in ordine
 ## Passa a un altra lezione
 
 ```shell script
-    git checkout <6_Log>
+    git checkout <7_JUnit_Mockserver>
 ```
 
 
