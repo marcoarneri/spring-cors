@@ -27,12 +27,16 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 
 ## Passa alla prossima lezione
 
+per passare alla prossima lezione segui i branch in ordine
+
 - Lezione 0 - Basi
-- [Lezione 1 - MVC](https://github.com/marcoarneri/spring-cors/tree/1_MVC)
-- []()
-- []()
-- []()
-- []()
+- Lezione 1 - MVC
+- Lezione 2 - Mapstruct
+- Lezione 3 - Gestione errori
+- Lezione 4 - Openapi
+- Lezione 5 - Jpa & Docker
+- Lezione 6 - Log
+- Lezione 7 - Junit Test & Mockserver
 
 ---
 
