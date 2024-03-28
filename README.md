@@ -28,7 +28,7 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 
 ## Passa alla prossima lezione
 
-- [Lezione MVC]()
+- [Lezione MVC](tree/1_MVC)
 - []()
 - []()
 - []()
