@@ -26,6 +26,8 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 -  [Mapstruct](doc%2FMapstruct.md)
 -  [Gestione Errori](doc%2FGestioneErrori.md)
 -  [Openapi](doc%2FOpenapi.md)
+-  [Docker](doc%2FDocker.md)
+-  [Jpa](doc%2FJpa.md)
 
 ---
 
@@ -56,7 +58,7 @@ per passare alla prossima lezione segui i branch in ordine
 ## Passa a un altra lezione
 
 ```shell script
-    git checkout <5_Jpa_Docker>
+    git checkout <6_Log>
 ```
 
 
