@@ -33,10 +33,10 @@ per passare alla prossima lezione segui i branch in ordine
 
 - Lezione 0 - Basi
 - Lezione 1 - MVC
-- Lezione 2 - Mapstruct
-- Lezione 3 - Gestione errori
-- Lezione 4 - Openapi
-- Lezione 5 - Jpa & Docker
+- Lezione 2 - Jpa & Docker
+- Lezione 3 - Mapstruct
+- Lezione 4 - Gestione errori
+- Lezione 5 - Openapi
 - Lezione 6 - Log
 - Lezione 7 - Junit Test & Mockserver
 
@@ -54,7 +54,7 @@ per passare alla prossima lezione segui i branch in ordine
 ## Passa a un altra lezione
 
 ```shell script
-    git checkout <3_Gestione_errori>
+    git checkout <3_Mapstruct>
 ```
 
 
