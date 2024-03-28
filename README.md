@@ -24,7 +24,7 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 -  [Basi di architettura](doc%2FBASI.md)
 -  [MVC](doc%2FMVC.md)
 -  [Mapstruct](doc%2FMapstruct.md)
--  [Openapi](doc%2FOpenapi.md)
+-  [Gestione Errori](doc%2FGestioneErrori.md)
 
 ---
 
