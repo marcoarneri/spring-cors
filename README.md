@@ -30,6 +30,10 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 -  [GestioneErrori](doc%2FGestioneErrori.md)
 -  [Openapi](doc%2FOpenapi.md)
 
+### Approfondimenti
+- [QuerySQL.md](doc%2Finsight%2FQuerySQL.md)
+
+
 ---
 
 ## Passa alla prossima lezione
