@@ -29,6 +29,9 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 -  [Mapstruct](doc%2FMapstruct.md)
 -  [GestioneErrori](doc%2FGestioneErrori.md)
 
+### Approfondimenti
+- [QuerySQL.md](doc%2Finsight%2FQuerySQL.md)
+
 
 ---
 

@@ -15,8 +15,8 @@ Segui questi passaggi per creare il tuo progetto Spring Boot:
     - **Sistema di Build**: Scegli tra Maven e Gradle come sistema di build.
     - **Linguaggio**: Seleziona la versione di Java per il tuo progetto.
     - **Versione di Spring Boot**: Scegli la versione desiderata di Spring Boot per il tuo progetto.
-    - **Gruppo**: Questo campo rappresenta il package base del tuo progetto, ad esempio `com.example`.
-    - **Artifact**: L'artifact ID identifica il nome del tuo progetto.
+    - **Gruppo**: Rappresenta il package base del tuo progetto, ad esempio `com.example`.
+    - **Artifact**: Artifact ID identifica il nome del tuo progetto.
     - **Dipendenze**: Seleziona le dipendenze desiderate per il tuo progetto.
 
 
@@ -38,7 +38,7 @@ Segui questi passaggi per creare il tuo progetto Spring Boot:
 
 ## Architettura 
 
-Per questo progetto utiliziamo una architettura MVC
+Per questo progetto utilizziamo una architettura MVC
 
 - **Controller**: Nel contesto di Spring Boot, i controller sono responsabili di ricevere le richieste HTTP dai client. Un controller accetta le richieste, elabora i dati necessari e poi delega l'elaborazione dei dati a livelli inferiori dell'applicazione (Service). Il controller non dovrebbe contenere la logica di business, ma piuttosto agisce come un intermediario tra il client e il resto dell'applicazione.
 - **Service**:  Il layer del service contiene la logica di business dell'applicazione. In questo strato, vengono implementate le operazioni che l'applicazione deve eseguire sui dati. Il service prende i dati forniti dal controller, li elabora secondo le regole di business dell'applicazione e li passa eventualmente alla repository per l'accesso ai dati.

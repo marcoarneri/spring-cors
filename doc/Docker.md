@@ -23,7 +23,7 @@ Segui questi passaggi per integrare Docker nel tuo progetto Spring Boot:
 ***
 ### 2. Aggiunta del File docker-compose
 
-- Crea un file `docker-compose.yml` nella root del tuo progetto Spring Boot, esempio ([docker-compose.yaml](docker-compose.yaml))
+- Crea un file `docker-compose.yml` nella root del tuo progetto Spring Boot, esempio ([docker-compose.yaml](..%2Fdocker-compose.yaml))
 - Aggiungi la configurazione per il servizio del database PostgreSQL:
 
 ```yaml
@@ -55,7 +55,7 @@ Sostituisci `mydatabase`, `postgres` e `password` con i valori corrispondenti sp
 ***
 ### 4. Esecuzione dell'Applicazione con Docker
 
-- Per eseguire l'applicazione Spring Boot insieme al database PostgreSQL utilizzando Docker, apri il terminale nella root del tuo progetto e esegui il comando:
+- Per eseguire l'applicazione Spring Boot insieme al database PostgreSQL utilizzando Docker, apri il terminale nella root del tuo progetto ed esegui il comando:
 
 ```shell
 docker-compose up
