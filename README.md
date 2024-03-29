@@ -30,7 +30,7 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 -  [GestioneErrori](doc%2FGestioneErrori.md)
 
 ### Approfondimenti
-- [QuerySQL.md](doc%2Finsight%2FQuerySQL.md)
+- [QuerySQL](doc%2Finsight%2FQuerySQL.md)
 
 
 ---
