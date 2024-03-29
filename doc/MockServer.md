@@ -26,7 +26,7 @@ Segui questi passaggi per aggiungere MockServer al tuo progetto Spring Boot:
 ```
 ***
 ### 2. Configurazione del MockServer
-- Crea una classe di configurazione per il tuo MockServer. Puoi avviare e fermare il server in modo pulito utilizzando le annotazioni `@BeforeAll`, `@AfterAll` e `@BeforeEach`, esempio ([MockServerTest.java](src%2Ftest%2Fjava%2Feu%2Ftasgroup%2Fspringbootguide%2FMockServerTest.java)).
+- Crea una classe di configurazione per il tuo MockServer. Puoi avviare e fermare il server in modo pulito utilizzando le annotazioni `@BeforeAll`, `@AfterAll` e `@BeforeEach`, esempio ([MockServerTest.java](..%2Fsrc%2Ftest%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2FMockServerTest.java)).
 ```java
 public class MockServerConfig {
     @BeforeAll
@@ -76,7 +76,7 @@ public class MockExpectation {
 ```
 ***
 ### 4. Creazione dei Test
--  Crea i test che interagiscono con il server mockato, esempio ([MockServerTest.java](src%2Ftest%2Fjava%2Feu%2Ftasgroup%2Fspringbootguide%2FMockServerTest.java)).
+-  Crea i test che interagiscono con il server mockato, esempio ([MockServerTest.java](..%2Fsrc%2Ftest%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2FMockServerTest.java)).
 
 ```java
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
