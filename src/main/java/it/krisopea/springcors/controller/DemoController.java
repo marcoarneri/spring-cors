@@ -8,6 +8,7 @@ import it.krisopea.springcors.service.dto.DemoResponseDto;
 import it.krisopea.springcors.service.mapper.MapperDemoDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@Slf4j
 @Validated
 public class DemoController {
 
@@ -31,6 +33,8 @@ public class DemoController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DemoResponse> demo(
             @Valid @RequestBody DemoRequest request) {
+
+        log.info("demo request: [{}]", request.toString());
 
         DemoRequestDto requestDto = mapperDemoDto.toRequestDto(request);
 

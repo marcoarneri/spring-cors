@@ -8,12 +8,14 @@ import it.krisopea.springcors.repository.model.DemoEntity;
 import it.krisopea.springcors.service.dto.DemoRequestDto;
 import it.krisopea.springcors.service.dto.DemoResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DemoService {
 
     private final DemoRepository demoRepository;
@@ -26,7 +28,8 @@ public class DemoService {
 
         DemoEntity entity = mapperDemoEntity.toEntity(requestDto);
 
-        demoRepository.save(entity);
+        DemoEntity entitySaved = demoRepository.save(entity);
+        log.info("Successfully saved entity: [{}]", entitySaved.toString());
 
 //        Implementazione logica del servizio
 //        Se tutto passa senza errori setto la risposta dto da tornare al controller
