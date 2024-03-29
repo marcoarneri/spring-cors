@@ -15,7 +15,8 @@ public class DemoRouteBuilder extends RouteBuilder {
 
                     // Crea un oggetto DemoResponse
                     DemoResponseDto response = new DemoResponseDto();
-                    response.setOutcome("verifica");
+                    response.setOutcome("VERIFICA");
+                    response.setStatus("PENDING");
                     response.setCity(exchange.getIn().getBody(DemoRequest.class).getCity());
 
                     // Imposta l'oggetto DemoResponse come corpo del messaggio
