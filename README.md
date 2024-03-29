@@ -17,18 +17,18 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 - Docker
 - Java
 
+
 ---
 
 ## Spiegazione
 
 -  [Basi di architettura](doc%2FBASI.md)
 -  [MVC](doc%2FMVC.md)
--  [Mapstruct](doc%2FMapstruct.md)
--  [Gestione Errori](doc%2FGestioneErrori.md)
--  [Openapi](doc%2FOpenapi.md)
 -  [Docker](doc%2FDocker.md)
--  [Jpa](doc%2FJpa.md)
--  [Log](doc%2FLog.md)
+-  [JPA](doc%2FJPA.md)
+-  [Mapstruct](doc%2FMapstruct.md)
+-  [GestioneErrori](doc%2FGestioneErrori.md)
+-  [Openapi](doc%2FOpenapi.md)
 
 ---
 
@@ -38,10 +38,10 @@ per passare alla prossima lezione segui i branch in ordine
 
 - Lezione 0 - Basi
 - Lezione 1 - MVC
-- Lezione 2 - Mapstruct
-- Lezione 3 - Gestione errori
-- Lezione 4 - Openapi
-- Lezione 5 - Jpa & Docker
+- Lezione 2 - Jpa & Docker
+- Lezione 3 - Mapstruct
+- Lezione 4 - Gestione errori
+- Lezione 5 - Openapi
 - Lezione 6 - Log
 - Lezione 7 - Junit Test & Mockserver
 
