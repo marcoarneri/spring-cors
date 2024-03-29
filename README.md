@@ -32,10 +32,12 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 -  [Log](doc%2FLog.md)
 -  [JUnit](doc%2FJUnit.md)
 -  [MockServer](doc%2FMockServer.md)
--  [Log.md](doc%2FLog.md)
+-  [Log](doc%2FLog.md)
+-  [JUnit](doc%2FJUnit.md)
+-  [MockServer](doc%2FMockServer.md)
 
 ### Approfondimenti
-- [QuerySQL.md](doc%2Finsight%2FQuerySQL.md)
+- [QuerySQL](doc%2Finsight%2FQuerySQL.md)
 
 
 ---
