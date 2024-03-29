@@ -7,4 +7,5 @@ public class DemoResponseDto {
 
     private String outcome;
     private String status;
+    private String city;
 }
