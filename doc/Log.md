@@ -4,7 +4,7 @@
 
 Segui questi passaggi per aggiungere i log al tuo progetto Spring Boot:
 
-### Aggiunta anntoazione Slf4j
+### Aggiunta annotazione Slf4j
 
 l'annotazione `@Slf4j` ottenuta dalla libreria di Lombok permette di loggare informazioni sul tuo progetto springboot.
 
