@@ -57,7 +57,7 @@ Alcuni esempi di annotazioni sono:
 ### Validation
 I validator permettono di utilizzare annotazioni per la gestione delle validazioni dei campi di request che arrivano il controller.
 
-Alcuni esempi diannotazioni sono:
+Alcuni esempi di annotazioni sono:
 - `@NotBlank`
 - `@Size`
 - `@Pattern`

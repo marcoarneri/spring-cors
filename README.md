@@ -31,6 +31,10 @@ Il corso serve per ottenere le basi di spring-boot partendo da zero.
 -  [Openapi](doc%2FOpenapi.md)
 -  [Log.md](doc%2FLog.md)
 
+### Approfondimenti
+- [QuerySQL.md](doc%2Finsight%2FQuerySQL.md)
+
+
 ---
 
 ## Passa alla prossima lezione
