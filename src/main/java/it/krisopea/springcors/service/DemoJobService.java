@@ -1,5 +1,7 @@
 package it.krisopea.springcors.service;
 
+import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
+import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.DemoRepository;
 import it.krisopea.springcors.repository.mapper.MapperDemoEntity;
 import it.krisopea.springcors.repository.model.DemoEntity;
@@ -21,7 +23,11 @@ public class DemoJobService {
 
     public void jobService(DemoRequestDto requestDto){
 
-        validazioneSemantica(requestDto.getIuv());
+        boolean validazioneSemantica = validazioneSemantica(requestDto.getIuv());
+
+        if (!validazioneSemantica){
+            return;
+        }
 
         DemoEntity entity = mapperDemoEntity.toEntity(requestDto);
 
@@ -30,11 +36,13 @@ public class DemoJobService {
         log.info("Successfully saved entity: [{}]", entitySaved);
     }
 
-    private void validazioneSemantica(String iuv) {
+    private boolean validazioneSemantica(String iuv) {
         Optional<DemoEntity> byIuv = demoRepository.findByIuv(iuv);
         if(byIuv.isPresent()){
             log.error("Record con IUV duplicato [{}]", iuv);
+            return false;
         }
+        return true;
     }
 
     private DemoEntity save(DemoEntity entity){

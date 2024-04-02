@@ -27,7 +27,6 @@ import javax.sql.DataSource;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableBatchProcessing
 public class BatchConfiguration {
 
     private final DemoJobService demoJobService;
