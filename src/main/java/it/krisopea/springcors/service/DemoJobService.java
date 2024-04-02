@@ -1,7 +1,5 @@
 package it.krisopea.springcors.service;
 
-import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
-import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.DemoRepository;
 import it.krisopea.springcors.repository.mapper.MapperDemoEntity;
 import it.krisopea.springcors.repository.model.DemoEntity;

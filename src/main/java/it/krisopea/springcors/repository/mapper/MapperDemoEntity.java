@@ -2,7 +2,6 @@ package it.krisopea.springcors.repository.mapper;
 
 import it.krisopea.springcors.repository.model.DemoEntity;
 import it.krisopea.springcors.service.dto.DemoRequestDto;
-import lombok.Data;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
