@@ -1,6 +1,5 @@
 package it.krisopea.springcors.controller;
 
-
 import it.krisopea.springcors.controller.model.request.UserLoginRequest;
 import it.krisopea.springcors.controller.model.response.UserResponse;
 import it.krisopea.springcors.util.annotation.AnyRole;
@@ -21,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 @AnyRole
 public class UserController {
 
-    @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(
-            @ModelAttribute("userLoginRequest") UserLoginRequest request){
+  @PostMapping("/login")
+  public ResponseEntity<UserResponse> login(
+      @ModelAttribute("userLoginRequest") UserLoginRequest request) {
 
-        return ResponseEntity.ok().build();
-    }
+    return ResponseEntity.ok().build();
+  }
 }

@@ -1,10 +1,10 @@
- package it.krisopea.springcors.service.dto.response;
+package it.krisopea.springcors.service.dto.response;
 
- import lombok.Data;
+import lombok.Data;
 
- @Data
- public class UserResponseDto {
+@Data
+public class UserResponseDto {
 
   private String outcome;
   private String status;
- }
+}

@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class MapperUtils {
   private MapperUtils() {}
 
+  // FIXME utile?
   public static void encodePassword(
       @MappingTarget UserRegistrationRequestDto userRegistrationRequestDto,
       UserRegistrationRequest userRegistrationRequest,
