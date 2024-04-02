@@ -8,19 +8,19 @@ import lombok.Data;
 @Data
 public class UserLoginRequest {
 
-    @NotBlank
-    @Size(max = 70)
-    private String iuv;
+  @NotBlank
+  @Size(max = 70)
+  private String iuv;
 
-    @NotBlank
-    @Pattern(regexp = "([A-Z]{2})")
-    private String city;
+  @NotBlank
+  @Pattern(regexp = "([A-Z]{2})")
+  private String city;
 
-    @NotBlank
-    @Pattern(regexp = "([A-Z]{2})")
-    private String nation;
+  @NotBlank
+  @Pattern(regexp = "([A-Z]{2})")
+  private String nation;
 
-    @NotBlank
-    @Size(max = 70)
-    private String noticeId;
+  @NotBlank
+  @Size(max = 70)
+  private String noticeId;
 }

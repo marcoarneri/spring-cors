@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class DemoResponse {
 
-    private String outcome;
-    private String status;
+  private String outcome;
+  private String status;
 }
