@@ -8,22 +8,40 @@ import it.krisopea.springcors.service.dto.DemoRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.orm.jpa.JpaTransactionManager;
+
+import javax.sql.DataSource;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableBatchProcessing
 public class BatchConfiguration {
 
     private final DemoJobService demoJobService;
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Bean
+    @Primary
+    public JpaTransactionManager jpaTransactionManager() {
+        final JpaTransactionManager tm = new JpaTransactionManager();
+        tm.setDataSource(dataSource);
+        return tm;
+    }
 
     @Bean
     public Job demoJob(JobRepository jobRepository, Step step1, DemoJobNotificationListener listener) {
@@ -34,7 +52,7 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step step1(JobRepository jobRepository, DataSourceTransactionManager transactionManager,
+    public Step step1(JobRepository jobRepository, JpaTransactionManager transactionManager,
                       FlatFileItemReader<DemoRequest> reader, DemoItemProcessor processor,
                       ItemWriter<DemoRequestDto> writer) {
         return new StepBuilder("step1", jobRepository)

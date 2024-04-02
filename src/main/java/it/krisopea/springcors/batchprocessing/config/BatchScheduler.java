@@ -1,5 +1,6 @@
 package it.krisopea.springcors.batchprocessing.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -11,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 @Configuration
 @EnableScheduling
+@Slf4j
 public class BatchScheduler {
 
     @Autowired
@@ -24,6 +26,10 @@ public class BatchScheduler {
                 .addLong("time", System.currentTimeMillis())
                 .toJobParameters();
 
-        jobLauncher.run(demoJob, jobParameters);
+        try {
+            jobLauncher.run(demoJob, jobParameters);
+        }catch (Exception ex){
+            log.error(ex.getMessage());
+        }
     }
 }
