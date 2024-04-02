@@ -1,7 +1,9 @@
 package it.krisopea.springcors.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
+import it.krisopea.springcors.kafka.KafkaJsonProducer;
 import it.krisopea.springcors.repository.DemoRepository;
 import it.krisopea.springcors.repository.mapper.MapperDemoEntity;
 import it.krisopea.springcors.repository.model.DemoEntity;
@@ -9,14 +11,21 @@ import it.krisopea.springcors.service.dto.DemoRequestDto;
 import it.krisopea.springcors.service.dto.DemoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class DemoService {
+
+    @Autowired
+    private KafkaJsonProducer kafkaJsonProducer;
 
     private final DemoRepository demoRepository;
     private final MapperDemoEntity mapperDemoEntity;
@@ -36,6 +45,13 @@ public class DemoService {
         DemoResponseDto responseDto = new DemoResponseDto();
         responseDto.setOutcome("OK");
         responseDto.setStatus("ELABORATO");
+
+        try {
+            kafkaJsonProducer.sendMessage(requestDto);
+        } catch (JsonProcessingException e) {
+            throw new AppException(AppErrorCodeMessageEnum.ERROR, e.getMessage());
+        }
+
         return responseDto;
     }
 
