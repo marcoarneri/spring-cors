@@ -1,11 +1,11 @@
 package it.krisopea.springcors.controller;
 
-import it.krisopea.springcors.controller.model.DemoResponse;
-import it.krisopea.springcors.controller.model.UserLoginRequest;
-import it.krisopea.springcors.service.DemoService;
+import it.krisopea.springcors.controller.model.request.UserLoginRequest;
+import it.krisopea.springcors.controller.model.response.DemoResponse;
+import it.krisopea.springcors.service.UserService;
 import it.krisopea.springcors.service.dto.DemoResponseDto;
-import it.krisopea.springcors.service.dto.UserLoginRequestDto;
-import it.krisopea.springcors.service.mapper.MapperDemoDto;
+import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
+import it.krisopea.springcors.service.mapper.MapperUserDto;
 import it.krisopea.springcors.util.annotation.AnyRole;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 @AnyRole
 public class UserController {
 
-  private final DemoService demoService;
-  private final MapperDemoDto mapperDemoDto;
+  private final UserService userService;
+  private final MapperUserDto mapperUserDto;
 
   @PostMapping(
       value = "/demo",
@@ -37,11 +37,11 @@ public class UserController {
 
     log.info("demo request: [{}]", request.toString());
 
-    UserLoginRequestDto requestDto = mapperDemoDto.toRequestDto(request);
+    UserLoginRequestDto requestDto = mapperUserDto.toRequestDto(request);
 
-    DemoResponseDto responseDto = demoService.callDemoService(requestDto);
+    DemoResponseDto responseDto = userService.callDemoService(requestDto);
 
-    DemoResponse response = mapperDemoDto.toResponse(responseDto);
+    DemoResponse response = mapperUserDto.toResponse(responseDto);
 
     return ResponseEntity.ok().body(response);
   }

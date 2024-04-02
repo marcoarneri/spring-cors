@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum AppErrorCodeMessageEnum {
-  ERROR("0500", "system.error", HttpStatus.INTERNAL_SERVER_ERROR),
-  BAD_REQUEST("0400", "bad.request", HttpStatus.BAD_REQUEST),
-  IUV_DUPLICATE("1001", "iuv.duplicate", HttpStatus.BAD_REQUEST),
-  RECORD_BY_IUV_NOT_FOUND("1002", "record.by.iuv.not.found", HttpStatus.BAD_REQUEST);
+  ERROR("0500", "system.error", HttpStatus.INTERNAL_SERVER_ERROR);
 
   private final String errorCode;
   private final String errorMessageKey;

@@ -1,6 +1,6 @@
 package it.krisopea.springcors.repository;
 
-import it.krisopea.springcors.repository.model.DemoUserEntity;
+import it.krisopea.springcors.repository.model.UserEntity;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface UserRepository
-    extends JpaRepository<DemoUserEntity, Long>, JpaSpecificationExecutor<DemoUserEntity> {
+    extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
 
   //    Metodo di query derivato: Questo è il metodo più comune e più semplice. In questo approccio,
   // scrivi un metodo all'interno
@@ -19,12 +19,12 @@ public interface UserRepository
   // corrispondente. Ad esempio,
   //    findByIuv(String iuv) è un metodo di query derivato, che cerca un'entità in base al suo
   // attributo iuv.
-  DemoUserEntity findByIuvAndNoticeId(String iuv, String noticeId);
+  UserEntity findByIuvAndNoticeId(String iuv, String noticeId);
 
-  Optional<DemoUserEntity> findByIuv(String iuv);
+  Optional<UserEntity> findByIuv(String iuv);
 
   @Query("SELECT u FROM DemoEntity u WHERE u.location = :location")
-  List<DemoUserEntity> findAllByLocation(@Param("location") String location);
+  List<UserEntity> findAllByLocation(@Param("location") String location);
   //    Annotazione @Query: Questo approccio consente di scrivere query personalizzate in JPQL (Java
   // Persistence Query Language)
   //    o SQL direttamente sopra il metodo del repository utilizzando l'annotazione @Query. Questo

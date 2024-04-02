@@ -6,15 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 @Data
 @Entity
-@Table(name = "DEMO")
+@Table(name = "USER")
 @NoArgsConstructor
-public class DemoUserEntity {
+public class UserEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @UuidGenerator
   @Column(name = "ID")
   private Long id;
 

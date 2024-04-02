@@ -13,5 +13,4 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Validated
 @AllowAnonymous
-public class AuthenticationController {
-}
+public class AuthenticationController {}

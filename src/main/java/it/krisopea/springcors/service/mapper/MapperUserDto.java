@@ -1,15 +1,15 @@
 package it.krisopea.springcors.service.mapper;
 
-import it.krisopea.springcors.controller.model.DemoResponse;
-import it.krisopea.springcors.controller.model.UserLoginRequest;
+import it.krisopea.springcors.controller.model.request.UserLoginRequest;
+import it.krisopea.springcors.controller.model.response.DemoResponse;
 import it.krisopea.springcors.service.dto.DemoResponseDto;
-import it.krisopea.springcors.service.dto.UserLoginRequestDto;
+import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public abstract class MapperDemoDto {
+public abstract class MapperUserDto {
 
   @Mapping(
       target = "location",
