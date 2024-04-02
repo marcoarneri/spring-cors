@@ -29,7 +29,7 @@ public class BatchConfiguration {
     private final DemoJobService demoJobService;
     private final DataSource dataSource;
 
-    @Bean
+    @Bean(name = "transactionManager")
     @Primary
     public JpaTransactionManager jpaTransactionManager() {
         final JpaTransactionManager tm = new JpaTransactionManager();
