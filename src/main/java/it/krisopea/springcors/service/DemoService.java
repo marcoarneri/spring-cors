@@ -2,11 +2,11 @@ package it.krisopea.springcors.service;
 
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
-import it.krisopea.springcors.repository.DemoRepository;
-import it.krisopea.springcors.repository.mapper.MapperDemoEntity;
-import it.krisopea.springcors.repository.model.DemoEntity;
-import it.krisopea.springcors.service.dto.DemoRequestDto;
+import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.repository.mapper.MapperUserEntity;
+import it.krisopea.springcors.repository.model.DemoUserEntity;
 import it.krisopea.springcors.service.dto.DemoResponseDto;
+import it.krisopea.springcors.service.dto.UserLoginRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,17 +18,17 @@ import java.util.Optional;
 @Slf4j
 public class DemoService {
 
-    private final DemoRepository demoRepository;
-    private final MapperDemoEntity mapperDemoEntity;
+    private final UserRepository userRepository;
+    private final MapperUserEntity mapperUserEntity;
 
-    public DemoResponseDto callDemoService(DemoRequestDto requestDto){
+    public DemoResponseDto callDemoService(UserLoginRequestDto requestDto){
 
         validazioneSintattica(requestDto.getIuv());
         validazioneSemantica(requestDto.getIuv());
 
-        DemoEntity entity = mapperDemoEntity.toEntity(requestDto);
+        DemoUserEntity entity = mapperUserEntity.toEntity(requestDto);
 
-        DemoEntity entitySaved = demoRepository.save(entity);
+        DemoUserEntity entitySaved = userRepository.save(entity);
         log.info("Successfully saved entity: [{}]", entitySaved.toString());
 
 //        Implementazione logica del servizio
@@ -41,7 +41,7 @@ public class DemoService {
 
     private void validazioneSemantica(String iuv) {
         //Implementazione validazione semantica e logica (a db)
-        Optional<DemoEntity> byIuv = demoRepository.findByIuv(iuv);
+        Optional<DemoUserEntity> byIuv = userRepository.findByIuv(iuv);
         if(byIuv.isPresent()){
             throw new AppException(AppErrorCodeMessageEnum.IUV_DUPLICATE);
         }

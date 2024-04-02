@@ -1,9 +1,9 @@
 package it.krisopea.springcors.controller;
 
-import it.krisopea.springcors.controller.model.DemoRequest;
+import it.krisopea.springcors.controller.model.UserLoginRequest;
 import it.krisopea.springcors.controller.model.DemoResponse;
 import it.krisopea.springcors.service.DemoService;
-import it.krisopea.springcors.service.dto.DemoRequestDto;
+import it.krisopea.springcors.service.dto.UserLoginRequestDto;
 import it.krisopea.springcors.service.dto.DemoResponseDto;
 import it.krisopea.springcors.service.mapper.MapperDemoDto;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-public class DemoController {
+public class UserController {
 
     private final DemoService demoService;
     private final MapperDemoDto mapperDemoDto;
@@ -32,11 +32,11 @@ public class DemoController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DemoResponse> demo(
-            @Valid @RequestBody DemoRequest request) {
+            @Valid @RequestBody UserLoginRequest request) {
 
         log.info("demo request: [{}]", request.toString());
 
-        DemoRequestDto requestDto = mapperDemoDto.toRequestDto(request);
+        UserLoginRequestDto requestDto = mapperDemoDto.toRequestDto(request);
 
         DemoResponseDto responseDto = demoService.callDemoService(requestDto);
 

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class DemoRequest {
+public class UserRegistrationRequest {
 
     @NotBlank
     @Size(max = 70)

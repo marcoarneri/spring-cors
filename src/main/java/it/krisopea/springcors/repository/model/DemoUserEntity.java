@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
@@ -11,24 +12,27 @@ import java.time.Instant;
 @Entity
 @Table(name = "DEMO")
 @NoArgsConstructor
-public class DemoEntity {
+public class DemoUserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "IUV", unique = true, nullable = false)
-    private String iuv;
+    @Column(name = "USERNAME", unique = true, nullable = false)
+    private String username;
 
-    @Column(name = "LOCATION")
-    private String location;
-    
-    @Column(name = "NOTICE_ID",nullable = false)
-    private String noticeId;
+    @Column(name = "PASSWORD")
+    private String password;
 
     @CreationTimestamp
-    @Column(name = "INSERTED_TIMESTAMP")
-    private Instant insertedTimestamp;
+    @Column(name = "CREATE_ON")
+    private Instant createOn;
+
+    @UpdateTimestamp
+    @Column(name = "UPDATE_ON",nullable = false)
+    private Instant updateOn;
+
+
 }
 

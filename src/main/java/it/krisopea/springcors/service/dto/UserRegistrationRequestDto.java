@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 @Data
-public class DemoRequestDto {
+public class UserRegistrationRequestDto {
 
     private String iuv;
     private String location;
