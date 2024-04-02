@@ -41,13 +41,11 @@ Come esempio di lettura di dati da una fonte esterna abbiamo creato un file [dem
 - Crea i job e i processi batch necessari per la tua applicazione. Un job batch è un'istanza del tipo Job, mentre un processo batch è un'istanza del tipo Step.
 - Implementa i lettori, i processori e i writer necessari per l'elaborazione dei dati. Un lettore batch legge i dati da una fonte esterna, un processore batch elabora i dati e un writer batch scrive i dati su una destinazione.
 - Configura in base alle tue esigenze un `Listener`, che implementa la classe `JobExecutionListener` per intercettare quando viene avviato e quando finisce il Job.
-- Configura il TransactionManager per gestire le transazioni inerenti al tuo job batch.
 
 esempi:
 - [BatchConfiguration](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fbatchprocessing%2Fconfig%2FBatchConfiguration.java)
 - [DemoItemProcessor](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fbatchprocessing%2FDemoItemProcessor.java)
 - [DemoJobNotificationListener](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fbatchprocessing%2FDemoJobNotificationListener.java)
-- [TransactionManagerConfig](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fbatchprocessing%2Fconfig%2FTransactionManagerConfig.java)
 
 ### 3. Attivazione Job
 
