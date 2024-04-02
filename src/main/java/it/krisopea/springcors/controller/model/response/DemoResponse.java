@@ -1,10 +1,10 @@
-//package it.krisopea.springcors.controller.model.response;
+// package it.krisopea.springcors.controller.model.response;
 //
-//import lombok.Data;
+// import lombok.Data;
 //
-//@Data
-//public class DemoResponse {
+// @Data
+// public class DemoResponse {
 //
 //  private String outcome;
 //  private String status;
-//}
+// }
