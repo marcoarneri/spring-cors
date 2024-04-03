@@ -38,10 +38,11 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Job demoJob(JobRepository jobRepository, Step step1, DemoJobNotificationListener listener) {
+    public Job demoJob(JobRepository jobRepository, Step step1, Step step2, DemoJobNotificationListener listener) {
         return new JobBuilder("demoJob", jobRepository)
                 .listener(listener)
                 .start(step1)
+                .next(step2)
                 .build();
     }
 
@@ -50,6 +51,20 @@ public class BatchConfiguration {
                       FlatFileItemReader<DemoRequest> reader, DemoItemProcessor processor,
                       ItemWriter<DemoRequestDto> writer) {
         return new StepBuilder("step1", jobRepository)
+                .<DemoRequest, DemoRequestDto> chunk(1, transactionManager)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
+    }
+
+    //TODO Cambiare le funzionalità del secondo step
+    //TODO analizzare l'ipotesi di fare uno step per il restart invece dell'implementazione attuale
+    @Bean
+    public Step step2(JobRepository jobRepository, JpaTransactionManager transactionManager,
+                      FlatFileItemReader<DemoRequest> reader, DemoItemProcessor processor,
+                      ItemWriter<DemoRequestDto> writer) {
+        return new StepBuilder("step2", jobRepository)
                 .<DemoRequest, DemoRequestDto> chunk(1, transactionManager)
                 .reader(reader)
                 .processor(processor)
