@@ -2,10 +2,8 @@ package it.krisopea.springcors.service;
 
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
-import it.krisopea.springcors.repository.RoleRepository;
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.mapper.MapperUserEntity;
-import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
 import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
@@ -27,7 +25,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AuthService {
   private final UserRepository userRepository;
-  private final RoleRepository roleRepository;
   private final MapperUserEntity mapperUserEntity;
   private final BCryptPasswordEncoder passwordEncoder;
 
@@ -44,9 +41,7 @@ public class AuthService {
 
     UserEntity userEntity = mapperUserEntity.toUserEntity(userRegistrationRequestDto);
 
-    RoleEntity userRole = roleRepository.findByName(RoleConstants.ROLE_USER).get();
-
-    userEntity.setRole(userRole.getName());
+    userEntity.setRole(RoleConstants.ROLE_USER);
     userRepository.saveAndFlush(userEntity);
     producerTemplate.sendBodyAndHeader(
         "direct:sendRegistrationEmail", null, "email", userRegistrationRequestDto.getEmail());
