@@ -31,7 +31,7 @@ public class AuthService {
   private AuthenticationManager authenticationManager;
   @Autowired private ProducerTemplate producerTemplate;
 
-  @AllowAnonymous
+
   public void register(UserRegistrationRequestDto userRegistrationRequestDto) {
     if ((userRepository.findByEmail(userRegistrationRequestDto.getEmail()).isPresent())
         || (userRepository.findByUsername(userRegistrationRequestDto.getUsername()).isPresent())) {
@@ -46,7 +46,7 @@ public class AuthService {
         "direct:sendRegistrationEmail", null, "email", userRegistrationRequestDto.getEmail());
   }
 
-  @AllowAnonymous
+
   public void login(UserLoginRequestDto userLoginRequestDto) {
     UserEntity userEntity;
     if (userLoginRequestDto.getUsernameOrEmail().contains("@")) {

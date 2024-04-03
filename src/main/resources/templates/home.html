@@ -6,17 +6,17 @@
 <body>
 <h1>Benvenuto!</h1>
 
-<!-- Messaggio di conferma -->
+
 <div th:if="${message}">
     <p th:text="${message}"></p>
 </div>
 
-<!-- Visualizzazione dei dati dell'utente registrato -->
+
 <div th:if="${registrationSuccess}">
     <p><strong>Dati utente:</strong></p>
     <p>Nome: <span th:text="${userRegistrationRequest.name}"></span></p>
     <p>Cognome: <span th:text="${userRegistrationRequest.surname}"></span></p>
-    <!-- Aggiungi altri campi se necessario -->
+
 </div>
 </body>
 </html>
