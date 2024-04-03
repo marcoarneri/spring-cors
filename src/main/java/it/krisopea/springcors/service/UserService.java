@@ -3,11 +3,11 @@ package it.krisopea.springcors.service;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
-import it.krisopea.springcors.controller.model.request.UserDeleteRequest;
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.model.UserEntity;
+import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.util.AuthenticatedUserUtils;
 import it.krisopea.springcors.util.annotation.IsAdmin;
@@ -69,14 +69,14 @@ public class UserService {
           + "', '"
           + RoleConstants.ROLE_ADMIN
           + "')")
-  public void deleteUser(UserDeleteRequest userDeleteRequest, UUID userId) {
+  public void deleteUser(UserDeleteRequestDto userDeleteRequestDto, UUID userId) {
     UserEntity userEntity =
         userRepository
             .findById(userId)
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
     // TODO qua inviare email di notifica cancellazione tramite email passata nel dto
-    String encryptedPassword = passwordEncoder.encode(userDeleteRequest.getPassword());
+    String encryptedPassword = passwordEncoder.encode(userDeleteRequestDto.getPassword());
 
     if (!encryptedPassword.equals(userEntity.getPassword())) {
       throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
