@@ -2,10 +2,9 @@ package it.krisopea.springcors.batchprocessing;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.BatchStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.stereotype.Component;
 
@@ -16,19 +15,41 @@ public class JobRestarter {
 
     private final JobExplorer jobExplorer;
     private final JobOperator jobOperator;
+    private final Job demoJob;
+    private final JobLauncher jobLauncher;
 
-    public void restartJob() throws Exception {
 
+    public void restartOrStartJobIfFirstRun() throws Exception {
+        if (isFirstRun()) {
+            startJob();
+        } else if (isJobInterrupted()) {
+            restartJob();
+        }else {
+            log.info("Non ci sono altri record da aggiungere.");
+        }
+    }
+
+    private boolean isFirstRun() {
+        JobInstance jobInstance = jobExplorer.getLastJobInstance("demoJob");
+        return jobInstance == null;
+    }
+
+    private boolean isJobInterrupted() {
         JobInstance jobInstance = jobExplorer.getLastJobInstance("demoJob");
         JobExecution lastExecution = jobExplorer.getLastJobExecution(jobInstance);
+        return lastExecution != null && lastExecution.getStatus() == BatchStatus.FAILED;
+    }
 
-        if  (lastExecution != null && lastExecution.getStatus() == BatchStatus.FAILED) {
-            Long lastExecutionId = jobExplorer.getLastJobExecution(jobInstance).getId();
+    private void startJob() throws Exception {
+        JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+        jobLauncher.run(demoJob, jobParametersBuilder.toJobParameters());
+        log.info("Job avviato per la prima volta.");
+    }
 
-
-            jobOperator.restart(lastExecutionId);
-        } else {
-            log.info("Non ci sono nuovi dati da salvare.");
-        }
+    private void restartJob() throws Exception {
+        JobInstance jobInstance = jobExplorer.getLastJobInstance("demoJob");
+        JobExecution lastExecution = jobExplorer.getLastJobExecution(jobInstance);
+        Long lastExecutionId = lastExecution.getId();
+        jobOperator.restart(lastExecutionId);
     }
 }
