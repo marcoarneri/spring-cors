@@ -13,7 +13,7 @@ public class EmailLogRoute extends RouteBuilder {
   public void configure() {
     from("timer:emailLogTimer")
         .routeId("emailLogTimer")
-        .delayer(120000)
+        .delayer(210000)
         .log(
             "Sono state inviate "
                 + globalEmailResources.getEmailCounter()
