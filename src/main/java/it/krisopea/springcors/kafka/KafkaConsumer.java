@@ -5,14 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.krisopea.springcors.service.dto.DemoRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.annotation.TopicPartition;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KafkaJsonConsumer {
+public class KafkaConsumer {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -31,6 +27,13 @@ public class KafkaJsonConsumer {
             containerFactory = "filterKafkaListenerContainerFactory")
     public void listenWithFilter(String message) {
         System.out.println("Received Message in filtered listener: " + message);
+    }
+
+    @KafkaListener(
+            topics = "kafkacustomtopic",
+            containerFactory = "customKafkaListenerContainerFactory")
+    public void customListener(DemoRequestDto demoRequestDto) {
+        System.out.println("Received custom Message in custom listener: " + demoRequestDto);
     }
 
 //    @KafkaListener(topics = "kafkatest", groupId = "spring-cors")
