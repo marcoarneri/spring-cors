@@ -6,8 +6,10 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.repository.mapper.MapperUserEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
+import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.util.AuthenticatedUserUtils;
 import it.krisopea.springcors.util.annotation.IsAdmin;
@@ -28,8 +30,19 @@ public class UserService {
   private final UserRepository userRepository;
   private final AuthenticatedUserUtils authenticatedUserUtils;
   private final PasswordEncoder passwordEncoder;
+  private final MapperUserEntity mapperUserEntity;
 
   @Autowired private ProducerTemplate producerTemplate;
+
+  public void registerUser(UserRegistrationRequestDto requestDto) {
+    if ((userRepository.findByEmail(requestDto.getEmail()).isPresent())
+            || (userRepository.findByUsername(requestDto.getUsername()).isPresent())) {
+      throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
+    }
+    UserEntity userEntity = mapperUserEntity.toUserEntity(requestDto);
+    userEntity.setRole(RoleConstants.ROLE_USER);
+    userRepository.saveAndFlush(userEntity);
+  }
 
   @PreAuthorize(
       "@authenticatedUserUtils.hasId(#userId) and hasAnyRole('"
