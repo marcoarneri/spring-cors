@@ -3,6 +3,8 @@ package it.krisopea.springcors.security;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
@@ -19,16 +21,11 @@ public class WebSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-            .authorizeHttpRequests(requests -> requests
-                    .requestMatchers("/", "/home").permitAll()
-                    .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                    .loginPage("/login")
-                    .permitAll()
-            )
-            .logout(LogoutConfigurer::permitAll);
+    http.authorizeHttpRequests(
+            requests ->
+                requests.requestMatchers("/", "/home").permitAll().anyRequest().authenticated())
+        .formLogin(form -> form.loginPage("/login").permitAll())
+        .logout(LogoutConfigurer::permitAll);
 
     return http.build();
   }
@@ -36,11 +33,7 @@ public class WebSecurityConfig {
   @Bean
   public UserDetailsService userDetailsService() {
     UserDetails user =
-            User.builder()
-                    .username("admin")
-                    .password("admin")
-                    .roles(RoleConstants.ROLE_ADMIN)
-                    .build();
+        User.builder().username("admin").password("admin").roles(RoleConstants.ROLE_ADMIN).build();
 
     return new InMemoryUserDetailsManager(user);
   }
@@ -48,5 +41,11 @@ public class WebSecurityConfig {
   @Bean
   public static BCryptPasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+      throws Exception {
+    return configuration.getAuthenticationManager();
   }
 }
