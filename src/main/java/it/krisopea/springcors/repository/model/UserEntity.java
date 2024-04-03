@@ -1,12 +1,13 @@
 package it.krisopea.springcors.repository.model;
 
 import jakarta.persistence.*;
+import java.time.Instant;
+import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.Instant;
+import org.hibernate.annotations.UuidGenerator;
 
 @Data
 @Entity
@@ -15,15 +16,27 @@ import java.time.Instant;
 public class UserEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @UuidGenerator
   @Column(name = "ID")
-  private Long id;
+  private UUID id;
+
+  @Column(name = "NAME", nullable = false)
+  private String name;
+
+  @Column(name = "SURNAME", nullable = false)
+  private String surname;
 
   @Column(name = "USERNAME", unique = true, nullable = false)
   private String username;
 
+  @Column(name = "EMAIL", unique = true, nullable = false)
+  private String email;
+
   @Column(name = "PASSWORD", nullable = false)
   private String password;
+
+  @Column(name = "ROLE", nullable = false)
+  private String role;
 
   @CreationTimestamp
   @Column(name = "CREATE_ON")

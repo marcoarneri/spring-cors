@@ -13,5 +13,4 @@ public abstract class MapperUserDto {
   public abstract UserLoginRequestDto toRequestDto(UserLoginRequest request);
 
   public abstract UserResponse toResponse(UserResponseDto responseDto);
-
 }
