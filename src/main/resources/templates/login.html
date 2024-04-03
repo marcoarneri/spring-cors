@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <title>Login</title>
 </head>
 <body>
@@ -9,7 +9,7 @@
 <h2>Login</h2>
 
 <!-- Form di login -->
-<form action="/login" method="post" th:object="${userLoginRequest}">
+<!--<form action="/login" method="post" th:object="${userLoginRequest}">-->
     <div>
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" th:field="*{username}" required>
@@ -19,7 +19,7 @@
         <input type="password" id="password" name="password" th:field="*{password}" required>
     </div>
     <button type="submit">Login</button>
-</form>
+<!--</form>-->
 
 </body>
 </html>

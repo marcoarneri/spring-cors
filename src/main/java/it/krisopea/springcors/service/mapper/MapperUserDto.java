@@ -14,7 +14,4 @@ public abstract class MapperUserDto {
 
   public abstract UserResponse toResponse(UserResponseDto responseDto);
 
-  public String mapLocation(String city, String nation) {
-    return nation + " - " + city;
-  }
 }

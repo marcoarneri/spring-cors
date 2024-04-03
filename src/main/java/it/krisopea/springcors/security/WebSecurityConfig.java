@@ -1,15 +1,10 @@
 package it.krisopea.springcors.security;
 
-import static it.krisopea.springcors.config.SpringSecurityConfiguration.passwordEncoder;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -27,16 +22,11 @@ public class WebSecurityConfig {
     return http.build();
   }
 
-  @Bean
-  public UserDetailsService userDetailsService() {
-    UserDetails user =
-        User.builder()
-            .passwordEncoder(password -> passwordEncoder().encode(password))
-            .username("user")
-            .password("password")
-            .roles("USER")
-            .build();
-
-    return new InMemoryUserDetailsManager(user);
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth
+            .inMemoryAuthentication()
+            .withUser("admin").password("{noop}admin").roles("ADMIN")
+            .and()
+            .withUser("user").password("{noop}user").roles("USER");
   }
 }
