@@ -3,6 +3,7 @@ package it.krisopea.springcors.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
@@ -12,28 +13,12 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-  @Bean
-  public ViewResolver viewResolver() {
-    ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-    resolver.setTemplateEngine(templateEngine());
-    resolver.setCharacterEncoding("UTF-8");
-    return resolver;
+  @Override
+  public void addViewControllers(ViewControllerRegistry registry) {
+    registry.addViewController("/home").setViewName("home");
+    registry.addViewController("/").setViewName("home");
+    registry.addViewController("/hello").setViewName("hello");
+    registry.addViewController("/login").setViewName("login");
   }
 
-  @Bean
-  public SpringTemplateEngine templateEngine() {
-    SpringTemplateEngine engine = new SpringTemplateEngine();
-    engine.setTemplateResolver(templateResolver());
-    return engine;
-  }
-
-  @Bean
-  public ClassLoaderTemplateResolver templateResolver() {
-    ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
-    resolver.setPrefix("templates/");
-    resolver.setSuffix(".html");
-    resolver.setTemplateMode(TemplateMode.HTML);
-    resolver.setCharacterEncoding("UTF-8");
-    return resolver;
-  }
 }
