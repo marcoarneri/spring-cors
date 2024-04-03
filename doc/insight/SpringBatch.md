@@ -47,7 +47,28 @@ esempi:
 - [DemoItemProcessor](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fbatchprocessing%2FDemoItemProcessor.java)
 - [DemoJobNotificationListener](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fbatchprocessing%2FDemoJobNotificationListener.java)
 
-### 3. Attivazione Job
+### 3. Riavvio di un job in caso di fallimento
+
+La classe [JobRestarter.java](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fbatchprocessing%2FJobRestarter.java) è responsabile di gestire il riavvio di un job in caso di fallimento dell'esecuzione precedente.
+
+
+Come prima cosa instanziamo due campi Importati per esplorare i metadati del job e fare delle operazioni su di essi
+
+* `jobExplorer`:
+
+  Questo campo rappresenta un'istanza di `JobExplorer`, che fornisce metodi per esplorare i metadati dei job. Viene utilizzato per ottenere informazioni sull'ultima esecuzione del job.
+
+
+* `jobOperator`:
+
+    Questo campo rappresenta un'istanza di `JobOperator`, che offre metodi per operare sui job, come avviare, fermare e riavviare i job. Nel caso del nostro esempio viene utilizzato per riavviare il nostro job in caso di fallimento.
+
+Il metodo `restartJob()` fornisce un meccanismo robusto per gestire i fallimenti dei job. Controlla se l'ultima esecuzione del job sia fallita e, in caso affermativo, riavvia il job dalla posizione in cui si è interrotto.
+
+In conclusione, il metodo restartJob() rappresenta un componente cruciale nell'architettura di un'applicazione Spring Batch, garantendo che i job vengano gestiti in modo robusto e affidabile anche in presenza di errori o fallimenti durante l'esecuzione.
+
+
+### 4. Attivazione Job
 
 Esegui il job batch utilizzando il `JobLauncher`. Puoi avviare i job batch manualmente tramite il codice Java o pianificare l'esecuzione dei job batch utilizzando strumenti come Spring Scheduler
 
