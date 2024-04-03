@@ -13,6 +13,8 @@ import it.krisopea.springcors.util.annotation.AllowAnonymous;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.ProducerTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,8 +30,10 @@ public class AuthService {
   private final RoleRepository roleRepository;
   private final MapperUserEntity mapperUserEntity;
   private final BCryptPasswordEncoder passwordEncoder;
+
   //  @Autowired FIXME
   private AuthenticationManager authenticationManager;
+  @Autowired private ProducerTemplate producerTemplate;
 
   @AllowAnonymous
   public void register(UserRegistrationRequestDto userRegistrationRequestDto) {
@@ -44,6 +48,8 @@ public class AuthService {
 
     userEntity.setRole(userRole.getName());
     userRepository.saveAndFlush(userEntity);
+    producerTemplate.sendBodyAndHeader(
+        "direct:sendRegistrationEmail", null, "email", userRegistrationRequestDto.getEmail());
   }
 
   @AllowAnonymous

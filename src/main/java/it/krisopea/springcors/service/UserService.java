@@ -15,6 +15,8 @@ import it.krisopea.springcors.util.constant.RoleConstants;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.ProducerTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ public class UserService {
   private final UserRepository userRepository;
   private final AuthenticatedUserUtils authenticatedUserUtils;
   private final BCryptPasswordEncoder passwordEncoder;
+
+  @Autowired private ProducerTemplate producerTemplate;
 
   @PreAuthorize(
       "@authenticatedUserUtils.hasId(#userId) and hasAnyRole('"
@@ -42,6 +46,11 @@ public class UserService {
     String name = userUpdateRequestDto.getName();
     String surname = userUpdateRequestDto.getSurname();
     String password = userUpdateRequestDto.getPassword();
+    String oldEncodedPassword = passwordEncoder.encode(userUpdateRequestDto.getOldPassword());
+
+    if (oldEncodedPassword.equals(userEntity.getPassword())) {
+      throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
+    }
 
     if (isBlank(name) && isBlank(surname) && isBlank(password)) {
       throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
@@ -57,10 +66,11 @@ public class UserService {
       userEntity.setPassword(passwordEncoder.encode(password));
     }
 
-    // TODO inviare email di aggiornamento all'utente
     userEntity.setUsername(null);
     userEntity.setEmail(null);
     userRepository.saveAndFlush(userEntity);
+    producerTemplate.sendBodyAndHeader(
+        "direct:sendUpdateEmail", null, "email", userEntity.getEmail());
   }
 
   @PreAuthorize(
@@ -75,13 +85,14 @@ public class UserService {
             .findById(userId)
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
-    // TODO qua inviare email di notifica cancellazione tramite email passata nel dto
     String encryptedPassword = passwordEncoder.encode(userDeleteRequestDto.getPassword());
 
     if (!encryptedPassword.equals(userEntity.getPassword())) {
       throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
     } else {
       userRepository.delete(userEntity);
+      producerTemplate.sendBodyAndHeader(
+          "direct:sendDeleteEmail", null, "email", userDeleteRequestDto.getEmail());
     }
   }
 
