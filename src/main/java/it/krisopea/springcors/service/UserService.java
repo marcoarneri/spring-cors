@@ -1,5 +1,8 @@
 package it.krisopea.springcors.service;
 
+import static org.apache.logging.log4j.util.Strings.isBlank;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
+
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.UserRepository;
@@ -8,6 +11,7 @@ import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.util.annotation.IsAdmin;
 import it.krisopea.springcors.util.constant.RoleConstants;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -15,11 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
-
-import static org.apache.logging.log4j.util.Strings.isBlank;
-import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
 @RequiredArgsConstructor

@@ -26,7 +26,7 @@ public class AuthController {
   private final AuthService authService;
   private final MapperUserDto userMapperDto;
 
-  //TODO adattarlo alle view
+  // TODO adattarlo alle view
   @PostMapping("/login")
   public ResponseEntity<Void> loginUser(@Valid @RequestBody UserLoginRequest userLoginRequest) {
     log.info("Login request for username or email: {}.", userLoginRequest.getUsernameOrEmail());
@@ -45,16 +45,17 @@ public class AuthController {
   }
 
   @PostMapping("/register")
-  public ModelAndView registerUser(@ModelAttribute("userRegistrationRequest") @Valid UserRegistrationRequest request, ModelMap model) {
+  public ModelAndView registerUser(
+      @ModelAttribute("userRegistrationRequest") @Valid UserRegistrationRequest request,
+      ModelMap model) {
     log.info(
-            "Registration request for name: {}, surname: {}, email: {}, username: {}.",
-            request.getName(),
-            request.getSurname(),
-            request.getEmail(),
-            request.getUsername());
+        "Registration request for name: {}, surname: {}, email: {}, username: {}.",
+        request.getName(),
+        request.getSurname(),
+        request.getEmail(),
+        request.getUsername());
 
-    UserRegistrationRequestDto requestDto =
-            userMapperDto.toUserRegistrationRequestDto(request);
+    UserRegistrationRequestDto requestDto = userMapperDto.toUserRegistrationRequestDto(request);
     authService.register(requestDto);
 
     log.info("Registration completed successfully.");

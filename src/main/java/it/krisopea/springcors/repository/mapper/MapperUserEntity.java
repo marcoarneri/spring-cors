@@ -17,6 +17,6 @@ public abstract class MapperUserEntity {
   @Named("encodePassword")
   public String encodePassword(String password) {
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-      return encoder.encode(password);
+    return encoder.encode(password);
   }
 }
