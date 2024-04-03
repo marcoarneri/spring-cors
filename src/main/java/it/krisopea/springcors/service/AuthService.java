@@ -13,7 +13,6 @@ import it.krisopea.springcors.util.annotation.AllowAnonymous;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,7 +26,7 @@ public class AuthService {
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final MapperUserEntity mapperUserEntity;
-//  @Autowired FIXME
+  //  @Autowired FIXME
   private AuthenticationManager authenticationManager;
 
   @AllowAnonymous

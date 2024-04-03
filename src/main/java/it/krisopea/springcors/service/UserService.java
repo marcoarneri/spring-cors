@@ -10,9 +10,8 @@ import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.util.AuthenticatedUserUtils;
-import java.util.UUID;
-
 import it.krisopea.springcors.util.annotation.IsAdmin;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,7 +51,7 @@ public class UserService {
       userEntity.setPassword(passwordEncoder.encode(password));
     }
 
-    //TODO inviare email di aggiornamento all'utente
+    // TODO inviare email di aggiornamento all'utente
     userEntity.setUsername(null);
     userEntity.setEmail(null);
     userRepository.saveAndFlush(userEntity);
@@ -78,9 +77,9 @@ public class UserService {
   @IsAdmin
   public void deleteUser(UUID userId) {
     UserEntity userEntity =
-            userRepository
-                    .findById(userId)
-                    .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
     userRepository.delete(userEntity);
   }
