@@ -50,7 +50,7 @@ public class BatchConfiguration {
                       FlatFileItemReader<DemoRequest> reader, DemoItemProcessor processor,
                       ItemWriter<DemoRequestDto> writer) {
         return new StepBuilder("step1", jobRepository)
-                .<DemoRequest, DemoRequestDto> chunk(2, transactionManager)
+                .<DemoRequest, DemoRequestDto> chunk(1, transactionManager)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -65,6 +65,7 @@ public class BatchConfiguration {
                 .resource(new ClassPathResource("demo.csv"))
                 .delimited()
                 .names("iuv", "city", "nation", "noticeId")
+                .linesToSkip(1)
                 .targetType(DemoRequest.class)
                 .build();
     }
