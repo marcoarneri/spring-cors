@@ -1,21 +1,19 @@
 package it.krisopea.springcors.controller;
 
-import it.krisopea.springcors.controller.model.request.UserDeleteRequest;
 import it.krisopea.springcors.service.UserService;
-import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.mapper.MapperUserDto;
-import it.krisopea.springcors.util.annotation.AnyRole;
 import it.krisopea.springcors.util.annotation.IsAdmin;
 import it.krisopea.springcors.util.constant.PathConstants;
 import it.krisopea.springcors.util.constant.PathMappingConstants;
-import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,15 +22,16 @@ import java.util.UUID;
 @Validated
 @IsAdmin
 public class AdminController {
-    private final UserService userService;
-    private final MapperUserDto mapperUserDto;
-    @DeleteMapping("/delete/{" + PathMappingConstants.USER_ID + "}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID userId) {
-        log.info("Admin's delete request with user ID: {}", userId);
+  private final UserService userService;
+  private final MapperUserDto mapperUserDto;
 
-        userService.deleteUser(userId);
+  @DeleteMapping("/delete/{" + PathMappingConstants.USER_ID + "}")
+  public ResponseEntity<Void> deleteUser(@PathVariable UUID userId) {
+    log.info("Admin's delete request with user ID: {}", userId);
 
-        log.info("Admin deleted user with user ID: {}", userId);
-        return ResponseEntity.ok().build();
-    }
+    userService.deleteUser(userId);
+
+    log.info("Admin deleted user with user ID: {}", userId);
+    return ResponseEntity.ok().build();
+  }
 }
