@@ -1,20 +1,13 @@
 package it.krisopea.springcors.service;
 
-import static org.apache.logging.log4j.util.Strings.isBlank;
-import static org.apache.logging.log4j.util.Strings.isNotBlank;
-
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.UserRepository;
-import it.krisopea.springcors.repository.mapper.MapperUserEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
-import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
-import it.krisopea.springcors.util.AuthenticatedUserUtils;
 import it.krisopea.springcors.util.annotation.IsAdmin;
 import it.krisopea.springcors.util.constant.RoleConstants;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -23,26 +16,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
+import static org.apache.logging.log4j.util.Strings.isBlank;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
   private final UserRepository userRepository;
-  private final AuthenticatedUserUtils authenticatedUserUtils;
   private final PasswordEncoder passwordEncoder;
-  private final MapperUserEntity mapperUserEntity;
 
   @Autowired private ProducerTemplate producerTemplate;
-
-  public void registerUser(UserRegistrationRequestDto requestDto) {
-    if ((userRepository.findByEmail(requestDto.getEmail()).isPresent())
-            || (userRepository.findByUsername(requestDto.getUsername()).isPresent())) {
-      throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
-    }
-    UserEntity userEntity = mapperUserEntity.toUserEntity(requestDto);
-    userEntity.setRole(RoleConstants.ROLE_USER);
-    userRepository.saveAndFlush(userEntity);
-  }
 
   @PreAuthorize(
       "@authenticatedUserUtils.hasId(#userId) and hasAnyRole('"

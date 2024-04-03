@@ -11,11 +11,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping("/authentication")
@@ -27,24 +26,7 @@ public class AuthController {
   private final AuthService authService;
   private final MapperUserDto userMapperDto;
 
-  @PostMapping("/register")
-  public ResponseEntity<Void> registerUser(
-      @Valid @RequestBody UserRegistrationRequest userRegistrationRequest) {
-    log.info(
-        "Registration request for name: {}, surname: {}, email: {}, username: {}.",
-        userRegistrationRequest.getName(),
-        userRegistrationRequest.getSurname(),
-        userRegistrationRequest.getEmail(),
-        userRegistrationRequest.getUsername());
-
-    UserRegistrationRequestDto userRegistrationRequestDto =
-        userMapperDto.toUserRegistrationRequestDto(userRegistrationRequest);
-    authService.register(userRegistrationRequestDto);
-
-    log.info("Registration completed successfully.");
-    return ResponseEntity.ok().build();
-  }
-
+  //TODO adattarlo alle view
   @PostMapping("/login")
   public ResponseEntity<Void> loginUser(@Valid @RequestBody UserLoginRequest userLoginRequest) {
     log.info("Login request for username or email: {}.", userLoginRequest.getUsernameOrEmail());
@@ -54,5 +36,29 @@ public class AuthController {
 
     log.info("Login completed successfully.");
     return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/register")
+  public ModelAndView showRegistrationForm(ModelMap model) {
+    model.addAttribute("userRegistrationRequest", new UserRegistrationRequest());
+    return new ModelAndView("register", model);
+  }
+
+  @PostMapping("/register")
+  public ModelAndView registerUser(@ModelAttribute("userRegistrationRequest") @Valid UserRegistrationRequest request, ModelMap model) {
+    log.info(
+            "Registration request for name: {}, surname: {}, email: {}, username: {}.",
+            request.getName(),
+            request.getSurname(),
+            request.getEmail(),
+            request.getUsername());
+
+    UserRegistrationRequestDto requestDto =
+            userMapperDto.toUserRegistrationRequestDto(request);
+    authService.register(requestDto);
+
+    log.info("Registration completed successfully.");
+
+    return new ModelAndView("login");
   }
 }
