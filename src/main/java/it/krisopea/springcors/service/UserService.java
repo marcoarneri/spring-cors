@@ -11,6 +11,7 @@ import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.util.AuthenticatedUserUtils;
 import it.krisopea.springcors.util.annotation.IsAdmin;
+import it.krisopea.springcors.util.constant.RoleConstants;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,12 @@ public class UserService {
   private final AuthenticatedUserUtils authenticatedUserUtils;
   private final BCryptPasswordEncoder passwordEncoder;
 
-  @PreAuthorize("@authenticatedUserUtils.hasId(#userId)")
+  @PreAuthorize(
+      "@authenticatedUserUtils.hasId(#userId) and hasAnyRole('"
+          + RoleConstants.ROLE_USER
+          + "', '"
+          + RoleConstants.ROLE_ADMIN
+          + "')")
   public void updateUser(UserUpdateRequestDto userUpdateRequestDto, UUID userId) {
     UserEntity userEntity =
         userRepository
@@ -57,7 +63,12 @@ public class UserService {
     userRepository.saveAndFlush(userEntity);
   }
 
-  @PreAuthorize("@authenticatedUserUtils.hasId(#userId)")
+  @PreAuthorize(
+      "@authenticatedUserUtils.hasId(#userId) and hasAnyRole('"
+          + RoleConstants.ROLE_USER
+          + "', '"
+          + RoleConstants.ROLE_ADMIN
+          + "')")
   public void deleteUser(UserDeleteRequest userDeleteRequest, UUID userId) {
     UserEntity userEntity =
         userRepository
