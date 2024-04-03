@@ -35,21 +35,18 @@ public class WebSecurityConfig {
                     .authenticated())
         .formLogin(
             form ->
-                form.loginPage("/login")
-                    .permitAll()
-                    .successHandler(
-                        ((request, response, authentication) -> response.sendRedirect("/hello"))))
+                form
+                    .loginPage("/login")
+                    .loginProcessingUrl("/perform_login")
+                    .defaultSuccessUrl("/hello", true)
+                    .failureUrl("/login?error=true")
+                    .permitAll())
         .logout(
             logout ->
                 logout
-                    .logoutSuccessHandler(
-                        (request, response, authentication) -> {
-                          if (authentication == null) {
-                            response.sendRedirect("/entry");
-                          } else {
-                            response.sendRedirect("/hello");
-                          }
-                        })
+                    .logoutSuccessUrl("/entry")
+                    .logoutUrl("/perform_logout")
+                    .invalidateHttpSession(true)
                     .permitAll());
 
     return http.build();
