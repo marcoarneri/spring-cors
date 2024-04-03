@@ -12,12 +12,9 @@ import it.krisopea.springcors.service.dto.DemoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +44,9 @@ public class DemoService {
         responseDto.setStatus("ELABORATO");
 
         try {
-            kafkaJsonProducer.sendMessage(requestDto);
+            kafkaJsonProducer.sendJsonMessage(requestDto);
+            //Il filtro verifica che se il messaggio contiene la parola Wold, verrà intercettato
+            kafkaJsonProducer.sendFilterMessage("Hello, this message contain the secret word: 'World'");
         } catch (JsonProcessingException e) {
             throw new AppException(AppErrorCodeMessageEnum.ERROR, e.getMessage());
         }

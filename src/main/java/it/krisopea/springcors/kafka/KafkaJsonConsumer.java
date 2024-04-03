@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.krisopea.springcors.service.dto.DemoRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.TopicPartition;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,6 +25,14 @@ public class KafkaJsonConsumer {
         // Puoi qui fare qualsiasi elaborazione desideri con l'oggetto DemoRequestDto ricevuto
     }
 
+    @KafkaListener(
+            topics = "kafkafiltertest",
+            groupId = "spring-cors-filter",
+            containerFactory = "filterKafkaListenerContainerFactory")
+    public void listenWithFilter(String message) {
+        System.out.println("Received Message in filtered listener: " + message);
+    }
+
 //    @KafkaListener(topics = "kafkatest", groupId = "spring-cors")
 //    public void listenWithHeaders(
 //            @Payload String jsonMessage,
@@ -31,12 +43,14 @@ public class KafkaJsonConsumer {
 //    }
 
 //    @KafkaListener(topicPartitions
-//            = @TopicPartition(topic = "kafkatest", partitions = { "0", "1" }))
+//            = @TopicPartition(topic = "kafkatest", partitions = { "0", "1" }),
+//    groupId = "spring-cors")
 //    public void listenToPartition(
-//            @Payload String message,
-//            @Header(KafkaHeaders.RECEIVED_PARTITION) int partition) {
+//            @Payload String jsonMessage,
+//            @Header(KafkaHeaders.RECEIVED_PARTITION) int partition) throws JsonProcessingException {
+//        DemoRequestDto requestDto = objectMapper.readValue(jsonMessage, DemoRequestDto.class);
 //        System.out.println(
-//                "Received Message: " + message
+//                "Received Message: " + requestDto
 //                        + "from partition: " + partition);
 //    }
 }

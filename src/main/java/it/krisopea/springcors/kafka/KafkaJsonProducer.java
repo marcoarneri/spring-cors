@@ -1,7 +1,6 @@
 package it.krisopea.springcors.kafka;
 
 import it.krisopea.springcors.service.dto.DemoRequestDto;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -20,7 +19,7 @@ public class KafkaJsonProducer {
     private ObjectMapper objectMapper;
 
 
-    public void sendMessage(DemoRequestDto requestDto) throws JsonProcessingException {
+    public void sendJsonMessage(DemoRequestDto requestDto) throws JsonProcessingException {
         String jsonMessage = objectMapper.writeValueAsString(requestDto);
         CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send("kafkatest", jsonMessage);
         future.whenComplete((result, ex) -> {
@@ -30,6 +29,19 @@ public class KafkaJsonProducer {
             } else {
                 System.out.println("Unable to send message=[" +
                         jsonMessage + "] due to : " + ex.getMessage());
+            }
+        });
+    }
+
+    public void sendFilterMessage(String message) throws JsonProcessingException {
+        CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send("kafkafiltertest", message);
+        future.whenComplete((result, ex) -> {
+            if (ex == null) {
+                System.out.println("Sent message=[" + message +
+                        "] with offset=[" + result.getRecordMetadata().offset() + "]");
+            } else {
+                System.out.println("Unable to send message=[" +
+                        message + "] due to : " + ex.getMessage());
             }
         });
     }
