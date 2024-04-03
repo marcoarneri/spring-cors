@@ -13,17 +13,17 @@ public class EmailLogRoute extends RouteBuilder {
   public void configure() {
     from("timer:emailLogTimer")
         .routeId("emailLogTimer")
-        .delayer(60000L)
+        .delayer(120000)
         .log(
             "Sono state inviate "
                 + globalEmailResources.getEmailCounter()
-                + " email fin'ora in questa sessione.\n"
-                + "In particolare: \n"
+                + " email fin'ora in questa sessione. "
+                + "In particolare: "
                 + globalEmailResources.getRegistrationEmailCounter()
-                + " email di registrazione, \n"
+                + " email di registrazione, "
                 + globalEmailResources.getUpdateEmailCounter()
-                + " email di aggiornamento, \n"
+                + " email di aggiornamento, "
                 + globalEmailResources.getDeleteEmailCounter()
-                + " email di cancellazione. \n");
+                + " email di cancellazione.");
   }
 }
