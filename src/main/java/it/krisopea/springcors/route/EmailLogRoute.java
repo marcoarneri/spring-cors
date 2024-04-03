@@ -20,10 +20,10 @@ public class EmailLogRoute extends RouteBuilder {
                 + " email fin'ora in questa sessione.\n"
                 + "In particolare: \n"
                 + globalEmailResources.getRegistrationEmailCounter()
-                + "email di registrazione, \n"
+                + " email di registrazione, \n"
                 + globalEmailResources.getUpdateEmailCounter()
-                + "email di aggiornamento, \n"
+                + " email di aggiornamento, \n"
                 + globalEmailResources.getDeleteEmailCounter()
-                + "email di cancellazione. \n");
+                + " email di cancellazione. \n");
   }
 }
