@@ -1,7 +1,6 @@
 package it.krisopea.springcors.avro;
 
 import org.apache.avro.Schema;
-import org.apache.avro.SchemaBuilder;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
