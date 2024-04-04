@@ -11,7 +11,7 @@ import java.io.IOException;
 @Component
 public class AvroSchemaFileWriter {
 
-    public String writeSchemaToFile(Schema schema) throws IOException {
+    public File writeSchemaToFile(Schema schema) throws IOException {
         String filePath = "src/main/resources/avroHttpRequest-utenteSchema.avsc"; // Percorso statico
         File file = new File(filePath);
 
@@ -24,6 +24,6 @@ public class AvroSchemaFileWriter {
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(schema.toString());
         }
-        return filePath;
+        return file;
     }
 }

@@ -1,5 +1,6 @@
 package it.krisopea.springcors.kafka.config.avro.config;
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import it.krisopea.springcors.avro.AvroSchemaConfig;
 import it.krisopea.springcors.avro.AvroSchemaFileWriter;
@@ -16,6 +17,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class KafkaAvroConsumerConfig {
     @Bean
     public ConsumerFactory<String, RegistrazioneUtenteRequest> customConsumerFactory() throws IOException {
         Schema registrazioneUtenteSchema = avroSchemaConfig.registrazioneUtenteRequestSchema;
-        String filePath = avroSchemaFileWriter.writeSchemaToFile(registrazioneUtenteSchema);
+        File schemaFile = avroSchemaFileWriter.writeSchemaToFile(registrazioneUtenteSchema);
         Map<String, Object> props = new HashMap<>();
         props.put(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -53,7 +55,9 @@ public class KafkaAvroConsumerConfig {
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
                 StringDeserializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
-        props.put("schema.registry.url", schemaRegistryUrl);
+        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+        props.put(KafkaAvroDeserializerConfig.AUTO_REGISTER_SCHEMAS, true);
+        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
         return new DefaultKafkaConsumerFactory<>(props);
     }
 

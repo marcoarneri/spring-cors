@@ -1,1 +1,1 @@
-{"type":"record","name":"RegistrazioneUtenteRequest","namespace":"it.krisopea.springcors.controller.model","fields":[{"name":"mail","type":"string"},{"name":"password","type":"string"},{"name":"dettagliUtente","type":{"type":"record","name":"DettagliUtente","fields":[{"name":"citta","type":"string"},{"name":"stato","type":"string"}]}}]}
+{"type":"record","name":"RegistrazioneUtenteRequest","namespace":"it.krisopea.springcors.controller.model","fields":[{"name":"mail","type":"string"},{"name":"password","type":"string"}]}
