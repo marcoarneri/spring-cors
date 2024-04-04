@@ -8,12 +8,11 @@ import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.service.mapper.MapperUserDto;
 import it.krisopea.springcors.util.annotation.AnyRole;
 import it.krisopea.springcors.util.constant.PathConstants;
-import it.krisopea.springcors.util.constant.PathMappingConstants;
 import jakarta.validation.Valid;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,27 +26,27 @@ public class UserController {
   private final UserService userService;
   private final MapperUserDto mapperUserDto;
 
-  @PutMapping("/update/{" + PathMappingConstants.USER_ID + "}")
-  public ResponseEntity<Void> updateUser(
-      @PathVariable UUID userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
-    log.info("Update request for user with user ID: {}", userId);
+  @PutMapping("/update")
+  public ResponseEntity<Void> updateUser(@Valid @RequestBody UserUpdateRequest userUpdateRequest) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    log.info("Update request for user with username: {}", username);
 
     UserUpdateRequestDto userUpdateRequestDto = mapperUserDto.toUserUpdateDto(userUpdateRequest);
-    userService.updateUser(userUpdateRequestDto, userId);
+    userService.updateUser(userUpdateRequestDto, username);
 
-    log.info("Updated user with user ID: {}", userId);
+    log.info("Updated user with username: {}", username);
     return ResponseEntity.ok().build();
   }
 
-  @DeleteMapping("/delete/{" + PathMappingConstants.USER_ID + "}")
-  public ResponseEntity<Void> deleteUser(
-      @PathVariable UUID userId, @Valid @RequestBody UserDeleteRequest deleteUserRequest) {
-    log.info("Delete request with user ID: {}", userId);
+  @DeleteMapping("/delete")
+  public ResponseEntity<Void> deleteUser(@Valid @RequestBody UserDeleteRequest deleteUserRequest) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    log.info("Delete request with username: {}", username);
 
     UserDeleteRequestDto userDeleteRequestDto = mapperUserDto.toUserDeleteDto(deleteUserRequest);
-    userService.deleteUser(userDeleteRequestDto, userId);
+    userService.deleteUser(userDeleteRequestDto, username);
 
-    log.info("Deleted user with user ID: {}", userId);
+    log.info("Deleted user with user ID: {}", username);
     return ResponseEntity.ok().build();
   }
 }

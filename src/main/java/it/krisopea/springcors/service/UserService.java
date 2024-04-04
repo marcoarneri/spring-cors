@@ -9,14 +9,12 @@ import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
+import it.krisopea.springcors.util.annotation.AnyRole;
 import it.krisopea.springcors.util.annotation.IsAdmin;
-import it.krisopea.springcors.util.constant.RoleConstants;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,16 +27,11 @@ public class UserService {
 
   @Autowired private ProducerTemplate producerTemplate;
 
-  @PreAuthorize(
-      "@authenticatedUserUtils.hasId(#userId) and hasAnyRole('"
-          + RoleConstants.ROLE_USER
-          + "', '"
-          + RoleConstants.ROLE_ADMIN
-          + "')")
-  public void updateUser(UserUpdateRequestDto userUpdateRequestDto, UUID userId) {
+  @AnyRole
+  public void updateUser(UserUpdateRequestDto userUpdateRequestDto, String username) {
     UserEntity userEntity =
         userRepository
-            .findById(userId)
+            .findByUsername(username)
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
     String name = userUpdateRequestDto.getName();
@@ -71,16 +64,11 @@ public class UserService {
         "direct:sendUpdateEmail", null, "email", userEntity.getEmail());
   }
 
-  @PreAuthorize(
-      "@authenticatedUserUtils.hasId(#userId) and hasAnyRole('"
-          + RoleConstants.ROLE_USER
-          + "', '"
-          + RoleConstants.ROLE_ADMIN
-          + "')")
-  public void deleteUser(UserDeleteRequestDto userDeleteRequestDto, UUID userId) {
+  @AnyRole
+  public void deleteUser(UserDeleteRequestDto userDeleteRequestDto, String username) {
     UserEntity userEntity =
         userRepository
-            .findById(userId)
+            .findByUsername(username)
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
     String encryptedPassword = passwordEncoder.encode(userDeleteRequestDto.getPassword());
@@ -95,10 +83,10 @@ public class UserService {
   }
 
   @IsAdmin
-  public void deleteUser(UUID userId) {
+  public void deleteUser(String username) {
     UserEntity userEntity =
         userRepository
-            .findById(userId)
+            .findByUsername(username)
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
     userRepository.delete(userEntity);

@@ -1,11 +1,9 @@
 package it.krisopea.springcors.controller;
 
 import it.krisopea.springcors.service.UserService;
-import it.krisopea.springcors.service.mapper.MapperUserDto;
 import it.krisopea.springcors.util.annotation.IsAdmin;
 import it.krisopea.springcors.util.constant.PathConstants;
 import it.krisopea.springcors.util.constant.PathMappingConstants;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 @IsAdmin
 public class AdminController {
   private final UserService userService;
-  private final MapperUserDto mapperUserDto;
 
-  @DeleteMapping("/delete/{" + PathMappingConstants.USER_ID + "}")
-  public ResponseEntity<Void> deleteUser(@PathVariable UUID userId) {
-    log.info("Admin's delete request with user ID: {}", userId);
+  @DeleteMapping("/delete/{" + PathMappingConstants.USERNAME + "}")
+  public ResponseEntity<Void> deleteUser(@PathVariable String username) {
+    log.info("Admin's delete request with username: {}", username);
 
-    userService.deleteUser(userId);
+    userService.deleteUser(username);
 
-    log.info("Admin deleted user with user ID: {}", userId);
+    log.info("Admin deleted the user with username: {}", username);
     return ResponseEntity.ok().build();
   }
 }

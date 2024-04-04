@@ -29,7 +29,7 @@ public class UserEntity {
   @Column(name = "USERNAME", unique = true, nullable = false)
   private String username;
 
-  @Column(name = "EMAIL", unique = true, nullable = false)
+  @Column(name = "EMAIL", nullable = false)
   private String email;
 
   @Column(name = "PASSWORD", nullable = false)

@@ -24,10 +24,8 @@ public class AuthService {
 
   public Boolean register(UserRegistrationRequestDto userRegistrationRequestDto) {
 
-    if ((userRepository.findByEmail(userRegistrationRequestDto.getEmail()).isPresent())
-        || (userRepository.findByUsername(userRegistrationRequestDto.getUsername()).isPresent())) {
+    if (userRepository.findByUsername(userRegistrationRequestDto.getUsername()).isPresent()) {
       log.error("Registration failed: {}", AppErrorCodeMessageEnum.USER_EXISTS);
-
       return false;
     }
 
