@@ -47,7 +47,7 @@ public class DemoService {
             kafkaProducer.sendJsonMessage(requestDto);
             //Il filtro verifica che se il messaggio contiene la parola Wold, verrà intercettato
             kafkaProducer.sendFilterMessage("Hello, this message contain the secret word: 'World'");
-            kafkaProducer.sendCustomMessage(requestDto);
+//            kafkaProducer.sendCustomMessage(requestDto);
         } catch (JsonProcessingException e) {
             throw new AppException(AppErrorCodeMessageEnum.ERROR, e.getMessage());
         }

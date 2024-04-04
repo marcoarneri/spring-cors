@@ -16,8 +16,8 @@ public class KafkaProducer {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    @Autowired
-    private KafkaTemplate<String, DemoRequestDto> customKafkaTemplate;
+//    @Autowired
+//    private KafkaTemplate<String, DemoRequestDto> customKafkaTemplate;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -50,16 +50,16 @@ public class KafkaProducer {
         });
     }
 
-    public void sendCustomMessage(DemoRequestDto demoRequestDto){
-        CompletableFuture<SendResult<String, DemoRequestDto>> future = customKafkaTemplate.send("kafkacustomtopic", demoRequestDto);
-        future.whenComplete((result, ex) -> {
-            if (ex == null) {
-                System.out.println("Sent message=[" + demoRequestDto +
-                        "] with offset=[" + result.getRecordMetadata().offset() + "]");
-            } else {
-                System.out.println("Unable to send message=[" +
-                        demoRequestDto + "] due to : " + ex.getMessage());
-            }
-        });
-    }
+//    public void sendCustomMessage(DemoRequestDto demoRequestDto){
+//        CompletableFuture<SendResult<String, DemoRequestDto>> future = customKafkaTemplate.send("kafkacustomtopic", demoRequestDto);
+//        future.whenComplete((result, ex) -> {
+//            if (ex == null) {
+//                System.out.println("Sent message=[" + demoRequestDto +
+//                        "] with offset=[" + result.getRecordMetadata().offset() + "]");
+//            } else {
+//                System.out.println("Unable to send message=[" +
+//                        demoRequestDto + "] due to : " + ex.getMessage());
+//            }
+//        });
+//    }
 }

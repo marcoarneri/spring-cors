@@ -29,12 +29,12 @@ public class KafkaConsumer {
         System.out.println("Received Message in filtered listener: " + message);
     }
 
-    @KafkaListener(
-            topics = "kafkacustomtopic",
-            containerFactory = "customKafkaListenerContainerFactory")
-    public void customListener(DemoRequestDto demoRequestDto) {
-        System.out.println("Received custom Message in custom listener: " + demoRequestDto);
-    }
+//    @KafkaListener(
+//            topics = "kafkacustomtopic",
+//            containerFactory = "customKafkaListenerContainerFactory")
+//    public void customListener(DemoRequestDto demoRequestDto) {
+//        System.out.println("Received custom Message in custom listener: " + demoRequestDto);
+//    }
 
 //    @KafkaListener(topics = "kafkatest", groupId = "spring-cors")
 //    public void listenWithHeaders(
