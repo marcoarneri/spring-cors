@@ -6,7 +6,6 @@ import it.krisopea.springcors.service.AuthService;
 import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
 import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
 import it.krisopea.springcors.service.mapper.MapperUserDto;
-import it.krisopea.springcors.util.annotation.AllowAnonymous;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-@AllowAnonymous
 public class AuthController {
   private final AuthService authService;
   private final MapperUserDto userMapperDto;
