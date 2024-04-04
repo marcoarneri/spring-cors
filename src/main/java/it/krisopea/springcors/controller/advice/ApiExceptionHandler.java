@@ -56,7 +56,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ApiErrorResponse> handleExceptiond(Exception ex) {
+  public ResponseEntity<ApiErrorResponse> handleException(Exception ex) {
     log.error(String.format("ExceptionHandler: %s", ex.getMessage()), ex);
 
     AppException appEx = new AppException(ex, AppErrorCodeMessageEnum.ERROR);

@@ -10,12 +10,10 @@ import it.krisopea.springcors.util.annotation.AllowAnonymous;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,7 +32,7 @@ public class AuthController {
 
   @PostMapping("/perform_login")
   public String loginUser(@ModelAttribute("userLoginRequest") @Valid UserLoginRequest userLoginRequest) {
-    log.info("Login request for username or email: {}.", userLoginRequest.getUsernameOrEmail());
+    log.info("Login request for username: {}.", userLoginRequest.getUsername());
 
     UserLoginRequestDto userLoginRequestDto = userMapperDto.toUserLoginRequestDto(userLoginRequest);
     authService.login(userLoginRequestDto);

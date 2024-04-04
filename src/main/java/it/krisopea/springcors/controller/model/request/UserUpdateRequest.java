@@ -1,6 +1,7 @@
 package it.krisopea.springcors.controller.model.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +10,11 @@ import lombok.Setter;
 @Setter
 public class UserUpdateRequest {
   @Size(max = 50)
+  @Pattern(regexp = "^[A-Za-z0-9]+$")
   private String name;
 
   @Size(max = 50)
+  @Pattern(regexp = "^[A-Za-z0-9]+$")
   private String surname;
 
   @Size(max = 255)
