@@ -37,4 +37,9 @@ public class KafkaTopicConfig {
     public NewTopic topic3() {
         return new NewTopic("kafkacustomtopic", 1, (short) 1);
     }
+
+    @Bean
+    public NewTopic topic4() {
+        return new NewTopic("kafka-avro-test", 1, (short) 1);
+    }
 }

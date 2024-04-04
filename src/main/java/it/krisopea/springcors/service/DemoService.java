@@ -3,7 +3,7 @@ package it.krisopea.springcors.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
-import it.krisopea.springcors.kafka.KafkaProducer;
+//import it.krisopea.springcors.kafka.KafkaProducer;
 import it.krisopea.springcors.repository.DemoRepository;
 import it.krisopea.springcors.repository.mapper.MapperDemoEntity;
 import it.krisopea.springcors.repository.model.DemoEntity;
@@ -21,8 +21,8 @@ import java.util.Optional;
 @Slf4j
 public class DemoService {
 
-    @Autowired
-    private KafkaProducer kafkaProducer;
+//    @Autowired
+//    private KafkaProducer kafkaProducer;
 
     private final DemoRepository demoRepository;
     private final MapperDemoEntity mapperDemoEntity;
@@ -43,14 +43,14 @@ public class DemoService {
         responseDto.setOutcome("OK");
         responseDto.setStatus("ELABORATO");
 
-        try {
-            kafkaProducer.sendJsonMessage(requestDto);
-            //Il filtro verifica che se il messaggio contiene la parola Wold, verrà intercettato
-            kafkaProducer.sendFilterMessage("Hello, this message contain the secret word: 'World'");
-            kafkaProducer.sendCustomMessage(requestDto);
-        } catch (JsonProcessingException e) {
-            throw new AppException(AppErrorCodeMessageEnum.ERROR, e.getMessage());
-        }
+//        try {
+//            kafkaProducer.sendJsonMessage(requestDto);
+//            //Il filtro verifica che se il messaggio contiene la parola Wold, verrà intercettato
+//            kafkaProducer.sendFilterMessage("Hello, this message contain the secret word: 'World'");
+//            kafkaProducer.sendCustomMessage(requestDto);
+//        } catch (JsonProcessingException e) {
+//            throw new AppException(AppErrorCodeMessageEnum.ERROR, e.getMessage());
+//        }
 
         return responseDto;
     }
