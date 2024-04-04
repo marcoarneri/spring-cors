@@ -11,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -24,13 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AuthController {
   private final AuthService authService;
   private final MapperUserDto userMapperDto;
-
-  /*-- LOGIN --*/
-  @GetMapping("/login")
-  public String loginUser(ModelMap model) {
-    model.addAttribute("userLoginRequest", new UserLoginRequest());
-    return "login";
-  }
 
   @PostMapping("/login")
   public String loginUser(
@@ -46,13 +37,6 @@ public class AuthController {
 
     log.info("Login completed successfully.");
     return "home";
-  }
-
-  /*-- REGISTRATION --*/
-  @GetMapping("/register")
-  public String showRegistrationForm(ModelMap model) {
-    model.addAttribute("userRegistrationRequest", new UserRegistrationRequest());
-    return "register";
   }
 
   @PostMapping("/register")
@@ -72,8 +56,8 @@ public class AuthController {
       model.addAttribute("registerError", true);
       return "register";
     }
-    log.info("Registration completed successfully.");
 
+    log.info("Registration completed successfully.");
     return "home";
   }
 }

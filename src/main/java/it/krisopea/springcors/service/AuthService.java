@@ -31,6 +31,7 @@ public class AuthService {
 
     UserEntity userEntity = mapperUserEntity.toUserEntity(userRegistrationRequestDto);
 
+    //TODO da fare in mapper
     userEntity.setRole(RoleConstants.ROLE_USER);
     userEntity.setEnabled(true);
 

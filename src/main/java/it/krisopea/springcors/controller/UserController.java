@@ -6,7 +6,7 @@ import it.krisopea.springcors.service.UserService;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.service.mapper.MapperUserDto;
-import it.krisopea.springcors.util.annotation.AnyRole;
+import it.krisopea.springcors.util.annotation.IsAuthenticated;
 import it.krisopea.springcors.util.constant.PathConstants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(PathConstants.USER_PATH)
 @Slf4j
 @Validated
-@AnyRole
+@IsAuthenticated
 public class UserController {
   private final UserService userService;
   private final MapperUserDto mapperUserDto;
@@ -46,7 +46,7 @@ public class UserController {
     UserDeleteRequestDto userDeleteRequestDto = mapperUserDto.toUserDeleteDto(deleteUserRequest);
     userService.deleteUser(userDeleteRequestDto, username);
 
-    log.info("Deleted user with user ID: {}", username);
+    log.info("Deleted user with username: {}", username);
     return ResponseEntity.ok().build();
   }
 }

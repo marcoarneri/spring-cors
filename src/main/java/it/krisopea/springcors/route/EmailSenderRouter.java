@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmailSenderRoute extends RouteBuilder {
+public class EmailSenderRouter extends RouteBuilder {
   @Autowired private GlobalEmailResources globalEmailResources;
 
   @Override

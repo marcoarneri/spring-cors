@@ -10,4 +10,4 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @PreAuthorize("hasAnyRole('" + RoleConstants.ROLE_ADMIN + "','" + RoleConstants.ROLE_USER + "')")
-public @interface AnyRole {}
+public @interface IsAuthenticated {}

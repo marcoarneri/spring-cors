@@ -9,8 +9,8 @@ import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
-import it.krisopea.springcors.util.annotation.AnyRole;
 import it.krisopea.springcors.util.annotation.IsAdmin;
+import it.krisopea.springcors.util.annotation.IsAuthenticated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -27,7 +27,7 @@ public class UserService {
 
   @Autowired private ProducerTemplate producerTemplate;
 
-  @AnyRole
+  @IsAuthenticated
   public void updateUser(UserUpdateRequestDto userUpdateRequestDto, String username) {
     UserEntity userEntity =
         userRepository
@@ -64,7 +64,7 @@ public class UserService {
         "direct:sendUpdateEmail", null, "email", userEntity.getEmail());
   }
 
-  @AnyRole
+  @IsAuthenticated
   public void deleteUser(UserDeleteRequestDto userDeleteRequestDto, String username) {
     UserEntity userEntity =
         userRepository
