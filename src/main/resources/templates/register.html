@@ -2,27 +2,79 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
     <head>
         <title>Registration</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+            .container {
+                width: 50%;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            h1 {
+                text-align: center;
+            }
+            .error {
+                color: red;
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            label {
+                display: block;
+                margin-bottom: 5px;
+            }
+            input[type="text"],
+            input[type="password"],
+            input[type="email"] {
+                width: calc(100% - 12px);
+                padding: 6px;
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            input[type="submit"] {
+                width: 100%;
+                padding: 10px;
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            input[type="submit"]:hover {
+                background-color: #0056b3;
+            }
+        </style>
     </head>
     <body>
-        <h1>Registration</h1>
+        <div class="container">
+            <h1>Registration</h1>
 
-        <form th:action="@{/register}" method="post" th:object="${userRegistrationRequest}">
-            <div>
-                <label>Name: <input type="text" th:field="*{name}"/></label>
-            </div>
-            <div>
-                <label>Surname: <input type="text" th:field="*{surname}"/></label>
-            </div>
-            <div>
-                <label>Username: <input type="text" th:field="*{username}"/></label>
-            </div>
-            <div>
-                <label>Password: <input type="password" th:field="*{password}"/></label>
-            </div>
-            <div>
-                <label>Email: <input type="email" th:field="*{email}"/></label>
-            </div>
-            <div><input type="submit" value="Register"/></div>
-        </form>
+            <p th:if="${registerError}" class="error">Email or Username already in use</p>
+            <form th:action="@{/register}" method="post" th:object="${userRegistrationRequest}">
+                <div>
+                    <label>Name: <input type="text" th:field="*{name}"/></label>
+                </div>
+                <div>
+                    <label>Surname: <input type="text" th:field="*{surname}"/></label>
+                </div>
+                <div>
+                    <label>Username: <input type="text" th:field="*{username}"/></label>
+                </div>
+                <div>
+                    <label>Password: <input type="password" th:field="*{password}"/></label>
+                </div>
+                <div>
+                    <label>Email: <input type="email" th:field="*{email}"/></label>
+                </div>
+                <div><input type="submit" value="Register"/></div>
+            </form>
+        </div>
     </body>
 </html>

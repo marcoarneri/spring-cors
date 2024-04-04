@@ -1,28 +1,22 @@
 package it.krisopea.springcors.security;
 
+import javax.sql.DataSource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
 
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
-      throws Exception {
-    return configuration.getAuthenticationManager();
-  }
+  private final DataSource dataSource;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,11 +29,9 @@ public class WebSecurityConfig {
                     .authenticated())
         .formLogin(
             form ->
-                form
-                    .loginPage("/login")
+                form.loginPage("/login")
                     .loginProcessingUrl("/perform_login")
                     .defaultSuccessUrl("/hello", true)
-                    .failureUrl("/login?error=true")
                     .permitAll())
         .logout(
             logout ->
@@ -57,15 +49,24 @@ public class WebSecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-  @Bean
-  public UserDetailsManager userDetailsManager(PasswordEncoder passwordEncoder) {
-    UserDetails user =
-        User.builder()
-            .username("user")
-            .password(passwordEncoder.encode("password"))
-            .roles("USER")
-            .build();
+  //  @Bean
+  //  public UserDetailsManager userDetailsManager(PasswordEncoder passwordEncoder) {
+  //    UserDetails user =
+  //        User.builder()
+  //            .username("user")
+  //            .password(passwordEncoder.encode("password"))
+  //            .roles("USER")
+  //            .build();
+  //
+  //    return new InMemoryUserDetailsManager(user);
+  //  }
 
-    return new InMemoryUserDetailsManager(user);
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.jdbcAuthentication()
+        .dataSource(dataSource)
+        .usersByUsernameQuery(
+            "SELECT username, password, enabled FROM USER_ENTITY WHERE username=?")
+        .authoritiesByUsernameQuery("SELECT role FROM USER_ENTITY WHERE username=?")
+        .passwordEncoder(passwordEncoder());
   }
 }

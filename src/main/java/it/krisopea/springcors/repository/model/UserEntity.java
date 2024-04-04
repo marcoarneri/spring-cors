@@ -38,6 +38,9 @@ public class UserEntity {
   @Column(name = "ROLE", nullable = false)
   private String role;
 
+  @Column(name = "ENABLED", nullable = false)
+  private boolean enabled;
+
   @CreationTimestamp
   @Column(name = "CREATE_ON")
   private Instant createOn;
