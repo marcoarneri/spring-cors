@@ -1,6 +1,7 @@
 package it.krisopea.springcors.security;
 
 import it.krisopea.springcors.repository.UserRepository;
+import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -41,6 +40,7 @@ public class WebSecurityConfig {
                 form.loginPage("/login")
                     .loginProcessingUrl("/login")
                     .defaultSuccessUrl("/home", true)
+                    .failureUrl("/login")
                     .permitAll())
         .logout(
             logout ->
@@ -58,22 +58,25 @@ public class WebSecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-//  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//    auth.jdbcAuthentication()
-//        .dataSource(dataSource)
-//        .usersByUsernameQuery(
-//            "SELECT username, password, enabled FROM USER_ENTITY WHERE username=?")
-//        .authoritiesByUsernameQuery("SELECT role FROM USER_ENTITY WHERE username=?")
-//        .passwordEncoder(passwordEncoder());
-//  }
+  //  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+  //    auth.jdbcAuthentication()
+  //        .dataSource(dataSource)
+  //        .usersByUsernameQuery(
+  //            "SELECT username, password, enabled FROM USER_ENTITY WHERE username=?")
+  //        .authoritiesByUsernameQuery("SELECT role FROM USER_ENTITY WHERE username=?")
+  //        .passwordEncoder(passwordEncoder());
+  //  }
 
   @Bean
   public UserDetailsService userDetailsService() {
     return new UserDetailsService() {
       @Override
       public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
-                .map(user -> User.builder()
+        return userRepository
+            .findByUsername(username)
+            .map(
+                user ->
+                    User.builder()
                         .username(user.getUsername())
                         .authorities(user.getRole())
                         .password(user.getPassword())
@@ -82,15 +85,14 @@ public class WebSecurityConfig {
                         .credentialsExpired(false)
                         .disabled(!user.isEnabled())
                         .build())
-                .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
+            .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
       }
     };
   }
 
   @Bean
   public AuthenticationManager authenticationManager(
-          UserDetailsService userDetailsService,
-          PasswordEncoder passwordEncoder) {
+      UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
     DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
     authenticationProvider.setUserDetailsService(userDetailsService);
     authenticationProvider.setPasswordEncoder(passwordEncoder);
