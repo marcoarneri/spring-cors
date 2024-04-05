@@ -67,11 +67,7 @@ public class KafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setCommonErrorHandler(errorHandler());
-        //Questo AckMode dovrebbe consentire al consumatore di indicare al broker quali messaggi
-        // specifici sono stati elaborati con successo. In questo modo, il broker può riconsegnare eventuali messaggi
-        // non riconosciuti a un altro consumatore.
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
-//        factory.getContainerProperties().setIdleBetweenPolls(1);
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
