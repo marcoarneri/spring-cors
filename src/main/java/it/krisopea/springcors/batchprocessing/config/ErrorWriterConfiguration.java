@@ -1,0 +1,50 @@
+package it.krisopea.springcors.batchprocessing.config;
+
+//import it.krisopea.springcors.batchprocessing.model.ErrorResponseWriter;
+import it.krisopea.springcors.service.dto.DemoRequestDto;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.FlatFileItemWriter;
+import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
+import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
+import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
+
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+@Configuration
+public class ErrorWriterConfiguration {
+
+    @Bean
+    public static FlatFileItemWriter<DemoRequestDto> errorWriter() {
+        File outputFile = new File("src/main/resources/doc/error/error.csv");
+        if (!outputFile.exists()) {
+            try {
+            outputFile.createNewFile();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return new FlatFileItemWriterBuilder<DemoRequestDto>()
+                .name("errorItemWriter")
+                .resource(new FileSystemResource(outputFile))
+                .lineAggregator(new DelimitedLineAggregator<>() {
+                    {
+                        setDelimiter(",");
+                        setFieldExtractor(new BeanWrapperFieldExtractor<>() {
+                            {
+                                setNames(new String[]{"iuv", "city", "nation", "noticeId", });
+                            }
+                        });
+                    }
+                })
+                .headerCallback(writer -> writer.write("iuv, city, nation, noticeId"))
+                .encoding(StandardCharsets.UTF_8.name())
+                .build();
+    }
+}
