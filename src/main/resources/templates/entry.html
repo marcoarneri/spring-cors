@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Entry Page</title>
@@ -10,11 +10,17 @@
     <div class = "container text-center">
         <h1>Entry page</h1>
         <p th:if="${success}" class="alert alert-success">Logout successful</p>
-        <p class="card-subtitle">Make a decision</p>
-        <div class="text-center" >
-            <form th:action="@{/logout}" th:method="post">
-                <button type="submit" class="btn btn-dark w-25">
-                    Log Out <i class="bi bi-door-open"></i>
+        <p class="card-subtitle mb-4">Make a decision</p>
+        <div class="d-flex justify-content-center" >
+            <form th:action="@{/login}" th:method="get">
+                <button type="submit" class="btn btn-dark">
+                    Login <i class="bi bi-door-open"></i>
+                </button>
+            </form>
+            <div class="mx-2"></div>
+            <form th:action="@{/register}" th:method="get">
+                <button type="submit" class="btn btn-dark">
+                    Register <i class="bi bi-door-open"></i>
                 </button>
             </form>
         </div>
