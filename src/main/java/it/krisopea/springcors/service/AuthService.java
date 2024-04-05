@@ -6,10 +6,13 @@ import it.krisopea.springcors.repository.mapper.MapperUserEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
 import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
-import it.krisopea.springcors.util.constant.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,7 @@ public class AuthService {
   private final UserRepository userRepository;
   private final MapperUserEntity mapperUserEntity;
   private final PasswordEncoder passwordEncoder;
+  private final AuthenticationManager authenticationManager;
   private final ProducerTemplate producerTemplate;
 
   public Boolean register(UserRegistrationRequestDto userRegistrationRequestDto) {
@@ -30,10 +34,6 @@ public class AuthService {
     }
 
     UserEntity userEntity = mapperUserEntity.toUserEntity(userRegistrationRequestDto);
-
-    //TODO da fare in mapper
-    userEntity.setRole(RoleConstants.ROLE_USER);
-    userEntity.setEnabled(true);
 
     userRepository.saveAndFlush(userEntity);
     producerTemplate.sendBodyAndHeader(
@@ -56,6 +56,11 @@ public class AuthService {
       log.error("Authentication failed: {}", AppErrorCodeMessageEnum.PASSWORD_MISMATCH);
       return false;
     }
+
+    UsernamePasswordAuthenticationToken authenticationToken =
+            new UsernamePasswordAuthenticationToken(userLoginRequestDto.getUsername(), userLoginRequestDto.getPassword());
+    Authentication authentication  = authenticationManager.authenticate(authenticationToken);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
 
     return true;
   }

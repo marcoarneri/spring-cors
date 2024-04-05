@@ -16,7 +16,7 @@ public class EmailSenderRouter extends RouteBuilder {
         .handled(true)
         .log(
             LoggingLevel.ERROR,
-            "Errore di timeout durante l'invio dell'email: ${exception.message}");
+            "Error while sending the email: ${exception.message}");
 
     from("direct:sendRegistrationEmail")
         .routeId("sendRegistrationEmailRoute")
@@ -32,7 +32,7 @@ public class EmailSenderRouter extends RouteBuilder {
               globalEmailResources.incrementEmailCounter();
               globalEmailResources.incrementRegistrationEmailCounter();
             })
-        .log("Email di registrazione inviata con successo e contatori di sessione incrementati.");
+        .log("Registration email successfully sent and counters increased.");
 
     from("direct:sendUpdateEmail")
         .routeId("sendUpdateEmailRoute")
@@ -49,7 +49,7 @@ public class EmailSenderRouter extends RouteBuilder {
               globalEmailResources.incrementEmailCounter();
               globalEmailResources.incrementUpdateEmailCounter();
             })
-        .log("Email di aggiornamento inviata con successo e contatori di sessione incrementati.");
+        .log("Update email successfully sent and counters increased.");
 
     from("direct:sendDeleteEmail")
         .routeId("sendDeleteEmailRoute")
@@ -68,6 +68,6 @@ public class EmailSenderRouter extends RouteBuilder {
               globalEmailResources.incrementEmailCounter();
               globalEmailResources.incrementDeleteEmailCounter();
             })
-        .log("Email di cancellazione inviata con successo e contatori di sessione incrementati.");
+        .log("Delete email successfully sent and counters increased.");
   }
 }

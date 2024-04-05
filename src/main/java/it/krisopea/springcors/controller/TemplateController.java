@@ -18,6 +18,11 @@ public class TemplateController {
     return "login";
   }
 
+  @GetMapping("/home")
+  public String showHomePage() {
+    return "home";
+  }
+
   @GetMapping("/register")
   public String showRegistrationForm(ModelMap model) {
     model.addAttribute("userRegistrationRequest", new UserRegistrationRequest());

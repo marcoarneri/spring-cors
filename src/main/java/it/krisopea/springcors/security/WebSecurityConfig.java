@@ -1,21 +1,30 @@
 package it.krisopea.springcors.security;
 
-import javax.sql.DataSource;
+import it.krisopea.springcors.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
+  private final UserRepository userRepository;
   private final DataSource dataSource;
 
   @Bean
@@ -30,8 +39,8 @@ public class WebSecurityConfig {
         .formLogin(
             form ->
                 form.loginPage("/login")
-                    .loginProcessingUrl("/perform_login")
-                    .defaultSuccessUrl("/hello", true)
+                    .loginProcessingUrl("/login")
+                    .defaultSuccessUrl("/home", true)
                     .permitAll())
         .logout(
             logout ->
@@ -49,24 +58,43 @@ public class WebSecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-  //  @Bean
-  //  public UserDetailsManager userDetailsManager(PasswordEncoder passwordEncoder) {
-  //    UserDetails user =
-  //        User.builder()
-  //            .username("user")
-  //            .password(passwordEncoder.encode("password"))
-  //            .roles("USER")
-  //            .build();
-  //
-  //    return new InMemoryUserDetailsManager(user);
-  //  }
+//  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//    auth.jdbcAuthentication()
+//        .dataSource(dataSource)
+//        .usersByUsernameQuery(
+//            "SELECT username, password, enabled FROM USER_ENTITY WHERE username=?")
+//        .authoritiesByUsernameQuery("SELECT role FROM USER_ENTITY WHERE username=?")
+//        .passwordEncoder(passwordEncoder());
+//  }
 
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.jdbcAuthentication()
-        .dataSource(dataSource)
-        .usersByUsernameQuery(
-            "SELECT username, password, enabled FROM USER_ENTITY WHERE username=?")
-        .authoritiesByUsernameQuery("SELECT role FROM USER_ENTITY WHERE username=?")
-        .passwordEncoder(passwordEncoder());
+  @Bean
+  public UserDetailsService userDetailsService() {
+    return new UserDetailsService() {
+      @Override
+      public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username)
+                .map(user -> User.builder()
+                        .username(user.getUsername())
+                        .authorities(user.getRole())
+                        .password(user.getPassword())
+                        .accountExpired(!user.isEnabled())
+                        .accountLocked(false)
+                        .credentialsExpired(false)
+                        .disabled(!user.isEnabled())
+                        .build())
+                .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
+      }
+    };
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager(
+          UserDetailsService userDetailsService,
+          PasswordEncoder passwordEncoder) {
+    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+    authenticationProvider.setUserDetailsService(userDetailsService);
+    authenticationProvider.setPasswordEncoder(passwordEncoder);
+
+    return new ProviderManager(authenticationProvider);
   }
 }
