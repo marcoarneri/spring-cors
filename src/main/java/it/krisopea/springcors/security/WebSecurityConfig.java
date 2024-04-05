@@ -9,6 +9,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,15 +42,21 @@ public class WebSecurityConfig {
                 form.loginPage("/login")
                     .loginProcessingUrl("/login")
                     .defaultSuccessUrl("/home", true)
-                    .failureUrl("/login")
+                    .failureUrl("/login?error")
                     .permitAll())
         .logout(
             logout ->
                 logout
-                    .logoutSuccessUrl("/entry")
                     .logoutUrl("/logout")
+                    .logoutSuccessHandler(
+                        (request, response, authentication) -> {
+                          SecurityContextHolder.clearContext();
+                          request.getSession().invalidate();
+                          response.sendRedirect("/entry?success");
+                        })
                     .deleteCookies("JSESSIONID")
                     .invalidateHttpSession(true)
+                    .clearAuthentication(true)
                     .permitAll());
 
     return http.build();

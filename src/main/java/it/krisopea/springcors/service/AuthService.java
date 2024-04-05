@@ -38,23 +38,22 @@ public class AuthService {
     userRepository.saveAndFlush(userEntity);
     producerTemplate.sendBodyAndHeader(
         "direct:sendRegistrationEmail", null, "email", userRegistrationRequestDto.getEmail());
-
     return true;
   }
 
-  public Boolean login(UserLoginRequestDto userLoginRequestDto) {
+  public void login(UserLoginRequestDto userLoginRequestDto) {
 
     UserEntity userEntity =
         userRepository.findByUsername(userLoginRequestDto.getUsername()).orElse(null);
 
     if (userEntity == null) {
       log.error("Authentication failed: {}", AppErrorCodeMessageEnum.BAD_REQUEST);
-      return false;
+      return;
     }
 
     if (!(passwordEncoder.matches(userLoginRequestDto.getPassword(), userEntity.getPassword()))) {
       log.error("Authentication failed: {}", AppErrorCodeMessageEnum.PASSWORD_MISMATCH);
-      return false;
+      return;
     }
 
     UsernamePasswordAuthenticationToken authenticationToken =
@@ -62,11 +61,5 @@ public class AuthService {
             userLoginRequestDto.getUsername(), userLoginRequestDto.getPassword());
     Authentication authentication = authenticationManager.authenticate(authenticationToken);
     SecurityContextHolder.getContext().setAuthentication(authentication);
-
-    return true;
-  }
-
-  public void logout() {
-    SecurityContextHolder.clearContext();
   }
 }
