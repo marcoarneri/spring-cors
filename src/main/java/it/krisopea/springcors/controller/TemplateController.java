@@ -21,14 +21,16 @@ public class TemplateController {
     if (authentication != null
         && !(authentication instanceof AnonymousAuthenticationToken)
         && authentication.isAuthenticated()) {
-      return showHomePage();
+      return showHomePage(new ModelMap());
     }
     model.addAttribute("userLoginRequest", new UserLoginRequest());
     return "login";
   }
 
   @GetMapping("/home")
-  public String showHomePage() {
+  public String showHomePage(ModelMap model) {
+    model.addAttribute(
+        "username", SecurityContextHolder.getContext().getAuthentication().getName());
     return "home";
   }
 
@@ -38,7 +40,7 @@ public class TemplateController {
     if (authentication != null
         && !(authentication instanceof AnonymousAuthenticationToken)
         && authentication.isAuthenticated()) {
-      return showHomePage();
+      return showHomePage(new ModelMap());
     }
     model.addAttribute("userRegistrationRequest", new UserRegistrationRequest());
     return "register";

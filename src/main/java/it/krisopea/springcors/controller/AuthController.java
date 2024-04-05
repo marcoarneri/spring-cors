@@ -9,6 +9,7 @@ import it.krisopea.springcors.service.mapper.MapperUserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -59,5 +60,17 @@ public class AuthController {
 
     log.info("Registration completed successfully.");
     return "home";
+  }
+
+  @PostMapping("/logout")
+  public String logoutUser() {
+    log.info(
+        "Invalidating session for user: "
+            + SecurityContextHolder.getContext().getAuthentication().getName());
+
+    authService.logout();
+
+    log.info("Logout completed successfully.");
+    return "entry";
   }
 }
