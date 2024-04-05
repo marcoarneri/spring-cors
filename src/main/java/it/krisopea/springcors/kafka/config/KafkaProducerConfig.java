@@ -1,18 +1,26 @@
 package it.krisopea.springcors.kafka.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
+import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
+import org.springframework.messaging.handler.annotation.SendTo;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@Slf4j
 public class KafkaProducerConfig {
 
     @Value(value = "${spring.kafka.producer.bootstrap-servers}")
@@ -34,7 +42,23 @@ public class KafkaProducerConfig {
     }
 
     @Bean
+    ReplyingKafkaTemplate<String, String, String> rkt(@Qualifier("producerFactory")ProducerFactory<String, String> pf,
+                                                      @Qualifier("replyFactory")ConcurrentKafkaListenerContainerFactory<String, String> factory,
+                                                      @Qualifier("kafkaTemplate") KafkaTemplate<String, String> template) {
+
+        factory.setReplyTemplate(template);
+        ConcurrentMessageListenerContainer<String, String> container = factory.createContainer("replies");
+        container.getContainerProperties().setGroupId("replies");
+        ReplyingKafkaTemplate<String, String, String> replier = new ReplyingKafkaTemplate<>(pf, container);
+        replier.setDefaultTopic("requests");
+        return replier;
+    }
+
+
+
+    @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
+
 }
