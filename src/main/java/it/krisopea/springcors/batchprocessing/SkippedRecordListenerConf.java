@@ -5,6 +5,7 @@ import it.krisopea.springcors.service.dto.DemoRequestDto;
 import it.krisopea.springcors.service.mapper.MapperDemoDto;
 import lombok.Data;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.SkipListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 @Component
 @Getter
+@Slf4j
 public class SkippedRecordListenerConf implements SkipListener<DemoRequest, DemoRequestDto> {
 
     private final List<DemoRequestDto> skippedRecords = new ArrayList<>();
 
     @Override
     public void onSkipInWrite(DemoRequestDto item, Throwable throwable) {
+        log.info("ENTRATO NELLO SKIP LISTENER " + item);
         skippedRecords.add(item);
     }
 

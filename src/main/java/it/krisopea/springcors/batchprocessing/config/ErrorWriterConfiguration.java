@@ -2,6 +2,7 @@ package it.krisopea.springcors.batchprocessing.config;
 
 //import it.krisopea.springcors.batchprocessing.model.ErrorResponseWriter;
 import it.krisopea.springcors.service.dto.DemoRequestDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
@@ -17,10 +18,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
+@Slf4j
 public class ErrorWriterConfiguration {
 
     @Bean
-    public static FlatFileItemWriter<DemoRequestDto> errorWriter() {
+    public FlatFileItemWriter<DemoRequestDto> errorWriter() {
+        log.info("ENTRATO NEL FLATFILEWRITER");
         File outputFile = new File("src/main/resources/doc/error/error.csv");
         if (!outputFile.exists()) {
             try {
@@ -36,14 +39,14 @@ public class ErrorWriterConfiguration {
                 .lineAggregator(new DelimitedLineAggregator<>() {
                     {
                         setDelimiter(",");
-                        setFieldExtractor(new BeanWrapperFieldExtractor<>() {
+                        setFieldExtractor(new BeanWrapperFieldExtractor<DemoRequestDto>() {
                             {
-                                setNames(new String[]{"iuv", "city", "nation", "noticeId", });
+                                setNames(new String[]{"iuv", "location", "noticeId"});
                             }
                         });
                     }
                 })
-                .headerCallback(writer -> writer.write("iuv, city, nation, noticeId"))
+                .headerCallback(writer -> writer.write("iuv, location, noticeId"))
                 .encoding(StandardCharsets.UTF_8.name())
                 .build();
     }
