@@ -1,10 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Entry Point</title>
 </head>
 <body>
-
+<div th:if="${userEntity}" align="center">
+    <p><strong>Dati utente:</strong></p>
+    <p>Nome: <span th:text="${userEntity.name}"></span></p>
+    <p>Cognome: <span th:text="${userEntity.surname}"></span></p>
+    <form th:action="@{/logout}" method="get">
+        <button type="submit">Logout</button>
+    </form>
+</div>
 </body>
 </html>

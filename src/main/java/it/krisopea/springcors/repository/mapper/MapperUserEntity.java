@@ -11,12 +11,12 @@ public abstract class MapperUserEntity {
 
   public abstract UserEntity toUserEntity(UserLoginRequestDto requestDto);
 
-  @Mapping(target = "password", source = "password", qualifiedByName = "encodePassword")
-  public abstract UserEntity toUserEntity(UserRegistrationRequestDto requestDto);
-
-  @Named("encodePassword")
-  public String encodePassword(String password) {
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    return encoder.encode(password);
-  }
+//  @Mapping(target = "password", source = "password", qualifiedByName = "encodePassword")
+//  public abstract UserEntity toUserEntity(UserRegistrationRequestDto requestDto);
+//
+//  @Named("encodePassword")
+//  public String encodePassword(String password) {
+//    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//    return encoder.encode(password);
+//  }
 }

@@ -1,26 +1,40 @@
 package it.krisopea.springcors.controller;
 
-import it.krisopea.springcors.controller.model.request.UserLoginRequest;
-import it.krisopea.springcors.controller.model.request.UserRegistrationRequest;
+import it.krisopea.springcors.repository.model.UserEntity;
+import it.krisopea.springcors.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @RequiredArgsConstructor
-@Slf4j
 public class TemplateController {
+
+  private final UserService userService;
+
   @GetMapping("/login")
-  public String showLoginForm(ModelMap model) {
-    model.addAttribute("userLoginRequest", new UserLoginRequest());
+  public String loginPage() {
     return "login";
   }
 
-  @GetMapping("/register")
-  public String showRegistrationForm(ModelMap model) {
-    model.addAttribute("userRegistrationRequest", new UserRegistrationRequest());
-    return "register";
+  @GetMapping("/logout")
+  public String profilePage() {
+    SecurityContextHolder.clearContext();
+    return "login";
+  }
+
+  @GetMapping("/entry")
+  public String entryPage(OAuth2AuthenticationToken authenticationToken, Model model) {
+    UserEntity userEntity = userService.saveUser(authenticationToken);
+    model.addAttribute("userEntity", userEntity);
+    return "entry";
+  }
+
+  @GetMapping("/login/error")
+  public String loginErrorPage() {
+    return "login";
   }
 }

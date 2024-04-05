@@ -28,12 +28,12 @@ public class AuthController {
       @ModelAttribute("userLoginRequest") @Valid UserLoginRequest userLoginRequest, Model model) {
     log.info("Login request for username: {}.", userLoginRequest.getUsername());
 
-    UserLoginRequestDto userLoginRequestDto = userMapperDto.toUserLoginRequestDto(userLoginRequest);
+//    UserLoginRequestDto userLoginRequestDto = userMapperDto.toUserLoginRequestDto(userLoginRequest);
 
-    if (Boolean.FALSE.equals(authService.login(userLoginRequestDto))) {
-      model.addAttribute("loginError", true);
-      return "login";
-    }
+//    if (Boolean.FALSE.equals(authService.login(userLoginRequestDto))) {
+//      model.addAttribute("loginError", true);
+//      return "login";
+//    }
 
     log.info("Login completed successfully.");
     return "home";
@@ -50,12 +50,12 @@ public class AuthController {
         request.getEmail(),
         request.getUsername());
 
-    UserRegistrationRequestDto requestDto = userMapperDto.toUserRegistrationRequestDto(request);
+//    UserRegistrationRequestDto requestDto = userMapperDto.toUserRegistrationRequestDto(request);
 
-    if (Boolean.FALSE.equals(authService.register(requestDto))) {
-      model.addAttribute("registerError", true);
-      return "register";
-    }
+//    if (Boolean.FALSE.equals(authService.register(requestDto))) {
+//      model.addAttribute("registerError", true);
+//      return "register";
+//    }
 
     log.info("Registration completed successfully.");
     return "home";

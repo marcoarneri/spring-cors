@@ -11,7 +11,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 @Data
 @Entity
-@Table(name = "USER_ENTITY")
+@Table(name = "USER_INFO")
 @NoArgsConstructor
 public class UserEntity {
 
@@ -26,20 +26,14 @@ public class UserEntity {
   @Column(name = "SURNAME", nullable = false)
   private String surname;
 
-  @Column(name = "USERNAME", unique = true, nullable = false)
-  private String username;
-
   @Column(name = "EMAIL", nullable = false)
   private String email;
 
-  @Column(name = "PASSWORD", nullable = false)
-  private String password;
+  @Column(name = "PICTURE")
+  private String picture;
 
   @Column(name = "ROLE", nullable = false)
   private String role;
-
-  @Column(name = "ENABLED", nullable = false)
-  private boolean enabled;
 
   @CreationTimestamp
   @Column(name = "CREATE_ON")
