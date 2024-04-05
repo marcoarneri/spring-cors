@@ -44,8 +44,4 @@ public class KafkaTopicConfig {
         return TopicBuilder.name("replies").partitions(1).replicas(1).build();
     }
 
-    @Bean
-    NewTopic topic5() {
-        return TopicBuilder.name("requests").partitions(1).replicas(1).build();
-    }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import it.krisopea.springcors.controller.model.DemoRequest;
 import it.krisopea.springcors.controller.model.DemoResponse;
 import it.krisopea.springcors.service.DemoService;
+import it.krisopea.springcors.service.KafkaReplyService;
 import it.krisopea.springcors.service.dto.DemoRequestDto;
 import it.krisopea.springcors.service.dto.DemoResponseDto;
 import it.krisopea.springcors.service.mapper.MapperDemoDto;
@@ -30,11 +31,8 @@ import java.util.concurrent.ConcurrentMap;
 public class DemoController {
 
     private final DemoService demoService;
+    private final KafkaReplyService kafkaReplyService;
     private final MapperDemoDto mapperDemoDto;
-
-    private final ReplyingKafkaTemplate<String, String, String> rkt;
-    private final ConcurrentMap<String, String> map = new ConcurrentHashMap<>();
-    private final Set<String> awaiting = ConcurrentHashMap.newKeySet();
 
     @PostMapping(
             value = "/demo",
@@ -57,28 +55,12 @@ public class DemoController {
     @GetMapping(
             value = "/demoReply/{correlation}/{data}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public String demoReply(@PathVariable String correlation, @PathVariable String data){
-        if (this.awaiting.add(correlation)) {
-            RequestReplyMessageFuture<String, String> future =
-                    this.rkt.sendAndReceive(MessageBuilder.withPayload(data)
-                            .build());
-            future.whenComplete((msg, reply) -> {
-                if (reply == null) {
-                    this.map.put(correlation, (String) msg.getPayload());
-                }
-                else {
-                    this.map.put(correlation, "msg arrived: " + correlation);
-                }
-            });
-        }
-        String reply = this.map.remove(correlation);
-        if (reply != null) {
-            this.awaiting.remove(correlation);
-            return reply + "\n";
-        }
-        else {
-            return "no result yet\n";
-        }
+    public ResponseEntity<Object> demoReply(@PathVariable String correlation, @PathVariable String data) throws Exception {
+
+        String message = correlation +", "+ data;
+        Object messageReceived = kafkaReplyService.kafkaRequestReply(message);
+
+        return ResponseEntity.ok().body(messageReceived);
     }
 
 }

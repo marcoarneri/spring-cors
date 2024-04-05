@@ -41,19 +41,6 @@ public class KafkaProducerConfig {
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
-    @Bean
-    ReplyingKafkaTemplate<String, String, String> rkt(@Qualifier("producerFactory")ProducerFactory<String, String> pf,
-                                                      @Qualifier("replyFactory")ConcurrentKafkaListenerContainerFactory<String, String> factory,
-                                                      @Qualifier("kafkaTemplate") KafkaTemplate<String, String> template) {
-
-        factory.setReplyTemplate(template);
-        ConcurrentMessageListenerContainer<String, String> container = factory.createContainer("replies");
-        container.getContainerProperties().setGroupId("replies");
-        ReplyingKafkaTemplate<String, String, String> replier = new ReplyingKafkaTemplate<>(pf, container);
-        replier.setDefaultTopic("requests");
-        return replier;
-    }
-
 
 
     @Bean
