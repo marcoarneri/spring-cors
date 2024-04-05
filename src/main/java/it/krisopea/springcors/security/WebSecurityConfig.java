@@ -25,6 +25,7 @@ public class WebSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    // FIXME sessionManagement
     http.sessionManagement(
             sessionManagementConfigurer ->
                 sessionManagementConfigurer.maximumSessions(1).maxSessionsPreventsLogin(true))

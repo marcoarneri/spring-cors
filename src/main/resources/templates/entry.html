@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Entry Page</title>
@@ -7,22 +7,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 <body>
-    <div class = "container text-center">
-        <h1>Entry page</h1>
+    <div class = "container text-center w-75">
+        <h1>Entry Page</h1>
         <p th:if="${success}" class="alert alert-success">Logout successful</p>
-        <p class="card-subtitle mb-4">Make a decision</p>
-        <div class="d-flex justify-content-center" >
-            <form th:action="@{/login}" th:method="get">
-                <button type="submit" class="btn btn-dark">
-                    Login <i class="bi bi-door-open"></i>
-                </button>
-            </form>
-            <div class="mx-2"></div>
-            <form th:action="@{/register}" th:method="get">
-                <button type="submit" class="btn btn-dark">
-                    Register <i class="bi bi-door-open"></i>
-                </button>
-            </form>
+        <p class="card-subtitle mb-3">Make a decision</p>
+        <div class="container w-auto">
+            <div class="d-flex justify-content-center" >
+                <form th:action="@{/login}" th:method="get">
+                    <button type="submit" class="btn btn-sm w-auto mb-3">
+                        Login <i class="bi bi-key-fill"></i>
+                    </button>
+                </form>
+                <form th:action="@{/register}" th:method="get">
+                    <button type="submit" class="btn btn-sm w-auto mb-3">
+                        Register <i class="bi bi-floppy-fill"></i>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </body>

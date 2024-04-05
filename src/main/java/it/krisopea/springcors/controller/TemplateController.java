@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TemplateController {
   @GetMapping("/login")
   public String showLoginForm(ModelMap model) {
+    // FIXME aggiustare sessione - if non necessario
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication != null
         && !(authentication instanceof AnonymousAuthenticationToken)
@@ -36,6 +37,7 @@ public class TemplateController {
 
   @GetMapping("/register")
   public String showRegistrationForm(ModelMap model) {
+    // FIXME aggiustare sessione - if non necessario
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication != null
         && !(authentication instanceof AnonymousAuthenticationToken)
