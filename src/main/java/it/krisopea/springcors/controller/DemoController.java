@@ -62,8 +62,8 @@ public class DemoController {
             RequestReplyMessageFuture<String, String> future =
                     this.rkt.sendAndReceive(MessageBuilder.withPayload(data)
                             .build());
-            future.whenComplete((msg, ex) -> {
-                if (ex == null) {
+            future.whenComplete((msg, reply) -> {
+                if (reply == null) {
                     this.map.put(correlation, (String) msg.getPayload());
                 }
                 else {
