@@ -24,7 +24,9 @@ public class DemoRequestDtoItemReader implements ItemReader<DemoRequestDto>, Ini
     @Override
     public DemoRequestDto read() throws UnexpectedInputException, ParseException, NonTransientResourceException {
         log.info("ENTRATO NEL READ DEL SECONDO STEP");
-        this.iterator = skipListener.getSkippedRecords().iterator();
+        if (this.iterator == null){
+            this.iterator = skipListener.getSkippedRecords().iterator();
+        }
         if (iterator.hasNext()) {
             return iterator.next();
         } else {
