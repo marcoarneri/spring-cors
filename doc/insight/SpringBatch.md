@@ -38,34 +38,24 @@ Come esempio di lettura di dati da una fonte esterna abbiamo creato un file [dem
 
 ### 2. Creazione Job e Processi batch
 
-- Crea i job e i processi batch necessari per la tua applicazione. Un job batch è un'istanza del tipo Job, mentre un processo batch è un'istanza del tipo Step.
-- Implementa i lettori, i processori e i writer necessari per l'elaborazione dei dati. Un lettore batch legge i dati da una fonte esterna, un processore batch elabora i dati e un writer batch scrive i dati su una destinazione.
+#### Passaggio 1: Configurazione del contesto di Spring Batch
+
+- Annota la classe di configurazione con `@Configuration` per indicare a Spring che questa classe è una classe di configurazione che definisce i bean per l'applicazione.
+- Crea i job e gli step necessari per la tua applicazione. Un job batch è un'istanza del tipo Job, mentre uno step è un'istanza del tipo Step.
+
+#### Passaggio 2: Configurazione dei lettori
+
+- Implementa i `Reader`, i `Processor` e i `Writer` necessari per l'elaborazione dei dati. Un `Reader` batch legge i dati da una fonte esterna, un `Processor` batch elabora i dati e un `Writer` batch scrive i dati su una destinazione.
 - Configura in base alle tue esigenze un `Listener`, che implementa la classe `JobExecutionListener` per intercettare quando viene avviato e quando finisce il Job.
+
+#### Nota bene
+Ognuno di questi componenti può cambiare a secondo delle necessita ad esempio per leggere da un file bisogna usare la classe `FlatFileItemReader` o per leggere più file la classe `MultiResourceItemReader`, ecc.
+Quindi per la configurazione di questi componenti prima verificare a cosa servono per utilizzare l'implementazione corretta
 
 esempi:
 - [BatchConfiguration](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fbatchprocessing%2Fconfig%2FBatchConfiguration.java)
 - [DemoItemProcessor](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fbatchprocessing%2FDemoItemProcessor.java)
 - [DemoJobNotificationListener](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fbatchprocessing%2FDemoJobNotificationListener.java)
-
-### 3. Riavvio di un job in caso di fallimento
-
-La classe [JobRestarter.java](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fbatchprocessing%2FJobRestarter.java) è responsabile di gestire il riavvio di un job in caso di fallimento dell'esecuzione precedente.
-
-
-Come prima cosa instanziamo due campi Importati per esplorare i metadati del job e fare delle operazioni su di essi
-
-* `jobExplorer`:
-
-  Questo campo rappresenta un'istanza di `JobExplorer`, che fornisce metodi per esplorare i metadati dei job. Viene utilizzato per ottenere informazioni sull'ultima esecuzione del job.
-
-
-* `jobOperator`:
-
-    Questo campo rappresenta un'istanza di `JobOperator`, che offre metodi per operare sui job, come avviare, fermare e riavviare i job. Nel caso del nostro esempio viene utilizzato per riavviare il nostro job in caso di fallimento.
-
-Il metodo `restartJob()` fornisce un meccanismo robusto per gestire i fallimenti dei job. Controlla se l'ultima esecuzione del job sia fallita e, in caso affermativo, riavvia il job dalla posizione in cui si è interrotto.
-
-In conclusione, il metodo restartJob() rappresenta un componente cruciale nell'architettura di un'applicazione Spring Batch, garantendo che i job vengano gestiti in modo robusto e affidabile anche in presenza di errori o fallimenti durante l'esecuzione.
 
 
 ### 4. Attivazione Job

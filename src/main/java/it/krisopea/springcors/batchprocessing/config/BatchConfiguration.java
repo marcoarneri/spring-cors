@@ -86,20 +86,6 @@ public class BatchConfiguration {
                 .build();
     }
 
-
-    @Bean
-    public FlatFileItemReader<DemoRequest> reader() {
-        log.info("ENTRATO NEL READER DEL PRIMO STEP");
-        return new FlatFileItemReaderBuilder<DemoRequest>()
-                .name("demoItemReader")
-                .resource(new ClassPathResource("doc/to-process/demo.csv"))
-                .delimited()
-                .names("iuv", "city", "nation", "noticeId")
-                .linesToSkip(1)
-                .targetType(DemoRequest.class)
-                .build();
-    }
-
     @Bean
     public FlatFileItemReader<DemoRequest> flatFileItemReader() {
         FlatFileItemReader<DemoRequest> reader = new FlatFileItemReader<>();
