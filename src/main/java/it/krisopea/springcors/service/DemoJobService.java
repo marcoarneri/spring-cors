@@ -6,9 +6,7 @@ import it.krisopea.springcors.repository.model.DemoEntity;
 import it.krisopea.springcors.service.dto.DemoRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 
 @Service
 @RequiredArgsConstructor

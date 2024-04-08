@@ -1,7 +1,6 @@
 package it.krisopea.springcors.batchprocessing;
 
 import it.krisopea.springcors.service.dto.DemoRequestDto;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
@@ -30,10 +29,9 @@ public class DemoRequestDtoItemReader implements ItemReader<DemoRequestDto>, Ini
         if (iterator.hasNext()) {
             return iterator.next();
         } else {
-            return null; // Return null when all items have been read
+            return null;
         }
     }
-
     @Override
     public void afterPropertiesSet() throws Exception {
 

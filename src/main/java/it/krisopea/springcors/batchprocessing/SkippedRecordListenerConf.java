@@ -2,13 +2,9 @@ package it.krisopea.springcors.batchprocessing;
 
 import it.krisopea.springcors.controller.model.DemoRequest;
 import it.krisopea.springcors.service.dto.DemoRequestDto;
-import it.krisopea.springcors.service.mapper.MapperDemoDto;
-import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.SkipListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

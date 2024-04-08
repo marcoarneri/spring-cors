@@ -18,7 +18,6 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,15 +43,12 @@ public class BatchConfiguration {
         return tm;
     }
 
-    //todo reitegrare lo step del restart e fare in modo che i record skippati vengano scritti sul file
     @Bean
     public Job demoJob(JobRepository jobRepository, Step startStep, Step errorHandlingStep, DemoJobNotificationListener listener) {
         return new JobBuilder("demoJob", jobRepository)
                 .listener(listener)
                 .start(startStep)
                 .next(errorHandlingStep)
-//                .from(startStep).on("*").to(errorHandlingStep)
-//                .from(startStep).on("UNKNOWN").to(errorHandlingStep)
                 .build();
     }
 
@@ -83,29 +79,6 @@ public class BatchConfiguration {
                 .build();
     }
 
-
-//    @Bean
-//    public Step restartStep(JobRestarter jobRestarter, JobRepository jobRepository, JpaTransactionManager transactionManager,
-//                            FlatFileItemReader<DemoRequest> reader, DemoItemProcessor processor,
-//                            ItemWriter<DemoRequestDto> writer) {
-//        return new StepBuilder("restartStep", jobRepository)
-//                .<DemoRequest, DemoRequestDto>chunk(1, transactionManager)
-//                .reader(reader)
-//                .processor(processor)
-//                .writer(writer)
-//                .listener(new StepExecutionListener() {
-//                    @Override
-//                    public void beforeStep(StepExecution stepExecution) {
-//                        try {
-//                            jobRestarter.restartJob();
-//                        } catch (Exception e) {
-//                            e.printStackTrace(); // Gestisci l'eccezione in modo appropriato
-//                        }
-//                    }
-//                })
-//                .build();
-//    }
-
     @Bean
     public FlatFileItemReader<DemoRequest> reader() {
         log.info("ENTRATO NEL READER DEL PRIMO STEP");
@@ -124,23 +97,6 @@ public class BatchConfiguration {
         log.info("ENTRATO IN LIST ITEM READER" );
         return new DemoRequestDtoItemReader();
     }
-
-    //TODO capire cosa fare per ClassifierCompositeItemWriter in modo da poter usare due writer differenti all'interno di uno step e capire che tipo di oggetto devo passare avendone due differenti
-//    public ClassifierCompositeItemWriter<DemoRequestDto> classifierCompositeItemWriter(
-//            ItemWriter<DemoRequestDto> primaryWriter,
-//            FlatFileItemWriter<DemoRequestDto> errorWriter) {
-//
-//        ClassifierCompositeItemWriter<DemoRequestDto> compositeItemWriter = new ClassifierCompositeItemWriter<>();
-//        compositeItemWriter.setClassifier((Classifier<DemoRequestDto, ItemWriter<? super DemoRequestDto>>) demoRequestDto -> {
-//            // Determina a quale writer inviare il record in base a qualche criterio
-//            if (demoRequestDto.getSomeCriteria()) {
-//                return primaryWriter; // Invia il record al writer principale
-//            } else {
-//                return errorWriter; // Invia il record al writer degli errori
-//            }
-//        });
-//        return compositeItemWriter;
-//    }
 
     @Bean
     public DemoItemProcessor processor() {
