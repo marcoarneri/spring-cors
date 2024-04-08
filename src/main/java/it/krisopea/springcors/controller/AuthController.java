@@ -23,17 +23,17 @@ public class AuthController {
   private final AuthService authService;
   private final MapperUserDto userMapperDto;
 
-  @PostMapping("/login")
-  public void loginUser(
-      @ModelAttribute("userLoginRequest") @Valid UserLoginRequest userLoginRequest) {
-    log.info("Login request for username: {}.", userLoginRequest.getUsername());
-
-    UserLoginRequestDto userLoginRequestDto = userMapperDto.toUserLoginRequestDto(userLoginRequest);
-
-    authService.login(userLoginRequestDto);
-
-    log.info("Login completed successfully.");
-  }
+//  @PostMapping("/login")
+//  public void loginUser(
+//      @ModelAttribute("userLoginRequest") @Valid UserLoginRequest userLoginRequest) {
+//    log.info("Login request for username: {}.", userLoginRequest.getUsername());
+//
+//    UserLoginRequestDto userLoginRequestDto = userMapperDto.toUserLoginRequestDto(userLoginRequest);
+//
+//    authService.login(userLoginRequestDto);
+//
+//    log.info("Login completed successfully.");
+//  }
 
   @PostMapping("/register")
   public String registerUser(

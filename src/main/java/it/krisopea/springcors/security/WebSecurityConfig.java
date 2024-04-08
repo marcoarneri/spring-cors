@@ -2,6 +2,7 @@ package it.krisopea.springcors.security;
 
 import it.krisopea.springcors.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity
@@ -26,21 +28,21 @@ public class WebSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    // FIXME sessionManagement
+
     http.sessionManagement(
             sessionManagementConfigurer ->
                 sessionManagementConfigurer.maximumSessions(1).maxSessionsPreventsLogin(true))
         .authorizeHttpRequests(
             requests ->
                 requests
-                    .requestMatchers("/entry", "/register", "/login")
+                    .requestMatchers("/entry", "/register")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
         .formLogin(
             form ->
                 form.loginPage("/login")
-                    .loginProcessingUrl("/login")
+//                    .loginProcessingUrl("/login")
                     .defaultSuccessUrl("/home", true)
                     .failureUrl("/login?error")
                     .permitAll())
@@ -48,18 +50,23 @@ public class WebSecurityConfig {
             logout ->
                 logout
                     .logoutUrl("/logout")
-                    .logoutSuccessHandler(
-                        (request, response, authentication) -> {
-                          SecurityContextHolder.clearContext();
-                          request.getSession().invalidate();
-                          response.sendRedirect("/entry?success");
-                        })
-                    .deleteCookies("JSESSIONID")
+//                    .logoutSuccessHandler(
+//                        (request, response, authentication) -> {
+//                          SecurityContextHolder.clearContext();
+//                          request.getSession().invalidate();
+//                          response.sendRedirect("/entry?success");
+//                        })
+//                    .deleteCookies("JSESSIONID")
                     .invalidateHttpSession(true)
                     .clearAuthentication(true)
                     .permitAll());
 
     return http.build();
+  }
+
+  @Bean
+  public static ServletListenerRegistrationBean httpSessionEventPublisher() {
+    return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
   }
 
   @Bean
