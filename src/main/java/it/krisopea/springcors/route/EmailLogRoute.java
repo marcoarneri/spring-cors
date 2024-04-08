@@ -15,15 +15,17 @@ public class EmailLogRoute extends RouteBuilder {
         .routeId("emailLogTimer")
         .delayer(210000)
         .log(
-            "Sono state inviate "
+            "A total of "
                 + globalEmailResources.getEmailCounter()
-                + " email fin'ora in questa sessione. "
-                + "In particolare: "
+                + " emails have been sent so far in this session. "
+                + "Specifically: "
                 + globalEmailResources.getRegistrationEmailCounter()
-                + " email di registrazione, "
+                + " registration emails, "
                 + globalEmailResources.getUpdateEmailCounter()
-                + " email di aggiornamento, "
+                + " update emails, "
                 + globalEmailResources.getDeleteEmailCounter()
-                + " email di cancellazione.");
+                + " deletion emails, "
+                + globalEmailResources.getLoginEmailCounter()
+                + " login emails.");
   }
 }

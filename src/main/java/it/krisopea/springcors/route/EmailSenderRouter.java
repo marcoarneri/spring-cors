@@ -1,6 +1,7 @@
 package it.krisopea.springcors.route;
 
 import it.krisopea.springcors.util.GlobalEmailResources;
+import it.krisopea.springcors.util.constant.EmailEnum;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,42 +20,50 @@ public class EmailSenderRouter extends RouteBuilder {
     from("direct:sendEmail")
         .routeId("sendEmailRoute")
         .choice()
-        .when(header("topic").isEqualTo("Registrazione utenza"))
-        .setHeader("subject", constant("Benvenuto!"))
-        .setBody(simple("Ciao, grazie per esserti registrato al nostro servizio!"))
+        .when(header("topic").isEqualTo(EmailEnum.REGISTRATION))
+        .setHeader("subject", constant("Welcome!"))
+        .setBody(simple("Hi, thank you for registering to our service!"))
         .process(
             exchange -> {
               globalEmailResources.incrementEmailCounter();
               globalEmailResources.incrementRegistrationEmailCounter();
             })
-        .when(header("topic").isEqualTo("Aggiornamento utenza"))
-        .setHeader("subject", constant("Notifica di aggiornamento"))
+        .when(header("topic").isEqualTo(EmailEnum.UPDATE))
+        .setHeader("subject", constant("Update Notification"))
         .setBody(
-            simple("Vogliamo notificarti dell'aggiornamento di uno o più campi della tua utenza."))
+            simple(
+                "We would like to notify you about the update of one or more fields of your"
+                    + " account."))
         .process(
             exchange -> {
               globalEmailResources.incrementEmailCounter();
               globalEmailResources.incrementUpdateEmailCounter();
             })
-        .when(header("topic").isEqualTo("Cancellazione utenza"))
+        .when(header("topic").isEqualTo(EmailEnum.DELETE))
         .choice()
         .when(header("isAdmin").isEqualTo(Boolean.TRUE.toString()))
-        .setHeader("subject", constant("Notifica di cancellazione"))
+        .setHeader("subject", constant("Cancellation Notification"))
         .setBody(
             simple(
-                "Vogliamo notificarti della cancellazione della tua utenza da parte di un"
-                    + " amministratore."))
+                "We want to notify you of the cancellation of your account by an administrator."))
         .otherwise()
-        .setHeader("subject", constant("Notifica di cancellazione"))
+        .setHeader("subject", constant("Cancellation Notification"))
         .setBody(
             simple(
-                "Vogliamo notificarti della cancellazione della tua utenza. Speriamo di rivederti"
-                    + " presto!"))
-        .end()
+                "We want to notify you of the cancellation of your account. We hope to see you"
+                    + " again soon!"))
         .process(
             exchange -> {
               globalEmailResources.incrementEmailCounter();
               globalEmailResources.incrementDeleteEmailCounter();
+            })
+        .when(header("topic").isEqualTo(EmailEnum.LOGIN))
+        .setHeader("subject", constant("Login Notification"))
+        .setBody(simple("You have successfully logged in at ${header.loginTime}."))
+        .process(
+            exchange -> {
+              globalEmailResources.incrementEmailCounter();
+              globalEmailResources.incrementLoginEmailCounter();
             })
         .end()
         .setHeader("to", simple("${header.email}"))

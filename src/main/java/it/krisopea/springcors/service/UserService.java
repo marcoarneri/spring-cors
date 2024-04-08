@@ -11,7 +11,7 @@ import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.util.annotation.IsAdmin;
 import it.krisopea.springcors.util.annotation.IsAuthenticated;
-import it.krisopea.springcors.util.constant.EmailConstants;
+import it.krisopea.springcors.util.constant.EmailEnum;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,7 +68,7 @@ public class UserService {
     Map<String, Object> headers = new HashMap<>();
     headers.put("email", userEntity.getEmail());
     headers.put("updateTime", Instant.now().toString());
-    headers.put("topic", EmailConstants.UPDATE);
+    headers.put("topic", EmailEnum.UPDATE);
     producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
   }
 
@@ -91,7 +91,7 @@ public class UserService {
     headers.put("email", userEntity.getEmail());
     headers.put("deleteTime", Instant.now().toString());
     headers.put("isAdmin", Boolean.FALSE.toString());
-    headers.put("topic", EmailConstants.DELETE);
+    headers.put("topic", EmailEnum.DELETE);
     producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
   }
 
@@ -108,7 +108,7 @@ public class UserService {
     headers.put("email", userEntity.getEmail());
     headers.put("deleteTime", Instant.now().toString());
     headers.put("isAdmin", Boolean.TRUE.toString());
-    headers.put("topic", EmailConstants.DELETE);
+    headers.put("topic", EmailEnum.DELETE);
     producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
   }
 }

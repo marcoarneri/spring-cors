@@ -6,7 +6,7 @@ import it.krisopea.springcors.repository.mapper.MapperUserEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
 import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
-import it.krisopea.springcors.util.constant.EmailConstants;
+import it.krisopea.springcors.util.constant.EmailEnum;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class AuthService {
 
     Map<String, Object> headers = new HashMap<>();
     headers.put("email", userRegistrationRequestDto.getEmail());
-    headers.put("topic", EmailConstants.REGISTRATION);
+    headers.put("topic", EmailEnum.REGISTRATION);
 
     userRepository.saveAndFlush(userEntity);
     producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
@@ -66,7 +66,7 @@ public class AuthService {
     Map<String, Object> headers = new HashMap<>();
     headers.put("email", userEntity.getEmail());
     headers.put("loginTime", Instant.now().toString());
-    headers.put("topic", EmailConstants.LOGIN);
+    headers.put("topic", EmailEnum.LOGIN);
 
     producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
 

@@ -64,11 +64,6 @@ public class WebSecurityConfig {
   }
 
   @Bean
-  public static ServletListenerRegistrationBean httpSessionEventPublisher() {
-    return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
-  }
-
-  @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
@@ -101,5 +96,10 @@ public class WebSecurityConfig {
     authenticationProvider.setPasswordEncoder(passwordEncoder);
 
     return new ProviderManager(authenticationProvider);
+  }
+
+  @Bean
+  public static ServletListenerRegistrationBean httpSessionEventPublisher() {
+    return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
   }
 }
