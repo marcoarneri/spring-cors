@@ -17,15 +17,22 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
+import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 
 @Configuration
 @RequiredArgsConstructor
@@ -54,11 +61,11 @@ public class BatchConfiguration {
 
     @Bean
     public Step startStep(JobRepository jobRepository, JpaTransactionManager transactionManager,
-                          FlatFileItemReader<DemoRequest> reader, DemoItemProcessor processor,
-                          ItemWriter<DemoRequestDto> writer, SkippedRecordListenerConf skipListener) {
+                          DemoItemProcessor processor,
+                          ItemWriter<DemoRequestDto> writer, SkippedRecordListenerConf skipListener) throws IOException {
         return new StepBuilder("startStep", jobRepository)
                 .<DemoRequest, DemoRequestDto> chunk(1, transactionManager)
-                .reader(reader)
+                .reader(multiResourceItemReader())
                 .processor(processor)
                 .writer(writer)
                 .faultTolerant()
@@ -79,17 +86,49 @@ public class BatchConfiguration {
                 .build();
     }
 
+
     @Bean
     public FlatFileItemReader<DemoRequest> reader() {
         log.info("ENTRATO NEL READER DEL PRIMO STEP");
         return new FlatFileItemReaderBuilder<DemoRequest>()
                 .name("demoItemReader")
-                .resource(new ClassPathResource("doc/demo.csv"))
+                .resource(new ClassPathResource("doc/to-process/demo.csv"))
                 .delimited()
                 .names("iuv", "city", "nation", "noticeId")
                 .linesToSkip(1)
                 .targetType(DemoRequest.class)
                 .build();
+    }
+
+    @Bean
+    public FlatFileItemReader<DemoRequest> flatFileItemReader() {
+        FlatFileItemReader<DemoRequest> reader = new FlatFileItemReader<>();
+        reader.setLineMapper(new DefaultLineMapper<DemoRequest>() {{
+            setLineTokenizer(new DelimitedLineTokenizer() {{
+                setNames(new String[]{"iuv", "city", "nation", "noticeId"});
+            }});
+            setFieldSetMapper(new BeanWrapperFieldSetMapper<DemoRequest>() {{
+                setTargetType(DemoRequest.class);
+            }});
+        }});
+        reader.setLinesToSkip(1);
+        return reader;
+    }
+
+    @Bean
+    public MultiResourceItemReader<DemoRequest> multiResourceItemReader() throws IOException {
+        Resource[] resources = loadCsvFilesFromDirectory("doc/to-process");
+
+        MultiResourceItemReader<DemoRequest> multiResourceItemReader = new MultiResourceItemReader<>();
+        multiResourceItemReader.setResources(resources);
+        multiResourceItemReader.setDelegate(flatFileItemReader()); // Usa il reader configurato sopra come delegate
+        return multiResourceItemReader;
+    }
+
+    private Resource[] loadCsvFilesFromDirectory(String directoryPath) throws IOException {
+        Resource[] resources = new PathMatchingResourcePatternResolver()
+                .getResources("classpath*:" + directoryPath + "/*.csv");
+        return resources;
     }
 
     @Bean
