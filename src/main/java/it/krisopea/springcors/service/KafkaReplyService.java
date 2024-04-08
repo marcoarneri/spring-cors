@@ -20,7 +20,6 @@ public class KafkaReplyService {
     public Object kafkaRequestReply(Object request) throws Exception {
         ProducerRecord<String, Object> record = new ProducerRecord<>("replies", request);
         RequestReplyFuture<String, Object, Object> replyFuture = template.sendAndReceive(record);
-        SendResult<String, Object> sendResult = replyFuture.getSendFuture().get(60, TimeUnit.SECONDS);
         ConsumerRecord<String, Object> consumerRecord = replyFuture.get(60, TimeUnit.SECONDS);
         return consumerRecord.value();
     }
