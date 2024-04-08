@@ -16,5 +16,6 @@ public class DemoJobNotificationListener implements JobExecutionListener {
     @Override
     public void afterJob(JobExecution jobExecution) {
         log.info("Job Finished");
+        //TODO: implementare parte di spostamento file errore
     }
 }

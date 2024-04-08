@@ -1,7 +1,6 @@
 package it.krisopea.springcors.batchprocessing;
 
 import it.krisopea.springcors.service.dto.DemoRequestDto;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
