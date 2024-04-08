@@ -50,12 +50,13 @@ public class WebSecurityConfig {
             logout ->
                 logout
                     .logoutUrl("/logout")
-                    .logoutSuccessHandler(
-                        (request, response, authentication) -> {
-                          SecurityContextHolder.clearContext();
-                          request.getSession().invalidate();
-                          response.sendRedirect("/entry?success");
-                        })
+//                    .logoutSuccessHandler(
+//                        (request, response, authentication) -> {
+//                          SecurityContextHolder.clearContext();
+//                          request.getSession().invalidate();
+//                          response.sendRedirect("/entry?success");
+//                        })
+//                    .deleteCookies("JSESSIONID")
                     .invalidateHttpSession(true)
                     .clearAuthentication(true)
                     .permitAll());

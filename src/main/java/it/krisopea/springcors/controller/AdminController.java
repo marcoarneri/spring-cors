@@ -1,7 +1,6 @@
 package it.krisopea.springcors.controller;
 
 import it.krisopea.springcors.service.UserService;
-import it.krisopea.springcors.util.annotation.IsAdmin;
 import it.krisopea.springcors.util.constant.PathConstants;
 import it.krisopea.springcors.util.constant.PathMappingConstants;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(PathConstants.ADMIN_PATH)
 @Slf4j
 @Validated
-@IsAdmin
 public class AdminController {
   private final UserService userService;
 

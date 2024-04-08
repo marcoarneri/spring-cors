@@ -2,19 +2,30 @@ package it.krisopea.springcors.controller;
 
 import it.krisopea.springcors.controller.model.request.UserLoginRequest;
 import it.krisopea.springcors.controller.model.request.UserRegistrationRequest;
+import it.krisopea.springcors.controller.model.request.UserUpdateRequest;
+import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.repository.mapper.MapperUserEntity;
+import it.krisopea.springcors.repository.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 public class TemplateController {
+
+  private final UserRepository repository;
+  private final MapperUserEntity mapperUserEntity;
+
   @GetMapping("/login")
   public String showLoginForm(ModelMap model) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -32,6 +43,18 @@ public class TemplateController {
     model.addAttribute(
         "username", SecurityContextHolder.getContext().getAuthentication().getName());
     return "home";
+  }
+
+  @GetMapping("/update")
+  public String updateUser(ModelMap model) {
+
+    UserEntity user = repository
+            .findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+            .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+
+    UserUpdateRequest updateRequest = mapperUserEntity.toUpdateRequest(user);
+    model.addAttribute("userUpdateRequest", updateRequest);
+    return "update";
   }
 
   @GetMapping("/register")

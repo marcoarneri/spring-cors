@@ -6,36 +6,50 @@ import it.krisopea.springcors.service.UserService;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.service.mapper.MapperUserDto;
-import it.krisopea.springcors.util.annotation.IsAuthenticated;
-import it.krisopea.springcors.util.constant.PathConstants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
-@RequestMapping(PathConstants.USER_PATH)
 @Slf4j
 @Validated
-@IsAuthenticated
 public class UserController {
   private final UserService userService;
+  private final MapperUserDto userMapperDto;
   private final MapperUserDto mapperUserDto;
 
-  @PutMapping("/update")
-  public ResponseEntity<Void> updateUser(@Valid @RequestBody UserUpdateRequest userUpdateRequest) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    log.info("Update request for user with username: {}", username);
+  @PostMapping("/update")
+  public String updateUser(
+          @ModelAttribute("userUpdateRequest") @Valid UserUpdateRequest request,
+          Model model) {
+    log.info(
+            "Update request for name: {}, surname: {}, email: {}, username: {}.",
+            request.getName(),
+            request.getSurname(),
+            request.getEmail(),
+            request.getUsername());
 
-    UserUpdateRequestDto userUpdateRequestDto = mapperUserDto.toUserUpdateDto(userUpdateRequest);
-    userService.updateUser(userUpdateRequestDto, username);
+    UserUpdateRequestDto requestDto = userMapperDto.toUserUpdateDto(request);
 
-    log.info("Updated user with username: {}", username);
-    return ResponseEntity.ok().build();
+    if (userService.updateUser(requestDto)) {
+      //FIXME
+      return "logout";
+    }
+
+    log.info("Registration completed successfully.");
+    model.addAttribute(
+            "username", SecurityContextHolder.getContext().getAuthentication().getName());
+    return "home";
   }
 
   @DeleteMapping("/delete")

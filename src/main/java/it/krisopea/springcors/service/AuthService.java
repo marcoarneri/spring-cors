@@ -70,10 +70,15 @@ public class AuthService {
 
     producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
 
+    authenticate(userLoginRequestDto.getUsername(), userLoginRequestDto.getPassword());
+
+  }
+
+  public void authenticate(String username, String password) {
     UsernamePasswordAuthenticationToken authenticationToken =
-        new UsernamePasswordAuthenticationToken(
-            userLoginRequestDto.getUsername(), userLoginRequestDto.getPassword());
+            new UsernamePasswordAuthenticationToken(username, password);
     Authentication authentication = authenticationManager.authenticate(authenticationToken);
     SecurityContextHolder.getContext().setAuthentication(authentication);
   }
+
 }

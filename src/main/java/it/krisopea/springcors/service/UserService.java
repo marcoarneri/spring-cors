@@ -1,78 +1,69 @@
 package it.krisopea.springcors.service;
 
-import static org.apache.logging.log4j.util.Strings.isBlank;
-import static org.apache.logging.log4j.util.Strings.isNotBlank;
-
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
-import it.krisopea.springcors.util.annotation.IsAdmin;
-import it.krisopea.springcors.util.annotation.IsAuthenticated;
 import it.krisopea.springcors.util.constant.EmailEnum;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
+
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final AuthenticationManager authenticationManager;
+  private final ProducerTemplate producerTemplate;
+  private final AuthService authService;
 
-  @Autowired private ProducerTemplate producerTemplate;
-
-  @IsAuthenticated
-  public void updateUser(UserUpdateRequestDto userUpdateRequestDto, String username) {
+  public Boolean updateUser(UserUpdateRequestDto requestDto) {
     UserEntity userEntity =
         userRepository
-            .findByUsername(username)
+            .findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
-    String name = userUpdateRequestDto.getName();
-    String surname = userUpdateRequestDto.getSurname();
-    String password = userUpdateRequestDto.getPassword();
-    String oldEncodedPassword = passwordEncoder.encode(userUpdateRequestDto.getOldPassword());
+    if(passwordEncoder.matches(requestDto.getOldPassword(), userEntity.getPassword())) {
+      userEntity.setName(requestDto.getName());
+      userEntity.setSurname(requestDto.getSurname());
+      userEntity.setUsername(requestDto.getUsername());
+      userEntity.setEmail(requestDto.getEmail());
+      if (requestDto.getPassword().isBlank()) {
+        userEntity.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+//        authService.authenticate(requestDto.getUsername(), userEntity.getPassword());
+        return true;
+      } else {
+        userEntity.setPassword(userEntity.getPassword());
+        authService.authenticate(requestDto.getUsername(), requestDto.getPassword());
+      }
 
-    if (oldEncodedPassword.equals(userEntity.getPassword())) {
-      throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
+      userRepository.saveAndFlush(userEntity);
+    } else {
+      throw new AppException(AppErrorCodeMessageEnum.PASSWORD_MISMATCH);
     }
 
-    if (isBlank(name) && isBlank(surname) && isBlank(password)) {
-      throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
-    }
+      Map<String, Object> headers = new HashMap<>();
+      headers.put("email", userEntity.getEmail());
+      headers.put("updateTime", Instant.now().toString());
+      headers.put("topic", EmailEnum.UPDATE);
+      producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
 
-    if (isNotBlank(name)) {
-      userEntity.setName(name);
-    }
-    if (isNotBlank(surname)) {
-      userEntity.setSurname(surname);
-    }
-    if (isNotBlank(password)) {
-      userEntity.setPassword(passwordEncoder.encode(password));
-    }
-
-    userEntity.setUsername(null);
-    userEntity.setEmail(null);
-    userRepository.saveAndFlush(userEntity);
-
-    Map<String, Object> headers = new HashMap<>();
-    headers.put("email", userEntity.getEmail());
-    headers.put("updateTime", Instant.now().toString());
-    headers.put("topic", EmailEnum.UPDATE);
-    producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
+    return false;
   }
 
-  @IsAuthenticated
   public void deleteUser(UserDeleteRequestDto userDeleteRequestDto, String username) {
     UserEntity userEntity =
         userRepository
@@ -95,7 +86,6 @@ public class UserService {
     producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
   }
 
-  @IsAdmin
   public void deleteUser(String username) {
     UserEntity userEntity =
         userRepository

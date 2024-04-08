@@ -1,7 +1,9 @@
 package it.krisopea.springcors.repository.mapper;
 
+import it.krisopea.springcors.controller.model.request.UserUpdateRequest;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
+import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import org.mapstruct.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +14,10 @@ public abstract class MapperUserEntity {
   @Mapping(target = "enabled", ignore = true)
   @Mapping(target = "role", ignore = true)
   public abstract UserEntity toUserEntity(UserRegistrationRequestDto requestDto);
+
+  @Mapping(target = "oldPassword", source = "password")
+  @Mapping(target = "password", ignore = true)
+  public abstract UserUpdateRequest toUpdateRequest(UserEntity userEntity);
 
   @AfterMapping
   protected void setDefaultValues(@MappingTarget UserEntity userEntity) {
