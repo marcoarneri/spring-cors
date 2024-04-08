@@ -6,6 +6,10 @@ import it.krisopea.springcors.repository.mapper.MapperUserEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
 import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
+import it.krisopea.springcors.util.constant.EmailConstants;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -35,9 +39,12 @@ public class AuthService {
 
     UserEntity userEntity = mapperUserEntity.toUserEntity(userRegistrationRequestDto);
 
+    Map<String, Object> headers = new HashMap<>();
+    headers.put("email", userRegistrationRequestDto.getEmail());
+    headers.put("topic", EmailConstants.REGISTRATION);
+
     userRepository.saveAndFlush(userEntity);
-    producerTemplate.sendBodyAndHeader(
-        "direct:sendRegistrationEmail", null, "email", userRegistrationRequestDto.getEmail());
+    producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
     return true;
   }
 
@@ -55,6 +62,13 @@ public class AuthService {
       log.error("Authentication failed: {}", AppErrorCodeMessageEnum.PASSWORD_MISMATCH);
       return;
     }
+
+    Map<String, Object> headers = new HashMap<>();
+    headers.put("email", userEntity.getEmail());
+    headers.put("loginTime", Instant.now().toString());
+    headers.put("topic", EmailConstants.LOGIN);
+
+    producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
 
     UsernamePasswordAuthenticationToken authenticationToken =
         new UsernamePasswordAuthenticationToken(

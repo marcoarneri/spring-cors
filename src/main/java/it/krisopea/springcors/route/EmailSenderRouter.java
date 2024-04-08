@@ -16,56 +16,54 @@ public class EmailSenderRouter extends RouteBuilder {
         .handled(true)
         .log(LoggingLevel.ERROR, "Error while sending the email: ${exception.message}");
 
-    from("direct:sendRegistrationEmail")
-        .routeId("sendRegistrationEmailRoute")
+    from("direct:sendEmail")
+        .routeId("sendEmailRoute")
+        .choice()
+        .when(header("topic").isEqualTo("Registrazione utenza"))
         .setHeader("subject", constant("Benvenuto!"))
-        .setHeader("to", simple("${header.email}"))
         .setBody(simple("Ciao, grazie per esserti registrato al nostro servizio!"))
-        .toD(
-            "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
-                + "&password={{spring.mail.password}}&mail.smtp.auth={{spring.mail.properties.mail.smtp.auth}}"
-                + "&mail.smtp.starttls.enable={{spring.mail.properties.mail.smtp.starttls.enable}}")
         .process(
             exchange -> {
               globalEmailResources.incrementEmailCounter();
               globalEmailResources.incrementRegistrationEmailCounter();
             })
-        .log("Registration email successfully sent and counters increased.");
-
-    from("direct:sendUpdateEmail")
-        .routeId("sendUpdateEmailRoute")
+        .when(header("topic").isEqualTo("Aggiornamento utenza"))
         .setHeader("subject", constant("Notifica di aggiornamento"))
-        .setHeader("to", simple("${header.email}"))
         .setBody(
             simple("Vogliamo notificarti dell'aggiornamento di uno o più campi della tua utenza."))
-        .toD(
-            "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
-                + "&password={{spring.mail.password}}&mail.smtp.auth={{spring.mail.properties.mail.smtp.auth}}"
-                + "&mail.smtp.starttls.enable={{spring.mail.properties.mail.smtp.starttls.enable}}")
         .process(
             exchange -> {
               globalEmailResources.incrementEmailCounter();
               globalEmailResources.incrementUpdateEmailCounter();
             })
-        .log("Update email successfully sent and counters increased.");
-
-    from("direct:sendDeleteEmail")
-        .routeId("sendDeleteEmailRoute")
+        .when(header("topic").isEqualTo("Cancellazione utenza"))
+        .choice()
+        .when(header("isAdmin").isEqualTo(Boolean.TRUE.toString()))
         .setHeader("subject", constant("Notifica di cancellazione"))
-        .setHeader("to", simple("${header.email}"))
         .setBody(
             simple(
-                "Vogliamo notificarti della cancellazione della tua utenza. "
-                    + "Speriamo di vederti di nuovo!"))
-        .toD(
-            "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
-                + "&password={{spring.mail.password}}&mail.smtp.auth={{spring.mail.properties.mail.smtp.auth}}"
-                + "&mail.smtp.starttls.enable={{spring.mail.properties.mail.smtp.starttls.enable}}")
+                "Vogliamo notificarti della cancellazione della tua utenza da parte di un"
+                    + " amministratore."))
+        .otherwise()
+        .setHeader("subject", constant("Notifica di cancellazione"))
+        .setBody(
+            simple(
+                "Vogliamo notificarti della cancellazione della tua utenza. Speriamo di rivederti"
+                    + " presto!"))
+        .end()
         .process(
             exchange -> {
               globalEmailResources.incrementEmailCounter();
               globalEmailResources.incrementDeleteEmailCounter();
             })
-        .log("Delete email successfully sent and counters increased.");
+        .end()
+        .setHeader("to", simple("${header.email}"))
+        .toD(
+            "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
+                + "&password={{spring.mail.password}}&mail.smtp.auth=true"
+                + "&mail.smtp.starttls.enable=true")
+        .log(
+            "\"${header.topic}\" email successfully sent to ${header.email} and counters"
+                + " increased.");
   }
 }

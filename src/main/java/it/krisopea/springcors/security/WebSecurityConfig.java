@@ -42,7 +42,7 @@ public class WebSecurityConfig {
         .formLogin(
             form ->
                 form.loginPage("/login")
-//                    .loginProcessingUrl("/login")
+                    .loginProcessingUrl("/login")
                     .defaultSuccessUrl("/home", true)
                     .failureUrl("/login?error")
                     .permitAll())
@@ -50,13 +50,12 @@ public class WebSecurityConfig {
             logout ->
                 logout
                     .logoutUrl("/logout")
-//                    .logoutSuccessHandler(
-//                        (request, response, authentication) -> {
-//                          SecurityContextHolder.clearContext();
-//                          request.getSession().invalidate();
-//                          response.sendRedirect("/entry?success");
-//                        })
-//                    .deleteCookies("JSESSIONID")
+                    .logoutSuccessHandler(
+                        (request, response, authentication) -> {
+                          SecurityContextHolder.clearContext();
+                          request.getSession().invalidate();
+                          response.sendRedirect("/entry?success");
+                        })
                     .invalidateHttpSession(true)
                     .clearAuthentication(true)
                     .permitAll());
@@ -85,6 +84,7 @@ public class WebSecurityConfig {
                         .username(user.getUsername())
                         .authorities(user.getRole())
                         .password(user.getPassword())
+                        // FIXME wip
                         .accountExpired(!user.isEnabled())
                         .accountLocked(false)
                         .credentialsExpired(false)

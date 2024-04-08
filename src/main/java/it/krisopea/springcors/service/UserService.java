@@ -11,6 +11,10 @@ import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.util.annotation.IsAdmin;
 import it.krisopea.springcors.util.annotation.IsAuthenticated;
+import it.krisopea.springcors.util.constant.EmailConstants;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -60,8 +64,12 @@ public class UserService {
     userEntity.setUsername(null);
     userEntity.setEmail(null);
     userRepository.saveAndFlush(userEntity);
-    producerTemplate.sendBodyAndHeader(
-        "direct:sendUpdateEmail", null, "email", userEntity.getEmail());
+
+    Map<String, Object> headers = new HashMap<>();
+    headers.put("email", userEntity.getEmail());
+    headers.put("updateTime", Instant.now().toString());
+    headers.put("topic", EmailConstants.UPDATE);
+    producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
   }
 
   @IsAuthenticated
@@ -75,11 +83,16 @@ public class UserService {
 
     if (!encryptedPassword.equals(userEntity.getPassword())) {
       throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
-    } else {
-      userRepository.delete(userEntity);
-      producerTemplate.sendBodyAndHeader(
-          "direct:sendDeleteEmail", null, "email", userDeleteRequestDto.getEmail());
     }
+
+    userRepository.delete(userEntity);
+
+    Map<String, Object> headers = new HashMap<>();
+    headers.put("email", userEntity.getEmail());
+    headers.put("deleteTime", Instant.now().toString());
+    headers.put("isAdmin", Boolean.FALSE.toString());
+    headers.put("topic", EmailConstants.DELETE);
+    producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
   }
 
   @IsAdmin
@@ -90,5 +103,12 @@ public class UserService {
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
     userRepository.delete(userEntity);
+
+    Map<String, Object> headers = new HashMap<>();
+    headers.put("email", userEntity.getEmail());
+    headers.put("deleteTime", Instant.now().toString());
+    headers.put("isAdmin", Boolean.TRUE.toString());
+    headers.put("topic", EmailConstants.DELETE);
+    producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
   }
 }
