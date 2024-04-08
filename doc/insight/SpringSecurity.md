@@ -1,9 +1,8 @@
 # Spring Security
-Le query SQL sono comandi utilizzati per interagire con un database relazionale al fine di recuperare, modificare, inserire o eliminare dati. Le query SQL seguono una sintassi specifica e possono essere utilizzate per eseguire una varietà di operazioni sui dati del database.
-
+Spring Security è essenziale per lo sviluppo di applicazioni web sicure e robuste in Java. Fornisce un set completo di funzionalità per proteggere le applicazioni dagli attacchi e garantire la conformità alle normative sulla sicurezza.
 ## Passaggi
 
-Segui questi passaggi per utilizzare Spring Security al tuo progetto Spring Boot:
+Segui questi passaggi per utilizzare Spring Security nel tuo progetto Spring Boot:
 
 ### 1. Aggiunta delle Dipendenze necessarie
 
