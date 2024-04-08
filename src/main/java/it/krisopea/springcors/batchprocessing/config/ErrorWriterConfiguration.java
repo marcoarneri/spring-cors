@@ -45,6 +45,8 @@ public class ErrorWriterConfiguration {
                 })
                 .headerCallback(writer -> writer.write("iuv, location, noticeId"))
                 .encoding(StandardCharsets.UTF_8.name())
+                .append(true)
+                .shouldDeleteIfEmpty(false)
                 .build();
     }
 }
