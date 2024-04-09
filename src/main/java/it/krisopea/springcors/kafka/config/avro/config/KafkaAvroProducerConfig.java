@@ -50,7 +50,6 @@ public class KafkaAvroProducerConfig {
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
         configProps.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
-//        configProps.put(KafkaAvroSerializerConfig.AUTO_REGISTER_SCHEMAS, true);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 

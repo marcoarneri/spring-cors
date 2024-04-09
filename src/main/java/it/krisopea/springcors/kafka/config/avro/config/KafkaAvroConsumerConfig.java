@@ -45,8 +45,6 @@ public class KafkaAvroConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, KafkaAvroDeserializer> customConsumerFactory() throws IOException {
-//        Schema registrazioneUtenteSchema = avroSchemaConfig.registrazioneUtenteRequestSchema;
-//        File schemaFile = avroSchemaFileWriter.writeSchemaToFile(registrazioneUtenteSchema);
         Map<String, Object> props = new HashMap<>();
         props.put(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
