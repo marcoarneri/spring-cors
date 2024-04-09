@@ -116,6 +116,6 @@ Ecco un esempio di come utilizzare l'aggregazione in una query personalizzata co
 
 ```java
     @Query("{$match: {city: ?0}}, {$group: {_id: '$city', count: {$sum: 1}}")
-    List<CityCount> countByCity(String city);
+    List<DemoEntity> countByCity(String city);
 ```
 In questo esempio, stiamo eseguendo un'aggregazione per contare il numero di documenti per ogni città. Utilizziamo `$match` per filtrare i documenti basati sulla città specificata e `$group` per raggrupparli per città e calcolarne il totale.
