@@ -9,23 +9,25 @@
     </head>
     <body class="min-vh-100 d-flex align-items-center">
 
-        <div class="container">
+        <div class="container mt-3">
             <div class="row">
                 <div class="col-md-6 offset-md-3">
                     <div class="card shadow-lg p-4 mb-5 bg-body rounded" style="background-color: rgba(255, 255, 255, 0.8)">
-                        <h1 class="card-title mb-3 text-center text-dark">Modifica</h1>
-                        <p th:if="${registerError}" class="alert alert-danger">Errore durante la modifica</p>
+                        <h1 class="card-title mb-3 text-center text-dark">Edit</h1>
+                        <div class="d-flex justify-content-center">
+                            <p th:if="${registerError}" class="alert alert-danger">Error when modifying the user</p>
+                        </div>
                         <form th:action="@{/update}" method="post" th:object="${userUpdateRequest}">
                             <div class="mb-3">
-                                <label for="name" class="form-label">Name*</label>
+                                <label for="name" class="form-label">Name *</label>
                                 <input type="text" class="form-control" id="name" th:field="*{name}" required/>
                             </div>
                             <div class="mb-3">
-                                <label for="surname" class="form-label">Surname*</label>
+                                <label for="surname" class="form-label">Surname *</label>
                                 <input type="text" class="form-control" id="surname" th:field="*{surname}" required/>
                             </div>
                             <div class="mb-3">
-                                <label for="username" class="form-label">Username*</label>
+                                <label for="username" class="form-label">Username *</label>
                                 <input type="text" class="form-control" id="username" th:field="*{username}" required/>
                             </div>
                             <div class="mb-3">
@@ -37,11 +39,11 @@
                                 <input type="password" class="form-control" id="OldPassword" th:field="*{oldPassword}"/>
                             </div>
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email*</label>
+                                <label for="email" class="form-label">Email *</label>
                                 <input type="email" class="form-control" id="email" th:field="*{email}" required/>
                             </div>
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn">
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-sm w-auto mb-3">
                                     Update <i class="bi bi-person-add"></i></button>
                             </div>
                         </form>
