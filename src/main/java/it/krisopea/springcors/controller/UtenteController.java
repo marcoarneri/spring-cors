@@ -71,16 +71,10 @@ public class UtenteController {
 
         int schemaId = schemaRegistryClient.getId("RegistrazioneUtenteRequest", parsedSchema);
         if (schemaId != -1) {
-            // Lo schema è già registrato
             log.info("Lo schema {} è già registrato con ID {}", "RegistrazioneUtenteRequest", schemaId);
         } else {
             log.error("Lo schema {} non è stato registrato nello schema registry", "RegistrazioneUtenteRequest");
-            // Puoi registrare lo schema qui se necessario
         }
-
-//        GenericRecord avroRecord = new GenericData.Record(schema);
-//        avroRecord.put("mail", request.getMail());
-//        avroRecord.put("password", request.getPassword());
 
         kafkaAvroProducer.send(request);
 
