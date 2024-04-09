@@ -6,6 +6,9 @@ import it.krisopea.springcors.controller.model.request.UserUpdateRequest;
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.mapper.MapperUserEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -16,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,6 +38,15 @@ public class TemplateController {
     }
     model.addAttribute("userLoginRequest", new UserLoginRequest());
     return "login";
+  }
+
+  @GetMapping("/logout")
+  public String logout(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      session.invalidate();
+    }
+    return "redirect:/login?logout";
   }
 
   @GetMapping("/home")

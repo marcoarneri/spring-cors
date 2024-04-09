@@ -1,6 +1,7 @@
 package it.krisopea.springcors.controller;
 
 import it.krisopea.springcors.controller.model.request.UserDeleteRequest;
+import it.krisopea.springcors.controller.model.request.UserLoginRequest;
 import it.krisopea.springcors.controller.model.request.UserUpdateRequest;
 import it.krisopea.springcors.service.UserService;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Slf4j
 @Validated
 public class UserController {
+
   private final UserService userService;
   private final MapperUserDto userMapperDto;
   private final MapperUserDto mapperUserDto;
@@ -41,12 +43,14 @@ public class UserController {
 
     UserUpdateRequestDto requestDto = userMapperDto.toUserUpdateDto(request);
 
-    if (userService.updateUser(requestDto)) {
-      //FIXME
-      return "logout";
+    if (Boolean.TRUE.equals(userService.updateUser(requestDto))) {
+      model.addAttribute("userLoginRequest", new UserLoginRequest());
+      model.addAttribute("updateUser", true);
+      SecurityContextHolder.clearContext();
+      return "redirect:/logout";
     }
 
-    log.info("Registration completed successfully.");
+    log.info("Update completed successfully.");
     model.addAttribute(
             "username", SecurityContextHolder.getContext().getAuthentication().getName());
     return "home";

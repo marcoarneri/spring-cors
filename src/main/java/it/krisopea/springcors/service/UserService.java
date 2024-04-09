@@ -10,7 +10,6 @@ import it.krisopea.springcors.util.constant.EmailEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-  private final AuthenticationManager authenticationManager;
   private final ProducerTemplate producerTemplate;
   private final AuthService authService;
 
@@ -36,23 +34,32 @@ public class UserService {
             .findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
-    if(passwordEncoder.matches(requestDto.getOldPassword(), userEntity.getPassword())) {
+    if (!(requestDto.getOldPassword().isBlank())) {
+      if (passwordEncoder.matches(requestDto.getOldPassword(), userEntity.getPassword())) {
+        userEntity.setName(requestDto.getName());
+        userEntity.setSurname(requestDto.getSurname());
+        userEntity.setUsername(requestDto.getUsername());
+        userEntity.setEmail(requestDto.getEmail());
+        if (requestDto.getPassword().isBlank()) {
+          userEntity.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+          return true;
+        } else {
+          userEntity.setPassword(userEntity.getPassword());
+          authService.authenticate(requestDto.getUsername(), requestDto.getPassword());
+        }
+
+        userRepository.saveAndFlush(userEntity);
+      } else {
+        throw new AppException(AppErrorCodeMessageEnum.PASSWORD_MISMATCH);
+      }
+    } else {
       userEntity.setName(requestDto.getName());
       userEntity.setSurname(requestDto.getSurname());
       userEntity.setUsername(requestDto.getUsername());
       userEntity.setEmail(requestDto.getEmail());
-      if (requestDto.getPassword().isBlank()) {
-        userEntity.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-//        authService.authenticate(requestDto.getUsername(), userEntity.getPassword());
-        return true;
-      } else {
-        userEntity.setPassword(userEntity.getPassword());
-        authService.authenticate(requestDto.getUsername(), requestDto.getPassword());
-      }
 
       userRepository.saveAndFlush(userEntity);
-    } else {
-      throw new AppException(AppErrorCodeMessageEnum.PASSWORD_MISMATCH);
+      return true;
     }
 
       Map<String, Object> headers = new HashMap<>();

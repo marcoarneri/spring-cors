@@ -15,30 +15,21 @@
                     <div class="card shadow-lg p-4 mb-5 bg-body rounded" style="background-color: rgba(255, 255, 255, 0.8)">
                         <h1 class="card-title mb-3 text-center text-dark">Modifica</h1>
                         <p th:if="${registerError}" class="alert alert-danger">Errore durante la modifica</p>
-                        <form th:action="@{/update}" method="post" th:object="${userUpdateRequest}">
+                        <form th:action="@{/admin/update}" method="post" th:object="${userEntity}">
                             <div class="mb-3">
-                                <label for="name" class="form-label">Name*</label>
-                                <input type="text" class="form-control" id="name" th:field="*{name}" required/>
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" th:field="*{username}" readonly/>
                             </div>
                             <div class="mb-3">
-                                <label for="surname" class="form-label">Surname*</label>
-                                <input type="text" class="form-control" id="surname" th:field="*{surname}" required/>
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" th:field="*{email}" readonly/>
                             </div>
                             <div class="mb-3">
-                                <label for="username" class="form-label">Username*</label>
-                                <input type="text" class="form-control" id="username" th:field="*{username}" required/>
-                            </div>
-                            <div class="mb-3">
-                                <label for="NewPassword" class="form-label"> Password (new)</label>
-                                <input type="password" class="form-control" id="NewPassword" th:field="*{password}"/>
-                            </div>
-                            <div class="mb-3">
-                                <label for="OldPassword" class="form-label">Password (old)</label>
-                                <input type="password" class="form-control" id="OldPassword" th:field="*{oldPassword}"/>
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email*</label>
-                                <input type="email" class="form-control" id="email" th:field="*{email}" required/>
+                                <label for="role" class="form-label">Role</label>
+                                <select class="form-select" id="role" th:field="*{role}" required>
+                                    <option value="USER" th:selected="${userEntity.role == 'USER'}">User</option>
+                                    <option value="ADMIN" th:selected="${userEntity.role == 'ADMIN'}">Admin</option>
+                                </select>
                             </div>
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn">

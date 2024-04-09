@@ -2,12 +2,9 @@ package it.krisopea.springcors.controller;
 
 import it.krisopea.springcors.controller.model.request.UserLoginRequest;
 import it.krisopea.springcors.controller.model.request.UserRegistrationRequest;
-import it.krisopea.springcors.controller.model.request.UserUpdateRequest;
 import it.krisopea.springcors.service.AuthService;
-import it.krisopea.springcors.service.UserService;
 import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
 import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
-import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.service.mapper.MapperUserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
