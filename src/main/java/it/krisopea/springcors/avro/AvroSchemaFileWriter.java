@@ -14,12 +14,10 @@ public class AvroSchemaFileWriter {
         String filePath = "src/main/resources/avroHttpRequest-utenteSchema.avsc"; // Percorso statico
         File file = new File(filePath);
 
-        // Se il file esiste già, elimina il contenuto esistente
         if (file.exists()) {
             file.delete();
         }
 
-        // Crea un nuovo file e scrivi lo schema
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(schema.toString());
         }
