@@ -3,7 +3,6 @@ package it.krisopea.springcors.repository.mapper;
 import it.krisopea.springcors.controller.model.request.UserUpdateRequest;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
-import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import org.mapstruct.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

@@ -32,14 +32,13 @@ public class UserController {
 
   @PostMapping("/update")
   public String updateUser(
-          @ModelAttribute("userUpdateRequest") @Valid UserUpdateRequest request,
-          Model model) {
+      @ModelAttribute("userUpdateRequest") @Valid UserUpdateRequest request, Model model) {
     log.info(
-            "Update request for name: {}, surname: {}, email: {}, username: {}.",
-            request.getName(),
-            request.getSurname(),
-            request.getEmail(),
-            request.getUsername());
+        "Update request for name: {}, surname: {}, email: {}, username: {}.",
+        request.getName(),
+        request.getSurname(),
+        request.getEmail(),
+        request.getUsername());
 
     UserUpdateRequestDto requestDto = userMapperDto.toUserUpdateDto(request);
 
@@ -52,7 +51,7 @@ public class UserController {
 
     log.info("Update completed successfully.");
     model.addAttribute(
-            "username", SecurityContextHolder.getContext().getAuthentication().getName());
+        "username", SecurityContextHolder.getContext().getAuthentication().getName());
     return "home";
   }
 

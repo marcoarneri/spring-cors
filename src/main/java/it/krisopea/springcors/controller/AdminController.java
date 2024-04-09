@@ -6,6 +6,7 @@ import it.krisopea.springcors.service.AdminService;
 import it.krisopea.springcors.service.UserService;
 import it.krisopea.springcors.util.constant.PathMappingConstants;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,20 +45,19 @@ public class AdminController {
 
   @GetMapping("/admin/update/{username}")
   public String getAdminUpdatePage(@PathVariable String username, ModelMap model) {
-    UserEntity user = userRepository
+    UserEntity user =
+        userRepository
             .findByUsername(username)
-            .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
     model.addAttribute("userEntity", user);
     return "adminUpdate";
   }
 
   @PostMapping("/admin/update")
-  public String adminUpdatePage(@ModelAttribute("userEntity") @Valid UserEntity user, ModelMap model) {
-    log.info(
-            "Update request for username: {}, email: {}.",
-            user.getUsername(),
-            user.getEmail());
+  public String adminUpdatePage(
+      @ModelAttribute("userEntity") @Valid UserEntity user, ModelMap model) {
+    log.info("Update request for username: {}, email: {}.", user.getUsername(), user.getEmail());
 
     adminService.updateUser(user);
 
@@ -70,5 +68,4 @@ public class AdminController {
 
     return "admin";
   }
-
 }

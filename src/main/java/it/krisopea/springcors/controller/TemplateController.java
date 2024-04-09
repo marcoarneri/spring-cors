@@ -19,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -59,9 +58,10 @@ public class TemplateController {
   @GetMapping("/update")
   public String updateUser(ModelMap model) {
 
-    UserEntity user = repository
+    UserEntity user =
+        repository
             .findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
-            .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
     UserUpdateRequest updateRequest = mapperUserEntity.toUpdateRequest(user);
     model.addAttribute("userUpdateRequest", updateRequest);

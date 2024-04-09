@@ -30,6 +30,4 @@ public class UserUpdateRequest {
 
   @Size(max = 255)
   private String oldPassword;
-
-
 }
