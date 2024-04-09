@@ -7,6 +7,10 @@
 
 Segui questi passaggi per integrare avro con kafka al tuo progetto Spring Boot:
 
+### 0. Docker
+
+Crea il file [docker-compose.yaml](..%2F..%2Fdocker-compose.yaml) e configura i servizi zookeper, kafka e schema-registry
+
 ### 1. Dipendenze e plugin
 
 Aggiungi le seguenti dipendenze e plugin per integrare avro:
@@ -110,4 +114,38 @@ Implementa il producer [KafkaAvroProducer](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkr
 ### 5. Implementazione Consumer
 
 Implementa il consumer [KafkaAvroConsumer](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fkafka%2Fconfig%2Favro%2FKafkaAvroConsumer.java)
+
+## Test
+
+Fare riferimento alla classe [UtenteController](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fcontroller%2FUtenteController.java)
+
+### 1. Creazione di uno schema rappresentante il tuo model
+
+Crea il tuo schema Schema `registrazioneUtenteSchema = avroSchemaConfig.registrazioneUtenteRequestSchema;`
+
+### 2. Scrivi il tuo schema su file
+
+Scrivi lo schema precedentemente creato su file .avsc `avroSchemaFileWriter.writeSchemaToFile(registrazioneUtenteSchema);`
+
+### 3. Registra schema nello schema-registry
+
+`ParsedSchema parsedSchema = new AvroSchema(registrazioneUtenteSchema);
+schemaRegistryClient.register("RegistrazioneUtenteRequest", parsedSchema);`
+
+### 4. Controlla che lo schema sia registrato
+
+Controlla che lo schema sia effettivamente registrato:
+
+`int schemaId = schemaRegistryClient.getId("RegistrazioneUtenteRequest", parsedSchema);
+if (schemaId != -1) {
+log.info("Lo schema {} è già registrato con ID {}", "RegistrazioneUtenteRequest", schemaId);
+} else {
+log.error("Lo schema {} non è stato registrato nello schema registry", "RegistrazioneUtenteRequest");
+}`
+
+Se il valore di schemaId è `-1` allora lo schema non è stato registrato correttamente
+
+### 5. Utilizza il producer per mandare al topic il message
+
+`kafkaAvroProducer.send(request);`
 
