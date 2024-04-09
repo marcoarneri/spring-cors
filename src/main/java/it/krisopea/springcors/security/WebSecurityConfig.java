@@ -78,6 +78,7 @@ public class WebSecurityConfig {
                     User.builder()
                         .username(user.getUsername())
                         .authorities(user.getRole())
+                        .roles(user.getRole())
                         .password(user.getPassword())
                         // FIXME wip
                         .accountExpired(!user.isEnabled())

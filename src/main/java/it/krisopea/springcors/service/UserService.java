@@ -61,12 +61,7 @@ public class UserService {
       return true;
     }
 
-    Map<String, Object> headers = new HashMap<>();
-    headers.put("email", userEntity.getEmail());
-    headers.put("updateTime", Instant.now().toString());
-    headers.put("topic", EmailEnum.UPDATE);
-    producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
-
+    sendEmail(userEntity, EmailEnum.UPDATE);
     return false;
   }
 
@@ -83,13 +78,7 @@ public class UserService {
     }
 
     userRepository.delete(userEntity);
-
-    Map<String, Object> headers = new HashMap<>();
-    headers.put("email", userEntity.getEmail());
-    headers.put("deleteTime", Instant.now().toString());
-    headers.put("isAdmin", Boolean.FALSE.toString());
-    headers.put("topic", EmailEnum.DELETE);
-    producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
+    sendEmail(userEntity, EmailEnum.DELETE);
   }
 
   public void deleteUser(String username) {
@@ -99,12 +88,20 @@ public class UserService {
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
     userRepository.delete(userEntity);
+    sendEmail(userEntity, EmailEnum.DELETE);
+  }
 
+  public void sendEmail(UserEntity userEntity, EmailEnum action) {
     Map<String, Object> headers = new HashMap<>();
     headers.put("email", userEntity.getEmail());
-    headers.put("deleteTime", Instant.now().toString());
-    headers.put("isAdmin", Boolean.TRUE.toString());
-    headers.put("topic", EmailEnum.DELETE);
-    producerTemplate.sendBodyAndHeader("direct:sendEmail", null, headers);
+    if (action == EmailEnum.UPDATE) {
+      headers.put("updateTime", Instant.now().toString());
+      headers.put("topic", EmailEnum.UPDATE);
+    } else if (action == EmailEnum.DELETE) {
+      headers.put("deleteTime", Instant.now().toString());
+      headers.put("isAdmin", Boolean.TRUE.toString());
+      headers.put("topic", EmailEnum.DELETE);
+    }
+    producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
   }
 }
