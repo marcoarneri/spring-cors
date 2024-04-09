@@ -61,12 +61,9 @@ public class UtenteController {
         //FACCIO TUTTO NEL CONTROLLER PER VELOCIZZARE I TEMPI
 
         Schema registrazioneUtenteSchema = avroSchemaConfig.registrazioneUtenteRequestSchema;
-        File schemaFile = avroSchemaFileWriter.writeSchemaToFile(registrazioneUtenteSchema);
+        avroSchemaFileWriter.writeSchemaToFile(registrazioneUtenteSchema);
 
-        Schema.Parser parser = new Schema.Parser();
-        Schema schema = parser.parse(schemaFile);
-
-        ParsedSchema parsedSchema = new AvroSchema(schema);
+        ParsedSchema parsedSchema = new AvroSchema(registrazioneUtenteSchema);
         schemaRegistryClient.register("RegistrazioneUtenteRequest", parsedSchema);
 
         int schemaId = schemaRegistryClient.getId("RegistrazioneUtenteRequest", parsedSchema);
