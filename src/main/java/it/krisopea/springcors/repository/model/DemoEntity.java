@@ -10,7 +10,7 @@ import java.time.Instant;
 @Data
 @Document
 @NoArgsConstructor
-public class DemoPOJO {
+public class DemoEntity {
 
     @Id
     private String id;

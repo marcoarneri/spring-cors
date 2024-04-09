@@ -1,7 +1,7 @@
 package it.krisopea.springcors.service;
 
 import it.krisopea.springcors.repository.DemoRepository;
-import it.krisopea.springcors.repository.model.DemoPOJO;
+import it.krisopea.springcors.repository.model.DemoEntity;
 import it.krisopea.springcors.service.dto.DemoRequestDto;
 import it.krisopea.springcors.service.dto.DemoResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +18,15 @@ public class DemoService {
         validazioneSintattica(requestDto.getIuv());
         validazioneSemantica(requestDto.getIuv());
 
-        if (demoRepository.existsByIuv(requestDto.getIuv())) {
+        if (demoRepository.duplicateIuv(requestDto.getIuv())) {
             // Gestisci il caso in cui la stringa iuv non è unica
             DemoResponseDto responseDto = new DemoResponseDto();
             responseDto.setOutcome("Error");
-            responseDto.setStatus("Duplicato di iuv");
+            responseDto.setStatus("Iuv duplicato");
             return responseDto;
         }
 
-        DemoPOJO pojo = new DemoPOJO();
+        DemoEntity pojo = new DemoEntity();
         pojo.setIuv(requestDto.getIuv());
         pojo.setLocation(requestDto.getLocation());
         pojo.setNoticeId(requestDto.getNoticeId());
