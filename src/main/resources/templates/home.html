@@ -21,13 +21,13 @@
         <div class="sidebar">
             <form th:action="@{/update}" method="get">
                 <button type="submit" class="btn btn-light ">
-                    Update <i class="bi bi-user"></i>
+                    Settings <i class="bi bi-gear"></i>
                 </button>
             </form>
-            <div sec:authorize="hasRole('ADMIN')">
+            <div sec:authorize="hasAuthority('ADMIN')">
                 <form th:action="@{/admin}" method="get">
                     <button type="submit" class="btn btn-light ">
-                        Admin <i class="bi bi-user"></i>
+                        Management <i class="bi bi-person"></i>
                     </button>
                 </form>
             </div>
