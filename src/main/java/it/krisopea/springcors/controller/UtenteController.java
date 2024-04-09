@@ -1,5 +1,8 @@
 package it.krisopea.springcors.controller;
 
+import io.confluent.kafka.schemaregistry.ParsedSchema;
+import io.confluent.kafka.schemaregistry.avro.AvroSchema;
+import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
 import it.krisopea.springcors.avro.AvroSchemaConfig;
 import it.krisopea.springcors.avro.AvroSchemaFileWriter;
 import it.krisopea.springcors.controller.model.DemoRequest;
@@ -15,6 +18,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -43,12 +47,16 @@ public class UtenteController {
     @Autowired
     private AvroSchemaConfig avroSchemaConfig;
 
+    @Autowired
+    private SchemaRegistryClient schemaRegistryClient;
+
+
     @PostMapping(
             value = "/registraUtente",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> demo(
-            @Valid @RequestBody RegistrazioneUtenteRequest request) throws IOException {
+            @Valid @RequestBody RegistrazioneUtenteRequest request) throws IOException, RestClientException {
 
         //FACCIO TUTTO NEL CONTROLLER PER VELOCIZZARE I TEMPI
 
@@ -58,11 +66,23 @@ public class UtenteController {
         Schema.Parser parser = new Schema.Parser();
         Schema schema = parser.parse(schemaFile);
 
-        GenericRecord avroRecord = new GenericData.Record(schema);
-        avroRecord.put(0, "mail");
-        avroRecord.put(1, "password");
+        ParsedSchema parsedSchema = new AvroSchema(schema);
+        schemaRegistryClient.register("RegistrazioneUtenteRequest", parsedSchema);
 
-        kafkaAvroProducer.send(avroRecord);
+        int schemaId = schemaRegistryClient.getId("RegistrazioneUtenteRequest", parsedSchema);
+        if (schemaId != -1) {
+            // Lo schema è già registrato
+            log.info("Lo schema {} è già registrato con ID {}", "RegistrazioneUtenteRequest", schemaId);
+        } else {
+            log.error("Lo schema {} non è stato registrato nello schema registry", "RegistrazioneUtenteRequest");
+            // Puoi registrare lo schema qui se necessario
+        }
+
+//        GenericRecord avroRecord = new GenericData.Record(schema);
+//        avroRecord.put("mail", request.getMail());
+//        avroRecord.put("password", request.getPassword());
+
+        kafkaAvroProducer.send(request);
 
         return ResponseEntity.accepted().build();
     }

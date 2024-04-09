@@ -1,11 +1,14 @@
 package it.krisopea.springcors.kafka.config.avro.config;
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import it.krisopea.springcors.avro.AvroSchemaConfig;
 import it.krisopea.springcors.avro.AvroSchemaFileWriter;
 import it.krisopea.springcors.controller.model.RegistrazioneUtenteRequest;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -41,9 +44,9 @@ public class KafkaAvroConsumerConfig {
     private AvroSchemaConfig avroSchemaConfig;
 
     @Bean
-    public ConsumerFactory<String, RegistrazioneUtenteRequest> customConsumerFactory() throws IOException {
-        Schema registrazioneUtenteSchema = avroSchemaConfig.registrazioneUtenteRequestSchema;
-        File schemaFile = avroSchemaFileWriter.writeSchemaToFile(registrazioneUtenteSchema);
+    public ConsumerFactory<String, KafkaAvroDeserializer> customConsumerFactory() throws IOException {
+//        Schema registrazioneUtenteSchema = avroSchemaConfig.registrazioneUtenteRequestSchema;
+//        File schemaFile = avroSchemaFileWriter.writeSchemaToFile(registrazioneUtenteSchema);
         Map<String, Object> props = new HashMap<>();
         props.put(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -54,7 +57,7 @@ public class KafkaAvroConsumerConfig {
         props.put(
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
                 StringDeserializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
         props.put(KafkaAvroDeserializerConfig.AUTO_REGISTER_SCHEMAS, true);
         props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
@@ -62,10 +65,10 @@ public class KafkaAvroConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, RegistrazioneUtenteRequest>
+    public ConcurrentKafkaListenerContainerFactory<String, KafkaAvroDeserializer>
     customKafkaListenerContainerFactory() throws IOException {
 
-        ConcurrentKafkaListenerContainerFactory<String, RegistrazioneUtenteRequest> factory =
+        ConcurrentKafkaListenerContainerFactory<String, KafkaAvroDeserializer> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(customConsumerFactory());
         return factory;
