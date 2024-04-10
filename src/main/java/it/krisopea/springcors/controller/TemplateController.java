@@ -48,6 +48,11 @@ public class TemplateController {
     return "redirect:/login?logout";
   }
 
+  @GetMapping("/access-denied")
+  public String accessDenied() {
+    return "access-denied";
+  }
+
   @GetMapping("/home")
   public String showHomePage(ModelMap model) {
     model.addAttribute(

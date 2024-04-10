@@ -57,7 +57,16 @@ public class WebSecurityConfig {
                         })
                     .invalidateHttpSession(true)
                     .clearAuthentication(true)
-                    .permitAll());
+                    .permitAll())
+        .exceptionHandling(
+            exception ->
+                exception
+                    .accessDeniedHandler(
+                        (request, response, accessDeniedException) -> {
+                          request.setAttribute("error", accessDeniedException);
+                          request.setAttribute("requestUri", request.getRequestURI());
+                          request.getRequestDispatcher("/access-denied").forward(request, response);
+                        }));
 
     return http.build();
   }
