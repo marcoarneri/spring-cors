@@ -107,9 +107,6 @@ Nella query d'esempio ci sono alcuni operatori JSON utilizzati per definire i cr
 - **$skip:** Salta un certo numero di documenti nel risultato.
 - **$unwind** De-normalizza i campi di array, producendo un documento separato per ogni elemento dell'array.
 
-
-Gli operatori sopra elencati sono solo alcuni. Per un ulteriore approfondimento degli operatori puoi consultare questa documentazione [https://www.mongodb.com/docs/manual/reference/operator/](https://www.mongodb.com/docs/manual/reference/operator/)
-
 ### Utilizzo di Aggregation nelle query personalizzate:
 
 Ecco un esempio di come utilizzare l'aggregazione in una query personalizzata con Spring Data MongoDB:
@@ -119,3 +116,119 @@ Ecco un esempio di come utilizzare l'aggregazione in una query personalizzata co
     List<DemoEntity> countByCity(String city);
 ```
 In questo esempio, stiamo eseguendo un'aggregazione per contare il numero di documenti per ogni città. Utilizziamo `$match` per filtrare i documenti basati sulla città specificata e `$group` per raggrupparli per città e calcolarne il totale.
+
+### Esempi di approfondimento 
+
+- ### Create:
+
+1. Schema flessibile: MongoDB è uno dei database NoSQL che supporta uno schema flessibile, il che significa che non è necessario definire uno schema rigido prima di
+   inserire i dati. Puoi inserire documenti in una collezione senza dover prima definire la struttura dei dati, il che elimina la necessità di un'istruzione di
+   creazione di tipo "CREATE".
+
+
+2. Creazione implicita: In MongoDB, quando si esegue un'operazione di inserimento in una collezione, se la collezione non esiste già, verrà creata automaticamente
+   al momento dell'inserimento del primo documento. Quindi, l'atto di inserire dati in una collezione funge implicitamente anche da operazione di creazione.
+
+
+3. Gestione automatica dello spazio: MongoDB gestisce automaticamente lo spazio su disco e non richiede una preallocazione di spazio come potrebbe essere necessario
+   nei database relazionali. Di conseguenza, non è necessario un comando esplicito di creazione per allocare spazio per il database o la collezione.
+
+***
+- ### Insert:
+
+```json
+   db.collection.insertOne(
+   {
+      name: 'John', 
+      age: 30, 
+      city: 'New York'
+   });
+```
+***
+- ### Update:
+
+```json
+   db.collection.updateOne({ name: 'John' }, { $set: { age: 35 } })
+```
+***
+- ### Find:
+
+```json
+   db.collection.find({ city: 'New York' });
+```
+***
+- ### Delete:
+
+```json
+   db.collection.deleteOne({ name: 'John' }) 
+```
+***
+- ### Maggiore di:
+
+```json
+   db.collection.find({ "age": { "$gt": 25 } });
+```
+***
+- ### Minore di:
+
+```json
+   db.collection.find({ "age": { "$lt": 25 } });
+```
+***
+- ### Non Uguale:
+
+```json
+   db.collection.find({ "city": { "$ne": "New York" } });
+```
+***
+- ### And:
+
+```json
+   db.collection.find(
+   {
+      "$and": 
+      [
+         { "age": { "$lt": 35 } }, 
+         { "city": "Messina" }
+      ]
+   });
+```
+***
+- ### Or:
+
+```json
+   db.collection.find(
+   {
+      "$or": 
+      [
+         { "age": { "$lt": 30 } }, 
+         { "city": "Los Angeles" }
+      ]
+   });
+```
+- ### Group by:
+
+```json
+   db.collection.aggregate(
+   [
+      {
+         "$group": {
+            "_id": null, 
+            "averageAge": { "$avg": "$age" }
+         }
+      }
+   ]);
+```
+***
+- ### Count:
+
+```json
+   db.collection.aggregate(
+   [
+      { 
+         "$group": 
+         { "_id": null, "count": { "$sum": 1 } }
+      }
+   ])
+```
+Gli operatori utilizzati in questa guida sono solo alcuni. Per un ulteriore approfondimento puoi consultare questa documentazione [https://www.mongodb.com/docs/manual/reference/operator/](https://www.mongodb.com/docs/manual/reference/operator/).
