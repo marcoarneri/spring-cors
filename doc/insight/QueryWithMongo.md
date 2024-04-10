@@ -231,4 +231,106 @@ In questo esempio, stiamo eseguendo un'aggregazione per contare il numero di doc
       }
    ])
 ```
+
+- ### Pipeline JsonQuery
+```json
+[
+  {
+    $match: {
+      noticeId: {
+        $nin: ["2", "10"],
+      },
+    },
+  },
+  {
+    $group: {
+      _id: "$noticeId",
+      count: {
+        $sum: 1,
+      },
+      documents: {
+        $push: "$$ROOT",
+      },
+    },
+  },
+  {
+    $facet: {
+      groupResult: [
+        {
+          $match: {},
+        },
+        {
+          $project: {
+            _id: 0,
+            count: 1,
+            documents: {
+              $map: {
+                input: "$documents",
+                as: "doc",
+                in: {
+                  $arrayToObject: {
+                    $filter: {
+                      input: {
+                        $objectToArray: "$$doc",
+                      },
+                      cond: {
+                        $ne: ["$$this.k", "_id"],
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            createdAt: {
+              $toDate: "$$NOW",
+            },
+          },
+        },
+      ],
+      averageResult: [
+        {
+          $group: {
+            _id: null,
+            averageCount: {
+              $avg: "$count",
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            averageCount: 1,
+            createdAt: {
+              $toDate: "$$NOW",
+            },
+          },
+        },
+      ],
+    },
+  },
+  {
+    $merge: {
+      into: "averageResults",
+      whenMatched: "keepExisting",
+      whenNotMatched: "insert",
+    },
+  },
+]
+```
+Questa query se messa su MongoDB Compass permetterà di convertirla in linguaggio java seguendo questi passaggi:
+1. andando sulla propia collection,
+2. poi su aggregations, 
+3. li selezionare come metodo di scrittura </>Text,
+4. incollare la pipeline,
+5. fare </>Export To Language,
+6. vi si aprira una finestra e in Exported Pipeline inserire come linguaggio Java.
+
+### Prima Fase
+<img src="../image/PrimaFase.png" alt="Prima Fase" width="1000">
+
+
+### Seconda Fase
+<img src="../image/SecondaFase.png" alt="Seconda Fase" width="1000">
+
+
 Gli operatori utilizzati in questa guida sono solo alcuni. Per un ulteriore approfondimento puoi consultare questa documentazione [https://www.mongodb.com/docs/manual/reference/operator/](https://www.mongodb.com/docs/manual/reference/operator/).
