@@ -175,7 +175,7 @@ In questo esempio, stiamo eseguendo un'aggregazione per contare il numero di doc
    db.collection.find({ "age": { "$lt": 25 } });
 ```
 ***
-- ### Non Uguale:
+- ### Non deve essere uguale (esclusione):
 
 ```json
    db.collection.find({ "city": { "$ne": "New York" } });
