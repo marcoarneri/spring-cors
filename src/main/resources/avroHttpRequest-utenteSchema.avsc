@@ -1,1 +1,0 @@
-{"type":"record","name":"RegistrazioneUtenteRequest","namespace":"it.krisopea.springcors.controller.model","fields":[{"name":"mail","type":"string"},{"name":"password","type":"string"}]}

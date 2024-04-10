@@ -1,15 +1,10 @@
 package it.krisopea.springcors.kafka.config.avro.config;
 
-import io.confluent.kafka.schemaregistry.client.CachedSchemaRegistryClient;
-import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
-import it.krisopea.springcors.avro.AvroSchemaConfig;
-import it.krisopea.springcors.avro.AvroSchemaFileWriter;
-import it.krisopea.springcors.controller.model.RegistrazioneUtenteRequest;
+import it.krisopea.springcors.kafka.model.UtenteAvro;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,27 +19,14 @@ import java.util.Map;
 @Configuration
 public class KafkaAvroProducerConfig {
 
-    @Value(value = "${spring.kafka.producer.bootstrap-servers}")
+    @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
     @Value(value = "${spring.kafka.properties.schema.registry.url}")
     private String schemaRegistryUrl;
 
-    @Autowired
-    private AvroSchemaFileWriter avroSchemaFileWriter;
-
-    @Autowired
-    private AvroSchemaConfig avroSchemaConfig;
-
     @Bean
-    public SchemaRegistryClient schemaRegistryClient() {
-        SchemaRegistryClient client = new CachedSchemaRegistryClient(schemaRegistryUrl, 1000);
-        return client;
-    }
-
-
-    @Bean
-    public ProducerFactory<String, RegistrazioneUtenteRequest> customProducerFactory() throws IOException {
+    public ProducerFactory<String, UtenteAvro> customProducerFactory() throws IOException {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -54,7 +36,7 @@ public class KafkaAvroProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, RegistrazioneUtenteRequest> kafkaAvroTemplate() throws IOException {
+    public KafkaTemplate<String, UtenteAvro> kafkaAvroTemplate() throws IOException {
         return new KafkaTemplate<>(customProducerFactory());
     }
 }

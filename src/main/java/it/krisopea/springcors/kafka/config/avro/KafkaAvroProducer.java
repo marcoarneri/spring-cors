@@ -1,8 +1,6 @@
 package it.krisopea.springcors.kafka.config.avro;
 
-import it.krisopea.springcors.controller.model.RegistrazioneUtenteRequest;
-import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.specific.SpecificRecord;
+import it.krisopea.springcors.kafka.model.UtenteAvro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -14,11 +12,11 @@ import java.util.concurrent.CompletableFuture;
 public class KafkaAvroProducer {
 
     @Autowired
-    private KafkaTemplate<String, RegistrazioneUtenteRequest> kafkaAvroTemplate;
+    private KafkaTemplate<String, UtenteAvro> kafkaAvroTemplate;
 
-    public void send(RegistrazioneUtenteRequest request) {
+    public void send(UtenteAvro request) {
         String key = "Key" + Math.random();
-        CompletableFuture<SendResult<String, RegistrazioneUtenteRequest>> future = kafkaAvroTemplate.send("kafka-avro-test", key,request);;
+        CompletableFuture<SendResult<String, UtenteAvro>> future = kafkaAvroTemplate.send("kafka-avro-test", key,request);
         future.whenComplete((result, ex) -> {
             if (ex == null) {
                 System.out.println("Sent message=[" + request +

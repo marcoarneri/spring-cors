@@ -13,7 +13,7 @@ import java.util.Map;
 @Configuration
 public class KafkaTopicConfig {
 
-    @Value(value = "${spring.kafka.admin.properties.bootstrap.servers}")
+    @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
     @Bean
@@ -21,21 +21,6 @@ public class KafkaTopicConfig {
         Map<String, Object> configs = new HashMap<>();
         configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         return new KafkaAdmin(configs);
-    }
-
-    @Bean
-    public NewTopic topic1() {
-        return new NewTopic("kafkatest", 1, (short) 1);
-    }
-
-    @Bean
-    public NewTopic topic2() {
-        return new NewTopic("kafkafiltertest", 1, (short) 1);
-    }
-
-    @Bean
-    public NewTopic topic3() {
-        return new NewTopic("kafkacustomtopic", 1, (short) 1);
     }
 
     @Bean

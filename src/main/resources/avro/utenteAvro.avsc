@@ -1,0 +1,15 @@
+{
+    "type":"record",
+    "name":"UtenteAvro",
+    "namespace":"it.krisopea.springcors.kafka.model",
+    "fields":[
+        {
+            "name":"mail",
+            "type":"string"
+        },
+        {
+            "name":"password",
+            "type":"string"
+        }
+    ]
+}
