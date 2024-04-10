@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
@@ -35,7 +38,7 @@ public class WebSecurityConfig {
             requests ->
                 requests
                     .requestMatchers("/admin/**")
-                    .hasAnyRole(RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_FOUNDER)
+                    .hasRole(RoleConstants.ROLE_ADMIN)
                     .requestMatchers("/entry", "/register")
                     .permitAll()
                     .anyRequest()
@@ -102,6 +105,31 @@ public class WebSecurityConfig {
     authenticationProvider.setPasswordEncoder(passwordEncoder);
 
     return new ProviderManager(authenticationProvider);
+  }
+
+  /* -- Role hierarchy -- */
+  @Bean
+  public RoleHierarchy roleHierarchy() {
+    RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+    String hierarchy =
+        RoleConstants.ROLE_FOUNDER
+            + ">"
+            + RoleConstants.ROLE_ADMIN
+            + "\n"
+            // TODO VERIFIED?
+            + RoleConstants.ROLE_ADMIN
+            + ">"
+            + RoleConstants.ROLE_USER;
+    roleHierarchy.setHierarchy(hierarchy);
+    return roleHierarchy;
+  }
+
+  @Bean
+  public DefaultWebSecurityExpressionHandler customWebSecurityExpressionHandler() {
+    DefaultWebSecurityExpressionHandler expressionHandler =
+        new DefaultWebSecurityExpressionHandler();
+    expressionHandler.setRoleHierarchy(roleHierarchy());
+    return expressionHandler;
   }
 
   @Bean
