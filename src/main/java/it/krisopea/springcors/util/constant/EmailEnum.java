@@ -5,5 +5,6 @@ public enum EmailEnum {
   UPDATE,
   DELETE,
   LOGIN,
-  VERIFY  //TODO
+  VERIFY
+  // TODO
 }
