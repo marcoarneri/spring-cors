@@ -17,9 +17,9 @@ public interface UserRepository
   Optional<UserEntity> findByUsername(String username);
 
   // FIXME
-  @Query("SELECT u FROM UserEntity u WHERE u.role = 'USER'")
+  @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.name = 'USER'")
   List<UserEntity> findAllUsers();
 
-  @Query("SELECT u FROM UserEntity u WHERE u.role <> 'FOUNDER'")
+  @Query("SELECT u FROM UserEntity u WHERE NOT EXISTS (SELECT r FROM u.roles r WHERE r.name = 'FOUNDER')")
   List<UserEntity> findAllNotFounder();
 }

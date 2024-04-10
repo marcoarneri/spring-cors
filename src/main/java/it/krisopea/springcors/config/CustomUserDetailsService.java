@@ -6,8 +6,7 @@ import it.krisopea.springcors.repository.model.PrivilegeEntity;
 import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.util.constant.RoleConstants;
-import java.util.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -17,22 +16,23 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 @Service("userDetailsService")
 @Transactional
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-  @Autowired private UserRepository userRepository;
-
-  //  @Autowired private IUserService service; TODO
-
-  //  @Autowired private MessageSource messages;
-
-  @Autowired private RoleRepository roleRepository;
+  private final UserRepository userRepository;
+  private final RoleRepository roleRepository;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-    UserEntity user = userRepository.findByUsername(username).get();
+    UserEntity user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
 
     if (user == null) {
       return new User(

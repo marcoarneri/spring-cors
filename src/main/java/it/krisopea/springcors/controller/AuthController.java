@@ -26,6 +26,7 @@ public class AuthController {
   private final AuthService authService;
   private final MapperUserDto userMapperDto;
 
+
   @PostMapping("/login")
   public void loginUser(
       @ModelAttribute("userLoginRequest") @Valid UserLoginRequest userLoginRequest) {
@@ -49,9 +50,7 @@ public class AuthController {
         request.getEmail(),
         request.getUsername());
 
-    UserRegistrationRequestDto requestDto = userMapperDto.toUserRegistrationRequestDto(request);
-
-    if (Boolean.FALSE.equals(authService.register(requestDto))) {
+    if (Boolean.FALSE.equals(authService.register(request))) {
       model.addAttribute("registerError", true);
       return "register";
     }

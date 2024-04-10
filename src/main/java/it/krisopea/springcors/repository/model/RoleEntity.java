@@ -18,7 +18,7 @@ public class RoleEntity {
   @Column(name = "NAME")
   private String name;
 
-  @ManyToMany(mappedBy = "ROLES")
+  @ManyToMany(mappedBy = "roles")
   private Collection<UserEntity> users;
 
   @ManyToMany

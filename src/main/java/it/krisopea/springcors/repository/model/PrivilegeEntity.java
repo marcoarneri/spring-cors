@@ -2,6 +2,8 @@ package it.krisopea.springcors.repository.model;
 
 import jakarta.persistence.*;
 import java.util.Collection;
+import java.util.UUID;
+
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -12,11 +14,11 @@ public class PrivilegeEntity {
   @Id
   @UuidGenerator
   @Column(name = "ID")
-  private Long id;
+  private UUID id;
 
   @Column(name = "NAME")
   private String name;
 
-  @ManyToMany(mappedBy = "PRIVILEGES")
+  @ManyToMany(mappedBy = "privileges")
   private Collection<RoleEntity> roles;
 }

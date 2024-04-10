@@ -1,15 +1,15 @@
 package it.krisopea.springcors.service;
 
+import it.krisopea.springcors.controller.model.request.UserRegistrationRequest;
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
+import it.krisopea.springcors.repository.RoleRepository;
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.mapper.MapperUserEntity;
+import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
-import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
 import it.krisopea.springcors.util.constant.EmailEnum;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import it.krisopea.springcors.util.constant.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -20,30 +20,39 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
+
+  private final RoleRepository roleRepository;
   private final UserRepository userRepository;
   private final MapperUserEntity mapperUserEntity;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
   private final ProducerTemplate producerTemplate;
 
-  public Boolean register(UserRegistrationRequestDto userRegistrationRequestDto) {
+  public Boolean register(UserRegistrationRequest userRequest) {
 
-    if (userRepository.findByUsername(userRegistrationRequestDto.getUsername()).isPresent()) {
+    if (userRepository.findByUsername(userRequest.getUsername()).isPresent()) {
       log.error("Registration failed: {}", AppErrorCodeMessageEnum.USER_EXISTS);
       return false;
     }
 
-    UserEntity userEntity = mapperUserEntity.toUserEntity(userRegistrationRequestDto);
+    UserEntity userEntity = mapperUserEntity.toUserEntity(userRequest);
+    RoleEntity adminRole = roleRepository.findByName(RoleConstants.ROLE_USER);
+    userEntity.setRoles(Collections.singletonList(adminRole));
+    userEntity.setEnabled(Boolean.TRUE);
+    userRepository.saveAndFlush(userEntity);
 
     Map<String, Object> headers = new HashMap<>();
-    headers.put("email", userRegistrationRequestDto.getEmail());
+    headers.put("email", userRequest.getEmail());
     headers.put("topic", EmailEnum.REGISTRATION);
-
-    userRepository.saveAndFlush(userEntity);
     producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
     return true;
   }

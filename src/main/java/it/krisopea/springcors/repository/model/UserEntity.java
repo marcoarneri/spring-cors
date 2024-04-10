@@ -36,7 +36,7 @@ public class UserEntity {
 
   @ManyToMany
   @JoinTable(
-      name = "ROLES",
+      name = "USER_ROLES",
       joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),
       inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"))
   private Collection<RoleEntity> roles;
