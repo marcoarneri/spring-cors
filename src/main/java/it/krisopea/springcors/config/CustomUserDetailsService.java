@@ -33,6 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
     UserEntity user = userRepository.findByUsername(username).get();
+
     if (user == null) {
       return new User(
           " ",
@@ -63,10 +64,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     List<String> privileges = new ArrayList<>();
     List<PrivilegeEntity> collection = new ArrayList<>();
+
     for (RoleEntity role : roles) {
       privileges.add(role.getName());
       collection.addAll(role.getPrivileges());
     }
+
     for (PrivilegeEntity item : collection) {
       privileges.add(item.getName());
     }
@@ -75,6 +78,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   private List<GrantedAuthority> getGrantedAuthorities(List<String> privileges) {
     List<GrantedAuthority> authorities = new ArrayList<>();
+
     for (String privilege : privileges) {
       authorities.add(new SimpleGrantedAuthority(privilege));
     }
