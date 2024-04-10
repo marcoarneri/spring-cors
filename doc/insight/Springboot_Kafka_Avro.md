@@ -122,7 +122,7 @@ Installa Offset Explorer sulla tua macchina all'indirizzo https://www.kafkatool.
 
 Connetti Offset Explorer a kafka e schema-registry.
 
-- Avvia il tuo docker con il comando `docker-compose up`
+- Avvia il tuo docker con il comando: `docker-compose up`
 - Avvia il tuo applicativo
 
 Apri Offset Explorer e segui i seguenti passaggi:
