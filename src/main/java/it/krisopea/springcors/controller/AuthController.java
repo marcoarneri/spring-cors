@@ -4,7 +4,6 @@ import it.krisopea.springcors.controller.model.request.UserLoginRequest;
 import it.krisopea.springcors.controller.model.request.UserRegistrationRequest;
 import it.krisopea.springcors.service.AuthService;
 import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
-import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
 import it.krisopea.springcors.service.mapper.MapperUserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AuthController {
   private final AuthService authService;
   private final MapperUserDto userMapperDto;
-
 
   @PostMapping("/login")
   public void loginUser(

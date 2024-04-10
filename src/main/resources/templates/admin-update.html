@@ -31,7 +31,7 @@
             </form>
         </div>
         <div class="container">
-            <div sec:authorize="hasRole('ADMIN')" class="row">
+            <div sec:authorize="hasAuthority('ADMIN')" class="row">
                 <div class="col-md-6 offset-md-3">
                     <div class="card shadow-lg p-4 mb-5 bg-body rounded" style="background-color: rgba(255, 255, 255, 0.8)">
                         <h1 class="card-title mb-3 text-center text-dark">Edit</h1>
@@ -47,9 +47,10 @@
                             </div>
                             <div class="mb-3">
                                 <label for="role" class="form-label">Role</label>
-                                <select class="form-select" id="role" th:field="*{role}" required>
-                                    <option value="USER" th:selected="${userEntity.role == 'USER'}">User</option>
-                                    <option value="ADMIN" th:selected="${userEntity.role == 'ADMIN'}">Admin</option>
+                                <!--                                TODO da aggiustare \/-->
+                                <select class="form-select" id="role" th:field="*{roles}" required>
+                                    <option value="USER" th:selected="${userEntity.roles == 'USER'}">User</option>
+                                    <option value="ADMIN" th:selected="${userEntity.roles == 'ADMIN'}">Admin</option>
                                 </select>
                             </div>
                             <div class="d-grid gap-2">
@@ -60,7 +61,7 @@
                     </div>
                 </div>
             </div>
-            <div sec:authorize="hasRole('FOUNDER')" class="row">
+            <div sec:authorize="hasAuthority('FOUNDER')" class="row">
                 <div class="col-md-6 offset-md-3">
                     <div class="card shadow-lg p-4 mb-5 bg-body rounded" style="background-color: rgba(255, 255, 255, 0.8)">
                         <h1 class="card-title mb-3 text-center text-dark">FOUNDER Edit</h1>
@@ -76,10 +77,11 @@
                             </div>
                             <div class="mb-3">
                                 <label for="roles" class="form-label">Role</label>
-                                <select class="form-select" id="roles" th:field="*{role}" required>
-                                    <option value="USER" th:selected="${userEntity.role == 'USER'}">User</option>
-                                    <option value="ADMIN" th:selected="${userEntity.role == 'ADMIN'}">Admin</option>
-                                    <option value="FOUNDER" th:selected="${userEntity.role == 'FOUNDER'}">Founder</option>
+<!--                                TODO da aggiustare \/-->
+                                <select class="form-select" id="roles" th:field="*{roles}" required>
+                                    <option value="USER" th:selected="${userEntity.roles == 'USER'}">User</option>
+                                    <option value="ADMIN" th:selected="${userEntity.roles == 'ADMIN'}">Admin</option>
+                                    <option value="FOUNDER" th:selected="${userEntity.roles == 'FOUNDER'}">Founder</option>
                                 </select>
                             </div>
                             <div class="d-grid gap-2">

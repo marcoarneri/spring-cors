@@ -38,7 +38,7 @@ public class WebSecurityConfig {
             requests ->
                 requests
                     .requestMatchers("/admin/**")
-                    .hasRole(RoleConstants.ROLE_ADMIN)
+                    .hasAnyAuthority(RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_FOUNDER)
                     .requestMatchers("/entry", "/register")
                     .permitAll()
                     .anyRequest()
@@ -80,21 +80,22 @@ public class WebSecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//      return username ->
-//          userRepository
-//              .findByUsername(username)
-//              .map(
-//                  user ->
-//                      User.builder()
-//                          .username(user.getUsername())
-//                          .authorities()
-//                          .roles()
-//                          .password(user.getPassword())
-//                          .build())
-//              .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
-//    }
+  //    @Bean
+  //    public UserDetailsService userDetailsService() {
+  //      return username ->
+  //          userRepository
+  //              .findByUsername(username)
+  //              .map(
+  //                  user ->
+  //                      User.builder()
+  //                          .username(user.getUsername())
+  //                          .authorities()
+  //                          .roles()
+  //                          .password(user.getPassword())
+  //                          .build())
+  //              .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not
+  // found"));
+  //    }
 
   @Bean
   public AuthenticationManager authenticationManager(

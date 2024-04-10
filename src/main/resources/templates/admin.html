@@ -42,7 +42,11 @@
                             <tr th:each="user : ${users}">
                                 <td th:text="${user.username}"></td>
                                 <td th:text="${user.email}"></td>
-                                <td th:text="${user.role}"></td>
+                                <td>
+                                    <ul style="list-style-type: none">
+                                        <li th:each="role : ${user.roles}" th:text="${role.name}"></li>
+                                    </ul>
+                                </td>
                                 <td>
                                     <a th:href="@{'/admin/update/' + ${user.username}}" class="btn btn-primary btn-sm me-2">Update</a>
                                     <a th:href="@{'/admin/delete/' + ${user.username}}" class="btn btn-danger btn-sm">Delete</a>

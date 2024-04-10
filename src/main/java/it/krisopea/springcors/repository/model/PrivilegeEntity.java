@@ -3,7 +3,6 @@ package it.krisopea.springcors.repository.model;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.UUID;
-
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 

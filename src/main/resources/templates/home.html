@@ -32,7 +32,7 @@
                     </button>
                 </form>
             </div>
-            <div sec:authorize="hasRole('ADMIN') || hasRole('FOUNDER')">
+                <div sec:authorize="hasAnyAuthority('ADMIN', 'FOUNDER')">
                 <form th:action="@{/admin}" method="get">
                     <button type="submit" class="btn btn-light ">
                         Admin <i class="bi bi-person-fill-lock"></i>
@@ -53,7 +53,6 @@
                 <div class="user-info">
                     <h3>User Info</h3>
                     <b>Username</b>: <span sec:authentication="name"></span><br>
-                    <b>Role</b>: <span sec:authentication="principal.authorities"></span><br>
                     <b>Authorities</b>:
                     <div style="padding-left: 0; margin-left: 0;">
                         <ul class="list" style="padding-left: 0; list-style-type: none;">
@@ -64,9 +63,8 @@
                     </div>
                 </div>
             </div>
-            <div class="container">
-                <span>Not verified yet? <a href="">Click here</a> to send a verification email.</span>
-            </div>
+<!--            TODO fare th if per il ruolo basic-->
+        <span>Not verified yet? <a href="">Click here</a> to send a verification email.</span>
         </div>
     </body>
 </html>
