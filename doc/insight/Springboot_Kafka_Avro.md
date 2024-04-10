@@ -128,3 +128,4 @@ Connetti Offset Explorer a kafka e schema-registry.
 Apri Offset Explorer e segui i seguenti passaggi:
 
 
+
