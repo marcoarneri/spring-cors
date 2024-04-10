@@ -6,7 +6,11 @@ import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,5 +27,16 @@ public class AdminService {
 
     findUser.setRole(user.getRole());
     userRepository.saveAndFlush(findUser);
+  }
+
+  public List<UserEntity> getUsersByRole() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    boolean isAdmin = authentication.getAuthorities().stream()
+            .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+    if (isAdmin) {
+      return userRepository.findAllUsers();
+    } else {
+      return userRepository.findAllNotFounder();
+    }
   }
 }

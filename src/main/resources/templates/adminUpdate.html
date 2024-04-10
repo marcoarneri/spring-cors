@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,7 +31,7 @@
             </form>
         </div>
         <div class="container">
-            <div class="row">
+            <div sec:authorize="hasRole('ADMIN')" class="row">
                 <div class="col-md-6 offset-md-3">
                     <div class="card shadow-lg p-4 mb-5 bg-body rounded" style="background-color: rgba(255, 255, 255, 0.8)">
                         <h1 class="card-title mb-3 text-center text-dark">Edit</h1>
@@ -54,6 +55,36 @@
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn">
                                     Update <i class="bi bi-person-add"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div sec:authorize="hasRole('FOUNDER')" class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div class="card shadow-lg p-4 mb-5 bg-body rounded" style="background-color: rgba(255, 255, 255, 0.8)">
+                        <h1 class="card-title mb-3 text-center text-dark">FOUNDER Edit</h1>
+                        <p th:if="${registerError}" class="alert alert-danger">Error when modifying the user</p>
+                        <form th:action="@{/admin/update}" method="post" th:object="${userEntity}">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="name" th:field="*{username}" readonly/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="e-mail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="e-mail" th:field="*{email}" readonly/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="roles" class="form-label">Role</label>
+                                <select class="form-select" id="roles" th:field="*{role}" required>
+                                    <option value="USER" th:selected="${userEntity.role == 'USER'}">User</option>
+                                    <option value="ADMIN" th:selected="${userEntity.role == 'ADMIN'}">Admin</option>
+                                    <option value="FOUNDER" th:selected="${userEntity.role == 'FOUNDER'}">Founder</option>
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn">
+                                    Update <i class="bi bi-person-fill-up"></i></button>
                             </div>
                         </form>
                     </div>

@@ -32,7 +32,7 @@
                     </button>
                 </form>
             </div>
-            <div sec:authorize="hasRole('ADMIN')">
+            <div sec:authorize="hasRole('ADMIN') || hasRole('FOUNDER')">
                 <form th:action="@{/admin}" method="get">
                     <button type="submit" class="btn btn-light ">
                         Admin <i class="bi bi-person-fill-lock"></i>
