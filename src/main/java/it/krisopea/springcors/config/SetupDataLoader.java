@@ -36,9 +36,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     if (alreadySetup)
       return;
 
-    PrivilegeEntity readPrivilege = createPrivilegeIfNotFound(String.valueOf(READ_PRIVILEGE));
-    PrivilegeEntity writePrivilege = createPrivilegeIfNotFound(String.valueOf(WRITE_PRIVILEGE));
-    PrivilegeEntity deletePrivilege = createPrivilegeIfNotFound(String.valueOf(DELETE_PRIVILEGE));
+    PrivilegeEntity readPrivilege = createPrivilegeIfNotFound(String.valueOf(READ));
+    PrivilegeEntity writePrivilege = createPrivilegeIfNotFound(String.valueOf(WRITE));
+    PrivilegeEntity deletePrivilege = createPrivilegeIfNotFound(String.valueOf(DELETE));
 
     List<PrivilegeEntity> userPrivileges = Collections.singletonList(readPrivilege);
     List<PrivilegeEntity> adminPrivileges = Arrays.asList(readPrivilege, writePrivilege);
