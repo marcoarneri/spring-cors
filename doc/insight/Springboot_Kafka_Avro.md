@@ -3,6 +3,8 @@
 - Avro viene spesso utilizzato con Kafka per serializzare e deserializzare i dati trasmessi attraverso i topic di Kafka. Quando i dati vengono prodotti in un topic Kafka, vengono serializzati utilizzando Avro prima di essere inviati al broker Kafka. Allo stesso modo, quando i dati vengono consumati da un topic Kafka, vengono deserializzati utilizzando Avro per essere compresi e elaborati.
 - Inoltre, Avro supporta l'evoluzione dello schema dei dati, il che significa che è possibile modificare lo schema dei dati senza interrompere la compatibilità con le versioni precedenti dei dati, garantendo una maggiore flessibilità e scalabilità nell'elaborazione dei dati in Kafka.
 
+---
+
 ## Passaggi
 
 Segui questi passaggi per integrare avro con kafka al tuo progetto Spring Boot:
@@ -98,6 +100,8 @@ Implementa il producer [KafkaAvroProducer](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkr
 
 Implementa il consumer [KafkaAvroConsumer](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fkafka%2Fconfig%2Favro%2FKafkaAvroConsumer.java)
 
+---
+
 ## Test
 
 Fare riferimento alla classe [UtenteController](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fcontroller%2FUtenteController.java)
@@ -109,6 +113,8 @@ Fare riferimento alla classe [UtenteController](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit
 ### 2. Utilizza il listener del consumer per consumare il record
 
 Il listener del consumer intercetterà il/i record in coda e li consumerà
+
+---
 
 ## Offset Explorer UI
 
@@ -127,4 +133,51 @@ Connetti Offset Explorer a kafka e schema-registry.
 
 Apri Offset Explorer e segui i seguenti passaggi:
 
+![offset_explorer_1.png](..%2F..%2Fsrc%2Fmain%2Fresources%2Freadme-asserts%2Foffset_explorer_1.png)
 
+- Nuova connessione
+
+![offset_explorer_2.png](..%2F..%2Fsrc%2Fmain%2Fresources%2Freadme-asserts%2Foffset_explorer_2.png)
+
+1. nomina il cluster
+2. inserisci l'indirizzo kafka
+3. inserisci l'host dell'indirizzo zookeper
+4. inserisci la porta dell'indirizzo zookeper
+
+fai ping per testare la connessione
+
+![offset_explorer_3.png](..%2F..%2Fsrc%2Fmain%2Fresources%2Freadme-asserts%2Foffset_explorer_3.png)
+
+1. spostati sul tab _Advanced_ 
+2. inserisci l'indirizzo dello schema-registry
+3. aggiungi la connessione
+ 
+### 3. Configurazione
+
+![offset_explorer_4.png](..%2F..%2Fsrc%2Fmain%2Fresources%2Freadme-asserts%2Foffset_explorer_4.png)
+
+Apri il tab dei _Topics_ e seleziona il tuo topic 
+
+1. seleziona il **String** per la de/serializzazione della chiave
+2. seleziona **Avro** per la de/serializzazione del valore
+3. fai update per salvare le nuove proprietà
+
+### 4. Utilizzo
+
+![postman_richiesta.png](..%2F..%2Fsrc%2Fmain%2Fresources%2Freadme-asserts%2Fpostman_richiesta.png)
+
+Fai una chiamata con Postman per mandare al producer un messaggio di tipo UtenteAvro
+
+![offset_explorer_5.png](..%2F..%2Fsrc%2Fmain%2Fresources%2Freadme-asserts%2Foffset_explorer_5.png)
+
+Spostati sul tuo topic e spostati sul tab _**Data**_ per vedere i messaggi nel tuo topic
+
+![offset_explorer_6.png](..%2F..%2Fsrc%2Fmain%2Fresources%2Freadme-asserts%2Foffset_explorer_6.png)
+
+Spostati sul tab **_Consumers_** per verificare i consumer attivi
+
+![offset_explorer_7.png](..%2F..%2Fsrc%2Fmain%2Fresources%2Freadme-asserts%2Foffset_explorer_7.png)
+
+Seleziona il consumer interessato per controllare che i messaggi siano stati effettivamente consumati.
+
+Puoi vederlo dalle proprietà come _Start_, _End_, _Offset_ e _Lag_
