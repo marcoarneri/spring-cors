@@ -51,8 +51,8 @@ Aggiungi le seguenti dipendenze e plugin per integrare avro:
                 <goal>idl-protocol</goal>
             </goals>
             <configuration>
-                <sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>
-                <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                <sourceDirectory>${project.basedir}/src/main/resources/avro</sourceDirectory>
+                <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
             </configuration>
         </execution>
     </executions>
@@ -61,26 +61,8 @@ Aggiungi le seguenti dipendenze e plugin per integrare avro:
 
 ### 2. Creazione modello da de/serializzare
 
-Crea un modello per avro e aggiungi le annotazioni:
-- `@AvroGenerated` a livello di classe 
-- `@AvroName("nomeCampo")` a livello di campo
-
-```java
-    import org.apache.avro.reflect.AvroName;
-import org.apache.avro.specific.AvroGenerated;
-
-@AvroGenerated
-public class RegistrazioneUtenteRequest {
-
-    @AvroName("mail")
-    private String mail;
-    
-    @AvroName("password")
-    private String password;
-}
-```
-
-il plugin avro genererà una classe come la seguente: [RegistrazioneUtenteRequest](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fcontroller%2Fmodel%2FRegistrazioneUtenteRequest.java)
+il plugin genererà le classi Avro a partire dagli schema al percorso specificato come source: `${project.basedir}/src/main/resources/avro`
+nel percorso specificato come target: `${project.build.directory}/generated-sources`
 
 ### 3. Configurazione Producer
 
@@ -88,10 +70,11 @@ Crea una classe di configurazione come [KafkaAvroProducerConfig](..%2F..%2Fsrc%2
 
 E crea i seguenti bean:
 
-- `SchemaRegistryClient`
 - `ProducerFactory` per integrare avro aggiungi le proprietà:
-  `configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
-  configProps.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);`
+  ```java
+  configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
+  configProps.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+  ```
 - `KafkaTemplate`
 
 ### 3. Configurazione Consumer
@@ -101,10 +84,10 @@ Crea una classe di configurazione come [KafkaAvroConsumerConfig](..%2F..%2Fsrc%2
 E crea i seguenti bean:
 
 - `ConsumerFactory` per integrare avro aggiungi le proprietà:
- ` props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-  props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
-  props.put(KafkaAvroDeserializerConfig.AUTO_REGISTER_SCHEMAS, true);
-  props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);`
+ ```java
+    props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+    props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+```
 - `ConcurrentKafkaListenerContainerFactory`
 
 ### 4. Implementazione Producer
@@ -119,33 +102,29 @@ Implementa il consumer [KafkaAvroConsumer](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkr
 
 Fare riferimento alla classe [UtenteController](..%2F..%2Fsrc%2Fmain%2Fjava%2Fit%2Fkrisopea%2Fspringcors%2Fcontroller%2FUtenteController.java)
 
-### 1. Creazione di uno schema rappresentante il tuo model
-
-Crea il tuo schema Schema `registrazioneUtenteSchema = avroSchemaConfig.registrazioneUtenteRequestSchema;`
-
-### 2. Scrivi il tuo schema su file
-
-Scrivi lo schema precedentemente creato su file .avsc `avroSchemaFileWriter.writeSchemaToFile(registrazioneUtenteSchema);`
-
-### 3. Registra schema nello schema-registry
-
-`ParsedSchema parsedSchema = new AvroSchema(registrazioneUtenteSchema);
-schemaRegistryClient.register("RegistrazioneUtenteRequest", parsedSchema);`
-
-### 4. Controlla che lo schema sia registrato
-
-Controlla che lo schema sia effettivamente registrato:
-
-`int schemaId = schemaRegistryClient.getId("RegistrazioneUtenteRequest", parsedSchema);
-if (schemaId != -1) {
-log.info("Lo schema {} è già registrato con ID {}", "RegistrazioneUtenteRequest", schemaId);
-} else {
-log.error("Lo schema {} non è stato registrato nello schema registry", "RegistrazioneUtenteRequest");
-}`
-
-Se il valore di schemaId è `-1` allora lo schema non è stato registrato correttamente
-
-### 5. Utilizza il producer per mandare al topic il message
+### 1. Utilizza il producer per mandare al topic il message
 
 `kafkaAvroProducer.send(request);`
+
+### 2. Utilizza il listener del consumer per consumare il record
+
+Il listener del consumer intercetterà il/i record in coda e li consumerà
+
+## Offset Explorer UI
+
+Offset Explorer è uno strumento che fornisce un'interfaccia grafica per esplorare i topic, gli offset dei consumatori e i relativi commit in un cluster Kafka.
+
+### 1. Installazione
+
+Installa Offset Explorer sulla tua macchina all'indirizzo https://www.kafkatool.com/download.html e selezione il tuo sistema operativo (nel mio caso Windows 64-bit)
+
+### 2. Connettiti
+
+Connetti Offset Explorer a kafka e schema-registry.
+
+- Avvia il tuo docker con il comando `docker-compose up`
+- Avvia il tuo applicativo
+
+Apri Offset Explorer e segui i seguenti passaggi:
+
 
