@@ -35,10 +35,9 @@ public class WebSecurityConfig {
         .authorizeHttpRequests(
             requests ->
                 requests
-                    .requestMatchers("/entry", "/register")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/entry", "/register").permitAll()
+                    .anyRequest().authenticated())
         .formLogin(
             form ->
                 form.loginPage("/login")
@@ -80,11 +79,6 @@ public class WebSecurityConfig {
                         .authorities(user.getRole())
                         .roles(user.getRole())
                         .password(user.getPassword())
-                        // FIXME wip
-                        .accountExpired(!user.isEnabled())
-                        .accountLocked(false)
-                        .credentialsExpired(false)
-                        .disabled(!user.isEnabled())
                         .build())
             .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
   }
