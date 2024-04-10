@@ -1,6 +1,7 @@
 package it.krisopea.springcors.security;
 
 import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.util.constant.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +36,7 @@ public class WebSecurityConfig {
         .authorizeHttpRequests(
             requests ->
                 requests
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/admin/**").hasRole(RoleConstants.ROLE_ADMIN)
                     .requestMatchers("/entry", "/register").permitAll()
                     .anyRequest().authenticated())
         .formLogin(
