@@ -6,12 +6,15 @@ import it.krisopea.springcors.service.AuthService;
 import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
 import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
 import it.krisopea.springcors.service.mapper.MapperUserDto;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -55,5 +58,13 @@ public class AuthController {
 
     log.info("Registration completed successfully.");
     return "home";
+  }
+
+  @GetMapping("/logout")
+  public void logout(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      session.invalidate();
+    }
   }
 }

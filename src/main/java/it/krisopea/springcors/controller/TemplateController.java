@@ -6,9 +6,6 @@ import it.krisopea.springcors.controller.model.request.UserUpdateRequest;
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.mapper.MapperUserEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -28,7 +25,7 @@ public class TemplateController {
   private final MapperUserEntity mapperUserEntity;
 
   @GetMapping("/login")
-  public String showLoginForm(ModelMap model) {
+  public String showLoginPage(ModelMap model) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication != null
         && !(authentication instanceof AnonymousAuthenticationToken)
@@ -39,17 +36,8 @@ public class TemplateController {
     return "login";
   }
 
-  @GetMapping("/logout")
-  public String logout(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
-    HttpSession session = request.getSession(false);
-    if (session != null) {
-      session.invalidate();
-    }
-    return "redirect:/login?logout";
-  }
-
   @GetMapping("/access-denied")
-  public String accessDenied() {
+  public String showAccessDeniedPage() {
     return "access-denied";
   }
 
@@ -61,8 +49,7 @@ public class TemplateController {
   }
 
   @GetMapping("/update")
-  public String updateUser(ModelMap model) {
-
+  public String showUpdateUserPage(ModelMap model) {
     UserEntity user =
         repository
             .findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
@@ -74,7 +61,7 @@ public class TemplateController {
   }
 
   @GetMapping("/register")
-  public String showRegistrationForm(ModelMap model) {
+  public String showRegistrationPage(ModelMap model) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication != null
         && !(authentication instanceof AnonymousAuthenticationToken)

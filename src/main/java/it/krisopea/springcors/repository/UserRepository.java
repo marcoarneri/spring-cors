@@ -1,7 +1,6 @@
 package it.krisopea.springcors.repository;
 
 import it.krisopea.springcors.repository.model.UserEntity;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,5 +19,4 @@ public interface UserRepository
 
   @Query("SELECT u FROM UserEntity u WHERE u.role <> 'FOUNDER'")
   List<UserEntity> findAllNotFounder();
-
 }

@@ -36,9 +36,12 @@ public class WebSecurityConfig {
         .authorizeHttpRequests(
             requests ->
                 requests
-                    .requestMatchers("/admin/**").hasAnyRole("ADMIN", "FOUNDER")
-                    .requestMatchers("/entry", "/register").permitAll()
-                    .anyRequest().authenticated())
+                    .requestMatchers("/admin/**")
+                    .hasAnyRole(RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_FOUNDER)
+                    .requestMatchers("/entry", "/register")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .formLogin(
             form ->
                 form.loginPage("/login")
@@ -61,13 +64,12 @@ public class WebSecurityConfig {
                     .permitAll())
         .exceptionHandling(
             exception ->
-                exception
-                    .accessDeniedHandler(
-                        (request, response, accessDeniedException) -> {
-                          request.setAttribute("error", accessDeniedException);
-                          request.setAttribute("requestUri", request.getRequestURI());
-                          request.getRequestDispatcher("/access-denied").forward(request, response);
-                        }));
+                exception.accessDeniedHandler(
+                    (request, response, accessDeniedException) -> {
+                      request.setAttribute("error", accessDeniedException);
+                      request.setAttribute("requestUri", request.getRequestURI());
+                      request.getRequestDispatcher("/access-denied").forward(request, response);
+                    }));
 
     return http.build();
   }
