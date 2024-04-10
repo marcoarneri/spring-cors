@@ -1,4 +1,4 @@
-package it.krisopea.springcors.security;
+package it.krisopea.springcors.config.security;
 
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.util.constant.RoleConstants;
@@ -12,9 +12,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -79,21 +77,22 @@ public class WebSecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-  @Bean
-  public UserDetailsService userDetailsService() {
-    return username ->
-        userRepository
-            .findByUsername(username)
-            .map(
-                user ->
-                    User.builder()
-                        .username(user.getUsername())
-                        .authorities(user.getRole())
-                        .roles(user.getRole())
-                        .password(user.getPassword())
-                        .build())
-            .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
-  }
+  //  @Bean
+  //  public UserDetailsService userDetailsService() {
+  //    return username ->
+  //        userRepository
+  //            .findByUsername(username)
+  //            .map(
+  //                user ->
+  //                    User.builder()
+  //                        .username(user.getUsername())
+  //                        .authorities(user.getRole())
+  //                        .roles(user.getRole())
+  //                        .password(user.getPassword())
+  //                        .build())
+  //            .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not
+  // found"));
+  //  }
 
   @Bean
   public AuthenticationManager authenticationManager(

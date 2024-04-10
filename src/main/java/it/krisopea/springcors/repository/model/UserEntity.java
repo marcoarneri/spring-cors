@@ -1,16 +1,13 @@
 package it.krisopea.springcors.repository.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.UUID;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
-
-import java.time.Instant;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -37,8 +34,12 @@ public class UserEntity {
   @Column(name = "PASSWORD", nullable = false)
   private String password;
 
-  @Column(name = "ROLE", nullable = false)
-  private String role;
+  @ManyToMany
+  @JoinTable(
+      name = "ROLES",
+      joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),
+      inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"))
+  private Collection<RoleEntity> roles;
 
   @Column(name = "ENABLED", nullable = false)
   private boolean enabled;
