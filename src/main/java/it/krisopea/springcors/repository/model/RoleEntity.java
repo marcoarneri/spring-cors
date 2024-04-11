@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.UUID;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.UuidGenerator;
 
 @Data
@@ -26,5 +27,6 @@ public class RoleEntity {
       name = "ROLES_PRIVILEGES",
       joinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"),
       inverseJoinColumns = @JoinColumn(name = "PRIVILEGE_ID", referencedColumnName = "ID"))
+  @ToString.Exclude
   private Collection<PrivilegeEntity> privileges;
 }

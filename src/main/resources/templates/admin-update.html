@@ -47,10 +47,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="role" class="form-label">Role</label>
-                                <!--                                TODO da aggiustare \/-->
                                 <select class="form-select" id="role" th:field="*{roles}" required>
-                                    <option value="USER" th:selected="${userEntity.roles == 'USER'}">User</option>
-                                    <option value="ADMIN" th:selected="${userEntity.roles == 'ADMIN'}">Admin</option>
+                                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id == userEntity.roles[0].id}">User</option>
                                 </select>
                             </div>
                             <div class="d-grid gap-2">
@@ -77,11 +75,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="roles" class="form-label">Role</label>
-<!--                                TODO da aggiustare \/-->
                                 <select class="form-select" id="roles" th:field="*{roles}" required>
-                                    <option value="USER" th:selected="${userEntity.roles == 'USER'}">User</option>
-                                    <option value="ADMIN" th:selected="${userEntity.roles == 'ADMIN'}">Admin</option>
-                                    <option value="FOUNDER" th:selected="${userEntity.roles == 'FOUNDER'}">Founder</option>
+                                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id == userEntity.roles[0].id}">User</option>
                                 </select>
                             </div>
                             <div class="d-grid gap-2">

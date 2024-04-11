@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.UUID;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
@@ -39,6 +40,7 @@ public class UserEntity {
       name = "USER_ROLES",
       joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),
       inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"))
+  @ToString.Exclude
   private Collection<RoleEntity> roles;
 
   @Column(name = "ENABLED", nullable = false)

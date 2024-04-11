@@ -1,6 +1,8 @@
 package it.krisopea.springcors.controller;
 
+import it.krisopea.springcors.repository.RoleRepository;
 import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.AdminService;
 import it.krisopea.springcors.service.UserService;
@@ -11,6 +13,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -27,6 +31,7 @@ public class AdminController {
   private final UserService userService;
   private final AdminService adminService;
   private final UserRepository userRepository;
+  private final RoleRepository roleRepository;
 
   @DeleteMapping("/delete/{" + PathMappingConstants.USERNAME + "}")
   public ResponseEntity<Void> deleteUser(@PathVariable String username) {
@@ -47,12 +52,22 @@ public class AdminController {
 
   @GetMapping("/update/{" + PathMappingConstants.USERNAME + "}")
   public String getAdminUpdatePage(@PathVariable String username, ModelMap model) {
-    UserEntity user =
-        userRepository
+    UserEntity user = userRepository
             .findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(r -> r.getAuthority().equals("ADMIN"));
+    List<RoleEntity> roles;
+    if (isAdmin) {
+        roles = roleRepository.findAllUserAndAdminRoles();
+    } else {
+        roles = roleRepository.findAll();
+    }
 
+    model.addAttribute("roles", roles);
     model.addAttribute("userEntity", user);
+
     return "admin-update";
   }
 

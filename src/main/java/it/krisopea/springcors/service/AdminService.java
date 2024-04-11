@@ -4,9 +4,14 @@ import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.RoleRepository;
 import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -27,16 +32,21 @@ public class AdminService {
             .findByUsername(user.getUsername())
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
-    findUser.setRoles(
-        Collections.singletonList(roleRepository.findByName(user.getRoles().stream().toString())));
-    userRepository.saveAndFlush(findUser);
+    List<RoleEntity> roles = new ArrayList<>();
+    for (RoleEntity userRole : user.getRoles()) {
+      RoleEntity role = roleRepository.findByName(userRole.getName());
+      roles.add(role);
+    }
+
+    findUser.setRoles(roles);
+    userRepository.save(findUser);
   }
 
   public List<UserEntity> getUsersByRole() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     boolean isAdmin =
         authentication.getAuthorities().stream()
-            .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+            .anyMatch(r -> r.getAuthority().equals("ADMIN"));
     if (isAdmin) {
       return userRepository.findAllUsers();
     } else {
