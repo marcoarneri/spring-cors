@@ -20,12 +20,14 @@ public class EmailLogRoute extends RouteBuilder {
                 + " emails have been sent so far in this session. "
                 + "Specifically: "
                 + globalEmailResources.getRegistrationEmailCounter()
-                + " registration emails, "
-                + globalEmailResources.getUpdateEmailCounter()
-                + " update emails, "
-                + globalEmailResources.getDeleteEmailCounter()
-                + " deletion emails, "
+                + " registrations, "
                 + globalEmailResources.getLoginEmailCounter()
-                + " login emails.");
+                + " logins, "
+                + globalEmailResources.getUpdateEmailCounter()
+                + " updates, "
+                + globalEmailResources.getDeleteEmailCounter()
+                + " deletions, "
+                + globalEmailResources.getVerificationEmailCounter()
+                + " verifications.");
   }
 }

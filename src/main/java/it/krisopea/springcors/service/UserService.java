@@ -2,14 +2,19 @@ package it.krisopea.springcors.service;
 
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
+import it.krisopea.springcors.repository.RoleRepository;
 import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.repository.VerificationRepository;
+import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
+import it.krisopea.springcors.repository.model.VerificationEntity;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
+import it.krisopea.springcors.util.UuidUtil;
 import it.krisopea.springcors.util.constant.EmailEnum;
+import it.krisopea.springcors.util.constant.RoleConstants;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -21,8 +26,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-
   private final UserRepository userRepository;
+  private final VerificationRepository verificationRepository;
+  private final RoleRepository roleRepository;
   private final PasswordEncoder passwordEncoder;
   private final ProducerTemplate producerTemplate;
   private final AuthService authService;
@@ -80,6 +86,35 @@ public class UserService {
 
     userRepository.delete(userEntity);
     sendEmail(userEntity, EmailEnum.DELETE);
+  }
+
+  public Boolean verifyUser(String tokenString) {
+    String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
+    Optional<VerificationEntity> optionalVerificationEntity =
+        verificationRepository.findByUserUsername(currentUsername);
+    if (optionalVerificationEntity.isEmpty()) {
+      return false;
+    }
+
+    VerificationEntity verificationEntity = optionalVerificationEntity.get();
+    UUID providedToken = UuidUtil.formatToken(tokenString);
+
+    if (!providedToken.equals(verificationEntity.getToken())) {
+      return false;
+    }
+
+    RoleEntity roleEntity = roleRepository.findByName(RoleConstants.ROLE_VERIFIED);
+    UserEntity userEntity = optionalVerificationEntity.get().getUserEntity();
+    if (userEntity != null) {
+      userEntity.setRoles(Collections.singletonList(roleEntity));
+      userRepository.saveAndFlush(userEntity);
+    } else {
+      throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
+    }
+
+    verificationRepository.delete(verificationEntity);
+    return true;
   }
 
   public void sendEmail(UserEntity userEntity, EmailEnum action) {

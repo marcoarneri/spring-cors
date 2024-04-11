@@ -14,7 +14,6 @@ import org.hibernate.annotations.UuidGenerator;
 @Entity
 @Table(name = "USER_ENTITY")
 public class UserEntity {
-
   @Id
   @UuidGenerator
   @Column(name = "ID")
@@ -29,7 +28,7 @@ public class UserEntity {
   @Column(name = "USERNAME", unique = true, nullable = false)
   private String username;
 
-  @Column(name = "EMAIL", nullable = false)
+  @Column(name = "EMAIL", unique = true, nullable = false)
   private String email;
 
   @Column(name = "PASSWORD", nullable = false)

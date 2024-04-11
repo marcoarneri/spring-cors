@@ -5,11 +5,12 @@ import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.RoleRepository;
 import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.repository.VerificationRepository;
 import it.krisopea.springcors.repository.mapper.MapperUserEntity;
 import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
+import it.krisopea.springcors.repository.model.VerificationEntity;
 import it.krisopea.springcors.service.dto.request.AdminUpdateRequestDto;
-import it.krisopea.springcors.util.constant.EmailEnum;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +27,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class AdminService {
-
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
+  private final VerificationRepository verificationRepository;
   private final MapperUserEntity mapperUserEntity;
 
   public void updateUser(AdminUpdateRequestDto adminUpdateRequestDto) {
@@ -52,10 +53,16 @@ public class AdminService {
   @PreAuthorize("hasAuthority('DELETE')")
   public void deleteUser(String username) {
     UserEntity userEntity =
-            userRepository
-                    .findByUsername(username)
-                    .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
+        userRepository
+            .findByUsername(username)
+            .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
+    VerificationEntity verificationEntity =
+        verificationRepository
+            .findByUserUsername(username)
+            .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
+
+    verificationRepository.delete(verificationEntity);
     userRepository.delete(userEntity);
   }
 

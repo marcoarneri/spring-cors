@@ -3,6 +3,7 @@ package it.krisopea.springcors.controller;
 import it.krisopea.springcors.controller.model.request.UserDeleteRequest;
 import it.krisopea.springcors.controller.model.request.UserLoginRequest;
 import it.krisopea.springcors.controller.model.request.UserUpdateRequest;
+import it.krisopea.springcors.service.AuthService;
 import it.krisopea.springcors.service.UserService;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
@@ -10,25 +11,27 @@ import it.krisopea.springcors.service.mapper.MapperUserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 @Validated
 public class UserController {
-
   private final UserService userService;
+  private final AuthService authService;
   private final MapperUserDto userMapperDto;
   private final MapperUserDto mapperUserDto;
+
+  @Value("${verification.maxAttempts}")
+  private int maxAttempts;
 
   @PostMapping("/update")
   public String updateUser(
@@ -65,5 +68,28 @@ public class UserController {
 
     log.info("Deleted user with username: {}", username);
     return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/verify")
+  public String verifyUser(@RequestParam("token") String tokenString, ModelMap model) {
+    log.info("Verifying user with token: {}", tokenString);
+
+    if (userService.verifyUser(tokenString).equals(Boolean.TRUE)) {
+      log.info("User verified successfully.");
+      model.addAttribute("success", true);
+    } else {
+      log.warn("Verification failed.");
+      model.addAttribute("error", true);
+    }
+    return "verification";
+  }
+
+  @PostMapping("/sendVerification")
+  public String sendVerificationEmail(ModelMap model) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    log.info("Sending another verification email to: {}", username);
+    Integer remainingAttempts = authService.sendVerificationEmail(username);
+    model.addAttribute("warning", remainingAttempts);
+    return "verification";
   }
 }

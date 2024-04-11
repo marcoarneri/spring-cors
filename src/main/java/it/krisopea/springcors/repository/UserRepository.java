@@ -23,4 +23,6 @@ public interface UserRepository
       "SELECT u FROM UserEntity u WHERE NOT EXISTS (SELECT r FROM u.roles r WHERE r.name ="
           + " 'FOUNDER')")
   List<UserEntity> findAllNotFounder();
+
+  UserEntity findByEmail(String email);
 }

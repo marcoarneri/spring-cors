@@ -71,4 +71,9 @@ public class TemplateController {
     model.addAttribute("userRegistrationRequest", new UserRegistrationRequest());
     return "register";
   }
+
+  @GetMapping("/verify")
+  public String showVerificationPage() {
+    return "verification";
+  }
 }

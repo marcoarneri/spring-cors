@@ -51,8 +51,8 @@
                                     <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id == adminUpdateRequest.roles[0].id}">User</option>
                                 </select>
                             </div>
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-sm w-auto mb-3">
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-primary w-auto mb-3">
                                     Update <i class="bi bi-person-add"></i></button>
                             </div>
                         </form>

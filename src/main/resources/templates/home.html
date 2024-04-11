@@ -25,7 +25,7 @@
     </head>
     <body>
         <div class="sidebar">
-            <div>
+            <div sec:authorize="hasAnyAuthority('VERIFIED', 'ADMIN', 'FOUNDER')">
                 <form th:action="@{/update}" method="get">
                     <button type="submit" class="btn btn-light ">
                         Profile <i class="bi bi-person-lines-fill"></i>
@@ -64,7 +64,11 @@
                 </div>
             </div>
             <div sec:authorize="hasAuthority('USER')">
-                <span>Not verified yet? <a href="">Click here</a> to send a verification email.</span>
+                <form th:action="@{/verification}">
+                    <button type="submit" class="btn btn-link" style="color: #007bff; text-decoration: underline;">
+                        Click here to verify your account
+                    </button>
+                </form>
             </div>
         </div>
     </body>

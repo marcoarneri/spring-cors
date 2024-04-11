@@ -12,6 +12,7 @@ public class GlobalEmailResources {
   private AtomicInteger updateEmailCounter = new AtomicInteger(0);
   private AtomicInteger deleteEmailCounter = new AtomicInteger(0);
   private AtomicInteger loginEmailCounter = new AtomicInteger(0);
+  private AtomicInteger verificationEmailCounter = new AtomicInteger(0);
 
   public void incrementEmailCounter() {
     this.emailCounter.incrementAndGet();
@@ -31,5 +32,9 @@ public class GlobalEmailResources {
 
   public void incrementLoginEmailCounter() {
     this.loginEmailCounter.incrementAndGet();
+  }
+
+  public void incrementVerificationEmailCounter() {
+    this.verificationEmailCounter.incrementAndGet();
   }
 }

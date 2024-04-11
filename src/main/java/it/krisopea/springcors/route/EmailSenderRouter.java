@@ -1,6 +1,13 @@
 package it.krisopea.springcors.route;
 
+import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
+import it.krisopea.springcors.exception.AppException;
+import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.repository.VerificationRepository;
+import it.krisopea.springcors.repository.model.UserEntity;
+import it.krisopea.springcors.repository.model.VerificationEntity;
 import it.krisopea.springcors.util.GlobalEmailResources;
+import it.krisopea.springcors.util.UuidUtil;
 import it.krisopea.springcors.util.constant.EmailEnum;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
@@ -10,6 +17,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailSenderRouter extends RouteBuilder {
   @Autowired private GlobalEmailResources globalEmailResources;
+  @Autowired private UserRepository userRepository;
+  @Autowired private VerificationRepository verificationRepository;
 
   @Override
   public void configure() {
@@ -65,7 +74,33 @@ public class EmailSenderRouter extends RouteBuilder {
               globalEmailResources.incrementEmailCounter();
               globalEmailResources.incrementLoginEmailCounter();
             })
-        .end()
+        .when(header("topic").isEqualTo(EmailEnum.VERIFY))
+        .setHeader("subject", constant("Account Verification"))
+        .process(
+            exchange -> {
+              String email = exchange.getIn().getHeader("email", String.class);
+              UserEntity userEntity = userRepository.findByEmail(email);
+              VerificationEntity verificationEntity =
+                  verificationRepository
+                      .findByUserUsername(userEntity.getUsername())
+                      .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
+              String tokenString =
+                  UuidUtil.removeDashesFromUuidString(verificationEntity.getToken().toString());
+              String verificationLinkBase =
+                  getContext().resolvePropertyPlaceholders("{{verification.link}}");
+              exchange
+                  .getIn()
+                  .setBody(
+                      simple(
+                          "Thank you for registering to our service. Please click the following"
+                              + " link to verify your account: "
+                              + verificationLinkBase
+                              + "\n Verification code: "
+                              + tokenString));
+              globalEmailResources.incrementEmailCounter();
+              globalEmailResources.incrementVerificationEmailCounter();
+            })
+        .endChoice()
         .setHeader("to", simple("${header.email}"))
         .toD(
             "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
