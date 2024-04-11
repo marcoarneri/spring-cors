@@ -82,16 +82,6 @@ public class UserService {
     sendEmail(userEntity, EmailEnum.DELETE);
   }
 
-  public void deleteUser(String username) {
-    UserEntity userEntity =
-        userRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
-
-    userRepository.delete(userEntity);
-    sendEmail(userEntity, EmailEnum.DELETE);
-  }
-
   public void sendEmail(UserEntity userEntity, EmailEnum action) {
     Map<String, Object> headers = new HashMap<>();
     headers.put("email", userEntity.getEmail());

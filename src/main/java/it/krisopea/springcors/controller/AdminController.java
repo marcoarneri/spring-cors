@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
@@ -27,19 +28,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(PathConstants.ADMIN_PATH)
 public class AdminController {
 
-  private final UserService userService;
   private final AdminService adminService;
   private final MapperUserDto mapperUserDto;
-
-  @DeleteMapping("/delete/{" + PathMappingConstants.USERNAME + "}")
-  public ResponseEntity<Void> deleteUser(@PathVariable String username) {
-    log.info("Admin's delete request with username: {}", username);
-
-    userService.deleteUser(username);
-
-    log.info("Admin deleted the user with username: {}", username);
-    return ResponseEntity.ok().build();
-  }
 
   @GetMapping()
   public String getAdminPage(ModelMap model) {
@@ -47,6 +37,8 @@ public class AdminController {
     model.addAttribute("users", users);
     return "admin";
   }
+
+  /* -- ADMIN UPDATE -- */
 
   @GetMapping("/update/{" + PathMappingConstants.USERNAME + "}")
   public String getAdminUpdatePage(@PathVariable String username, ModelMap model) {
@@ -72,6 +64,20 @@ public class AdminController {
     adminService.updateUser(adminUpdateRequestDto);
 
     log.info("Admin updated the user with username: {}", adminUpdateRequestDto.getUsername());
+
+    List<UserEntity> users = adminService.getUsersByRole();
+    model.addAttribute("users", users);
+
+    return "admin";
+  }
+
+  /* -- ADMIN DELETE -- */
+
+  @GetMapping("/delete/{" + PathMappingConstants.USERNAME + "}")
+  @PreAuthorize("hasAuthority('DELETE')")
+  public String deleteUser(@PathVariable String username, ModelMap model) {
+    adminService.deleteUser(username);
+    log.info("Admin deleted the user with username: {}", username);
 
     List<UserEntity> users = adminService.getUsersByRole();
     model.addAttribute("users", users);

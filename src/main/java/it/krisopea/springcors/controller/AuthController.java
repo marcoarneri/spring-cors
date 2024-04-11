@@ -55,8 +55,8 @@ public class AuthController {
       model.addAttribute("registerError", true);
       return "register";
     }
-
     log.info("Registration completed successfully.");
+    model.addAttribute("userLoginRequest", new UserLoginRequest());
     return "login";
   }
 
