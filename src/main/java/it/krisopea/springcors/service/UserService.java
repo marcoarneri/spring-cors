@@ -39,8 +39,9 @@ public class UserService {
         userEntity.setSurname(requestDto.getSurname());
         userEntity.setUsername(requestDto.getUsername());
         userEntity.setEmail(requestDto.getEmail());
-        if (requestDto.getPassword().isBlank()) {
+        if (!requestDto.getPassword().isBlank()) {
           userEntity.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+          userRepository.saveAndFlush(userEntity);
           return true;
         } else {
           userEntity.setPassword(userEntity.getPassword());

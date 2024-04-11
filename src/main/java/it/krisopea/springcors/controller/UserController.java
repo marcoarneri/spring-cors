@@ -46,7 +46,7 @@ public class UserController {
       model.addAttribute("userLoginRequest", new UserLoginRequest());
       model.addAttribute("updateUser", true);
       SecurityContextHolder.clearContext();
-      return "redirect:/logout";
+      return "login";
     }
 
     log.info("Update completed successfully.");

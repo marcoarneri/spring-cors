@@ -16,7 +16,6 @@ public interface UserRepository
     extends JpaRepository<UserEntity, UUID>, JpaSpecificationExecutor<UserEntity> {
   Optional<UserEntity> findByUsername(String username);
 
-  // FIXME
   @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.name = 'USER'")
   List<UserEntity> findAllUsers();
 
