@@ -41,7 +41,7 @@ public class WebSecurityConfig {
                     .requestMatchers("/admin")
                     .hasAnyAuthority(RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_FOUNDER)
                     .requestMatchers("/admin/update/**")
-                    .hasAnyAuthority(String.valueOf(PrivilegeEnum.WRITE))
+                    .hasAuthority(String.valueOf(PrivilegeEnum.WRITE))
                     .requestMatchers("/admin/delete/**")
                     .hasAuthority(String.valueOf(PrivilegeEnum.DELETE))
                     .requestMatchers("/entry", "/register")
