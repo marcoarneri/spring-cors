@@ -1,6 +1,7 @@
 package it.krisopea.springcors.config.security;
 
 import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.util.constant.PrivilegeEnum;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -37,8 +38,12 @@ public class WebSecurityConfig {
         .authorizeHttpRequests(
             requests ->
                 requests
-                    .requestMatchers("/admin/**")
+                    .requestMatchers("/admin")
                     .hasAnyAuthority(RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_FOUNDER)
+                    .requestMatchers("/admin/update/**")
+                    .hasAnyAuthority(String.valueOf(PrivilegeEnum.WRITE))
+                    .requestMatchers("/admin/delete/**")
+                    .hasAuthority(String.valueOf(PrivilegeEnum.DELETE))
                     .requestMatchers("/entry", "/register")
                     .permitAll()
                     .anyRequest()
