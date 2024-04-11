@@ -35,8 +35,8 @@
                 <div class="col-md-6 offset-md-3">
                     <div class="card shadow-lg p-4 mb-5 bg-body rounded" style="background-color: rgba(255, 255, 255, 0.8)">
                         <h1 class="card-title mb-3 text-center text-dark">Edit</h1>
-                        <p th:if="${registerError}" class="alert alert-danger">Error when modifying the user</p>
-                        <form th:action="@{/admin/update}" method="post" th:object="${userEntity}">
+                        <p th:if="${updateError}" class="alert alert-danger">Error when modifying the user</p>
+                        <form th:action="@{/admin/update}" method="post" th:object="${adminUpdateRequest}">
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="username" th:field="*{username}" readonly/>
@@ -48,11 +48,11 @@
                             <div class="mb-3">
                                 <label for="role" class="form-label">Role</label>
                                 <select class="form-select" id="role" th:field="*{roles}" required>
-                                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id == userEntity.roles[0].id}">User</option>
+                                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id == adminUpdateRequest.roles[0].id}">User</option>
                                 </select>
                             </div>
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn">
+                                <button type="submit" class="btn btn-sm w-auto mb-3">
                                     Update <i class="bi bi-person-add"></i></button>
                             </div>
                         </form>

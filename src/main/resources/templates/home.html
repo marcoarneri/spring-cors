@@ -63,8 +63,9 @@
                     </div>
                 </div>
             </div>
-<!--            TODO fare th if per il ruolo basic-->
-        <span>Not verified yet? <a href="">Click here</a> to send a verification email.</span>
+            <div sec:authorize="hasAuthority('USER')">
+                <span>Not verified yet? <a href="">Click here</a> to send a verification email.</span>
+            </div>
         </div>
     </body>
 </html>

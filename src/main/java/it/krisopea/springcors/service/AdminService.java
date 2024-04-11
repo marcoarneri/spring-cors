@@ -1,21 +1,23 @@
 package it.krisopea.springcors.service;
 
+import it.krisopea.springcors.controller.model.request.AdminUpdateRequest;
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.RoleRepository;
 import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.repository.mapper.MapperUserEntity;
 import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
-
+import it.krisopea.springcors.service.dto.request.AdminUpdateRequestDto;
+import it.krisopea.springcors.util.constant.RoleConstants;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,15 +27,18 @@ public class AdminService {
 
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
+  private final MapperUserEntity mapperUserEntity;
 
-  public void updateUser(UserEntity user) {
+  public void updateUser(AdminUpdateRequestDto adminUpdateRequestDto) {
+    String username = adminUpdateRequestDto.getUsername();
+
     UserEntity findUser =
         userRepository
-            .findByUsername(user.getUsername())
+            .findByUsername(username)
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
     List<RoleEntity> roles = new ArrayList<>();
-    for (RoleEntity userRole : user.getRoles()) {
+    for (RoleEntity userRole : adminUpdateRequestDto.getRoles()) {
       RoleEntity role = roleRepository.findByName(userRole.getName());
       roles.add(role);
     }
@@ -46,11 +51,33 @@ public class AdminService {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     boolean isAdmin =
         authentication.getAuthorities().stream()
-            .anyMatch(r -> r.getAuthority().equals("ADMIN"));
+            .anyMatch(r -> r.getAuthority().equals(RoleConstants.ROLE_ADMIN));
     if (isAdmin) {
       return userRepository.findAllUsers();
     } else {
       return userRepository.findAllNotFounder();
     }
+  }
+
+  public Pair<List<RoleEntity>, AdminUpdateRequest> getAdminAttributes(String username) {
+    UserEntity user =
+        userRepository
+            .findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    AdminUpdateRequest adminUpdateRequest = mapperUserEntity.toAdminUpdateRequest(user);
+
+    boolean isAdmin =
+        authentication.getAuthorities().stream()
+            .anyMatch(r -> r.getAuthority().equals(RoleConstants.ROLE_ADMIN));
+
+    List<RoleEntity> roles;
+    if (isAdmin) {
+      roles = roleRepository.findAllUserAndAdminRoles();
+    } else {
+      roles = roleRepository.findAll();
+    }
+    return Pair.of(roles, adminUpdateRequest);
   }
 }

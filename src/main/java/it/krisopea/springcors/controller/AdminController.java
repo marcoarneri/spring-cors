@@ -1,21 +1,20 @@
 package it.krisopea.springcors.controller;
 
-import it.krisopea.springcors.repository.RoleRepository;
-import it.krisopea.springcors.repository.UserRepository;
+import it.krisopea.springcors.controller.model.request.AdminUpdateRequest;
 import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.AdminService;
 import it.krisopea.springcors.service.UserService;
+import it.krisopea.springcors.service.dto.request.AdminUpdateRequestDto;
+import it.krisopea.springcors.service.mapper.MapperUserDto;
 import it.krisopea.springcors.util.constant.PathConstants;
 import it.krisopea.springcors.util.constant.PathMappingConstants;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
@@ -30,8 +29,7 @@ public class AdminController {
 
   private final UserService userService;
   private final AdminService adminService;
-  private final UserRepository userRepository;
-  private final RoleRepository roleRepository;
+  private final MapperUserDto mapperUserDto;
 
   @DeleteMapping("/delete/{" + PathMappingConstants.USERNAME + "}")
   public ResponseEntity<Void> deleteUser(@PathVariable String username) {
@@ -52,33 +50,28 @@ public class AdminController {
 
   @GetMapping("/update/{" + PathMappingConstants.USERNAME + "}")
   public String getAdminUpdatePage(@PathVariable String username, ModelMap model) {
-    UserEntity user = userRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    boolean isAdmin = authentication.getAuthorities().stream()
-                    .anyMatch(r -> r.getAuthority().equals("ADMIN"));
-    List<RoleEntity> roles;
-    if (isAdmin) {
-        roles = roleRepository.findAllUserAndAdminRoles();
-    } else {
-        roles = roleRepository.findAll();
-    }
+    Pair<List<RoleEntity>, AdminUpdateRequest> attributes =
+        adminService.getAdminAttributes(username);
 
-    model.addAttribute("roles", roles);
-    model.addAttribute("userEntity", user);
-
+    model.addAttribute("roles", attributes.getLeft());
+    model.addAttribute("adminUpdateRequest", attributes.getRight());
     return "admin-update";
   }
 
   @PostMapping("/update")
-  public String getUpdatePage(
-      @ModelAttribute("userEntity") @Valid UserEntity user, ModelMap model) {
-    log.info("Update request for username: {}, email: {}.", user.getUsername(), user.getEmail());
+  public String updateUser(
+      @ModelAttribute("adminUpdateRequest") @Valid AdminUpdateRequest adminUpdateRequest,
+      ModelMap model) {
+    log.info(
+        "Update request for username: {}, email: {}.",
+        adminUpdateRequest.getUsername(),
+        adminUpdateRequest.getEmail());
 
-    adminService.updateUser(user);
+    AdminUpdateRequestDto adminUpdateRequestDto =
+        mapperUserDto.toAdminUpdateRequestDto(adminUpdateRequest);
+    adminService.updateUser(adminUpdateRequestDto);
 
-    log.info("Admin updated the user with username: {}", user.getUsername());
+    log.info("Admin updated the user with username: {}", adminUpdateRequestDto.getUsername());
 
     List<UserEntity> users = adminService.getUsersByRole();
     model.addAttribute("users", users);

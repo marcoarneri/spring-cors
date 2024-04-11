@@ -39,22 +39,25 @@ public class AuthController {
 
   @PostMapping("/register")
   public String registerUser(
-      @ModelAttribute("userRegistrationRequest") @Valid UserRegistrationRequest request,
+      @ModelAttribute("userRegistrationRequest") @Valid
+          UserRegistrationRequest userRegistrationRequest,
       Model model) {
     log.info(
         "Registration request for name: {}, surname: {}, email: {}, username: {}.",
-        request.getName(),
-        request.getSurname(),
-        request.getEmail(),
-        request.getUsername());
+        userRegistrationRequest.getName(),
+        userRegistrationRequest.getSurname(),
+        userRegistrationRequest.getEmail(),
+        userRegistrationRequest.getUsername());
 
-    if (Boolean.FALSE.equals(authService.register(request))) {
+    if (Boolean.FALSE.equals(
+        authService.register(
+            userMapperDto.toUserRegistrationRequestDto(userRegistrationRequest)))) {
       model.addAttribute("registerError", true);
       return "register";
     }
 
     log.info("Registration completed successfully.");
-    return "home";
+    return "login";
   }
 
   @GetMapping("/logout")

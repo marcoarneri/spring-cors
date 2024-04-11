@@ -1,7 +1,6 @@
 package it.krisopea.springcors.repository;
 
 import it.krisopea.springcors.repository.model.RoleEntity;
-
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
