@@ -14,6 +14,8 @@ import it.krisopea.springcors.service.dto.request.AdminUpdateRequestDto;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -50,19 +52,16 @@ public class AdminService {
     userRepository.save(findUser);
   }
 
-  @PreAuthorize("hasAuthority('DELETE')")
   public void deleteUser(String username) {
     UserEntity userEntity =
         userRepository
             .findByUsername(username)
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
-    VerificationEntity verificationEntity =
-        verificationRepository
-            .findByUserUsername(username)
-            .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
+    Optional<VerificationEntity> verificationEntity = verificationRepository.findByUserUsername(username);
 
-    verificationRepository.delete(verificationEntity);
+    verificationEntity.ifPresent(verificationRepository::delete);
+
     userRepository.delete(userEntity);
   }
 
