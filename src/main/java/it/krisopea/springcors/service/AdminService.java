@@ -96,7 +96,7 @@ public class AdminService {
 
     List<RoleEntity> roles;
     if (isAdmin) {
-      roles = roleRepository.findAllUserAndAdminRoles();
+      roles = roleRepository.findAllRolesNotFounder();
     } else {
       roles = roleRepository.findAll();
     }

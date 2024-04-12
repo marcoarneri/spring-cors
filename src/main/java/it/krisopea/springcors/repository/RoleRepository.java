@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
   RoleEntity findByName(String name);
 
-  @Query("SELECT r FROM RoleEntity r WHERE r.name IN ('USER', 'ADMIN')")
-  List<RoleEntity> findAllUserAndAdminRoles();
+  @Query("SELECT r FROM RoleEntity r WHERE r.name NOT IN ('FOUNDER')")
+  List<RoleEntity> findAllRolesNotFounder();
 }
