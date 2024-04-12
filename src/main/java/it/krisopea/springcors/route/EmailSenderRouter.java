@@ -101,13 +101,13 @@ public class EmailSenderRouter extends RouteBuilder {
               globalEmailResources.incrementVerificationEmailCounter();
             })
         .endChoice()
-        .setHeader("to", simple("${header.email}"))
+        .setHeader("to", simple("${header.to}"))
         .toD(
             "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
                 + "&password={{spring.mail.password}}&mail.smtp.auth=true"
                 + "&mail.smtp.starttls.enable=true")
         .log(
-            "\"${header.topic}\" email successfully sent to ${header.email} and counters"
+            "\"${header.topic}\" email successfully sent to ${header.to} and counters"
                 + " increased.");
   }
 }

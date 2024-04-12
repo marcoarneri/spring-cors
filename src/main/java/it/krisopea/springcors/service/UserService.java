@@ -34,6 +34,14 @@ public class UserService {
   private final AuthService authService;
 
   public Boolean updateUser(UserUpdateRequestDto requestDto) {
+    if (userRepository.findByUsername(requestDto.getUsername()).isPresent()
+        && !(SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getName()
+            .equals(requestDto.getUsername()))) {
+      throw new AppException(AppErrorCodeMessageEnum.USER_EXISTS);
+    }
+
     UserEntity userEntity =
         userRepository
             .findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
