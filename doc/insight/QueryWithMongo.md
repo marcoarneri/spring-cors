@@ -235,86 +235,87 @@ In questo esempio, stiamo eseguendo un'aggregazione per contare il numero di doc
 - ### Pipeline JsonQuery
 ```json
 [
-  {
-    $match: {
-      noticeId: {
-        $nin: ["2", "10"],
+   {
+      $match: {
+         noticeId: {
+            $nin: ["2", "10"],
+         },
       },
-    },
-  },
-  {
-    $group: {
-      _id: "$noticeId",
-      count: {
-        $sum: 1,
+   },
+   {
+      $group: {
+         _id: "$noticeId",
+         count: {
+            $sum: 1,
+         },
+         documents: {
+            $push: "$$ROOT",
+         },
       },
-      documents: {
-        $push: "$$ROOT",
-      },
-    },
-  },
-  {
-    $facet: {
-      groupResult: [
-        {
-          $match: {},
-        },
-        {
-          $project: {
-            _id: 0,
-            count: 1,
-            documents: {
-              $map: {
-                input: "$documents",
-                as: "doc",
-                in: {
-                  $arrayToObject: {
-                    $filter: {
-                      input: {
-                        $objectToArray: "$$doc",
-                      },
-                      cond: {
-                        $ne: ["$$this.k", "_id"],
-                      },
-                    },
+   },
+   {
+      $facet: {
+         groupResult: [
+            {
+               $match: {},
+            },
+            {
+               $project: {
+                  _id: 0,
+                  noticeId: "$_id",
+                  count: 1,
+                  records: {
+                     $map: {
+                        input: "$documents",
+                        as: "doc",
+                        in: {
+                           $arrayToObject: {
+                              $filter: {
+                                 input: {
+                                    $objectToArray: "$$doc",
+                                 },
+                                 cond: {
+                                    $ne: ["$$this.k", "_id"],
+                                 },
+                              },
+                           },
+                        },
+                     },
                   },
-                },
-              },
+                  createdAt: {
+                     $toDate: "$$NOW",
+                  },
+               },
             },
-            createdAt: {
-              $toDate: "$$NOW",
+         ],
+         averageResult: [
+            {
+               $group: {
+                  _id: null,
+                  averageCount: {
+                     $avg: "$count",
+                  },
+               },
             },
-          },
-        },
-      ],
-      averageResult: [
-        {
-          $group: {
-            _id: null,
-            averageCount: {
-              $avg: "$count",
+            {
+               $project: {
+                  _id: 0,
+                  averageCount: 1,
+                  createdAt: {
+                     $toDate: "$$NOW",
+                  },
+               },
             },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            averageCount: 1,
-            createdAt: {
-              $toDate: "$$NOW",
-            },
-          },
-        },
-      ],
-    },
-  },
-  {
-    $merge: {
-      into: "averageResults",
-      whenMatched: "keepExisting",
-      whenNotMatched: "insert",
-    },
-  },
+         ],
+      },
+   },
+   {
+      $merge: {
+         into: "averageResults",
+         whenMatched: "keepExisting",
+         whenNotMatched: "insert",
+      },
+   },
 ]
 ```
 Questa query se messa su MongoDB Compass permetterà di convertirla in linguaggio java seguendo questi passaggi:
