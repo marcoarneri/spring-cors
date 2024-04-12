@@ -78,7 +78,7 @@ public class EmailSenderRouter extends RouteBuilder {
         .setHeader("subject", constant("Account Verification"))
         .process(
             exchange -> {
-              String email = exchange.getIn().getHeader("email", String.class);
+              String email = exchange.getIn().getHeader("to", String.class);
               UserEntity userEntity = userRepository.findByEmail(email);
               VerificationEntity verificationEntity =
                   verificationRepository

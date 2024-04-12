@@ -119,7 +119,7 @@ public class UserService {
 
   public void sendEmail(UserEntity userEntity, EmailEnum action) {
     Map<String, Object> headers = new HashMap<>();
-    headers.put("email", userEntity.getEmail());
+    headers.put("to", userEntity.getEmail());
     if (action == EmailEnum.UPDATE) {
       headers.put("updateTime", Instant.now().toString());
       headers.put("topic", EmailEnum.UPDATE);

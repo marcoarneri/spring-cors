@@ -119,7 +119,7 @@ public class AuthService {
 
   public void sendEmail(UserEntity userEntity, EmailEnum action) {
     Map<String, Object> headers = new HashMap<>();
-    headers.put("email", userEntity.getEmail());
+    headers.put("to", userEntity.getEmail());
     if (action == EmailEnum.REGISTRATION) {
       headers.put("topic", EmailEnum.REGISTRATION);
     } else if (action == EmailEnum.LOGIN) {
