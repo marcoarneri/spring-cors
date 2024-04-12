@@ -18,6 +18,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,6 +34,7 @@ public class AdminService {
   private final VerificationRepository verificationRepository;
   private final MapperUserEntity mapperUserEntity;
 
+  @PreAuthorize("hasAuthority('WRITE')")
   public void updateUser(AdminUpdateRequestDto adminUpdateRequestDto) {
     String username = adminUpdateRequestDto.getUsername();
 
@@ -50,6 +53,7 @@ public class AdminService {
     userRepository.save(findUser);
   }
 
+  @PreAuthorize("hasAuthority('DELETE')")
   public void deleteUser(String username) {
     UserEntity userEntity =
         userRepository

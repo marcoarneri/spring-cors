@@ -39,6 +39,7 @@ public class AdminController {
   /* -- ADMIN UPDATE -- */
 
   @GetMapping("/update/{" + PathMappingConstants.USERNAME + "}")
+  @PreAuthorize("hasAuthority('WRITE')")
   public String getAdminUpdatePage(@PathVariable String username, ModelMap model) {
     Pair<List<RoleEntity>, AdminUpdateRequest> attributes =
         adminService.getAdminAttributes(username);
@@ -49,6 +50,7 @@ public class AdminController {
   }
 
   @PostMapping("/update")
+  @PreAuthorize("hasAuthority('WRITE')")
   public String updateUser(
       @ModelAttribute("adminUpdateRequest") @Valid AdminUpdateRequest adminUpdateRequest,
       ModelMap model) {
