@@ -31,15 +31,19 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
   public void onApplicationEvent(ContextRefreshedEvent event) {
     if (alreadySetup) return;
     PrivilegeEntity readPrivilege = createPrivilegeIfNotFound(String.valueOf(READ));
+    PrivilegeEntity updatePrivilege = createPrivilegeIfNotFound(String.valueOf(UPDATE));
     PrivilegeEntity writePrivilege = createPrivilegeIfNotFound(String.valueOf(WRITE));
     PrivilegeEntity deletePrivilege = createPrivilegeIfNotFound(String.valueOf(DELETE));
 
     List<PrivilegeEntity> userPrivileges = Collections.singletonList(readPrivilege);
-    List<PrivilegeEntity> adminPrivileges = Arrays.asList(readPrivilege, writePrivilege);
+    List<PrivilegeEntity> verifiedPrivileges = Arrays.asList(readPrivilege, updatePrivilege);
+    List<PrivilegeEntity> adminPrivileges =
+        Arrays.asList(readPrivilege, updatePrivilege, writePrivilege);
     List<PrivilegeEntity> founderPrivileges =
-        Arrays.asList(readPrivilege, writePrivilege, deletePrivilege);
+        Arrays.asList(readPrivilege, updatePrivilege, writePrivilege, deletePrivilege);
 
     createRoleIfNotFound(RoleConstants.ROLE_USER, userPrivileges);
+    createRoleIfNotFound(RoleConstants.ROLE_VERIFIED, verifiedPrivileges);
     createRoleIfNotFound(RoleConstants.ROLE_ADMIN, adminPrivileges);
     createRoleIfNotFound(RoleConstants.ROLE_FOUNDER, founderPrivileges);
 

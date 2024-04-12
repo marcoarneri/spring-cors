@@ -62,7 +62,7 @@ public class AuthService {
     return true;
   }
 
-  private void setupVerification(UserEntity userEntity) {
+  public void setupVerification(UserEntity userEntity) {
     UUID token = UUID.randomUUID();
     VerificationEntity verificationEntity = new VerificationEntity();
     verificationEntity.setUserEntity(userEntity);

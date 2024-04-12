@@ -8,6 +8,7 @@ import it.krisopea.springcors.repository.mapper.MapperUserEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,6 +43,7 @@ public class TemplateController {
   }
 
   @GetMapping("/home")
+  @PreAuthorize("hasAuthority('READ')")
   public String showHomePage(ModelMap model) {
     model.addAttribute(
         "username", SecurityContextHolder.getContext().getAuthentication().getName());
@@ -49,6 +51,7 @@ public class TemplateController {
   }
 
   @GetMapping("/update")
+  @PreAuthorize("hasAuthority('UPDATE')")
   public String showUpdateUserPage(ModelMap model) {
     UserEntity user =
         repository
