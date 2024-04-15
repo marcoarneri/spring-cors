@@ -97,23 +97,21 @@ public class UserService {
   }
 
   public Boolean verifyUser(String tokenString) {
-    String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+    UUID providedToken = UuidUtil.formatToken(tokenString);
 
     Optional<VerificationEntity> optionalVerificationEntity =
-        verificationRepository.findByUsername(currentUsername);
+        verificationRepository.findByToken(providedToken);
     if (optionalVerificationEntity.isEmpty()) {
       return false;
     }
 
     VerificationEntity verificationEntity = optionalVerificationEntity.get();
-    UUID providedToken = UuidUtil.formatToken(tokenString);
-
     if (!providedToken.equals(verificationEntity.getToken())) {
       return false;
     }
 
     RoleEntity roleEntity = roleRepository.findByName(RoleConstants.ROLE_VERIFIED);
-    UserEntity userEntity = optionalVerificationEntity.get().getUserEntity();
+    UserEntity userEntity = verificationEntity.getUserEntity();
     if (userEntity != null) {
       userEntity.setRoles(Collections.singletonList(roleEntity));
       userRepository.saveAndFlush(userEntity);

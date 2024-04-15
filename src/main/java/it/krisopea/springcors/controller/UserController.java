@@ -87,7 +87,7 @@ public class UserController {
   }
 
   @PostMapping("/sendVerification")
-  public String sendVerificationEmail(ModelMap model) {
+  public String sendVerificationEmail() {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     log.info("Sending another verification email to: {}", username);
     //    Integer remainingAttempts = authService.sendVerificationEmail(username);
