@@ -1,12 +1,15 @@
 package it.krisopea.springcors.service;
 
 import it.krisopea.springcors.controller.model.request.AdminUpdateRequest;
+import it.krisopea.springcors.controller.model.request.RoleRequest;
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
+import it.krisopea.springcors.repository.PrivilegeRepository;
 import it.krisopea.springcors.repository.RoleRepository;
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.VerificationRepository;
 import it.krisopea.springcors.repository.mapper.MapperUserEntity;
+import it.krisopea.springcors.repository.model.PrivilegeEntity;
 import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.repository.model.VerificationEntity;
@@ -31,6 +34,7 @@ public class AdminService {
   private final AuthService authService;
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
+  private final PrivilegeRepository privilegeRepository;
   private final VerificationRepository verificationRepository;
   private final MapperUserEntity mapperUserEntity;
 
@@ -54,6 +58,14 @@ public class AdminService {
     userRepository.save(findUser);
   }
 
+  @PreAuthorize("hasAuthority('WRITE')")
+  public void updateRole(RoleRequest roleRequest) {
+    RoleEntity findRole = roleRepository.findByName(roleRequest.getName());
+
+    findRole.setPrivileges(roleRequest.getPrivileges());
+    roleRepository.save(findRole);
+  }
+
   @PreAuthorize("hasAuthority('DELETE')")
   public void deleteUser(String username) {
     UserEntity userEntity =
@@ -67,6 +79,22 @@ public class AdminService {
     verificationEntity.ifPresent(verificationRepository::delete);
 
     userRepository.delete(userEntity);
+  }
+
+  @PreAuthorize("hasAuthority('DELETE')")
+  public void deleteRole(String name) {
+    List<UserEntity> findUsers = userRepository.findUsersByRoleName(name);
+    if (!findUsers.isEmpty()) {
+      for (UserEntity user : findUsers) {
+        List<RoleEntity> roles = new ArrayList<>();
+        RoleEntity role = roleRepository.findByName(RoleConstants.ROLE_USER);
+        roles.add(role);
+        user.setRoles(roles);
+        userRepository.save(user);
+      }
+    }
+    RoleEntity role = roleRepository.findByName(name);
+    roleRepository.deleteById(role.getId());
   }
 
   @PreAuthorize("hasAuthority('WRITE')")
@@ -117,6 +145,30 @@ public class AdminService {
     } else if (roleName.equals(RoleConstants.ROLE_USER) && (verificationEntity.isEmpty())) {
       // FIXME
       // authService.setupVerification(entity);
+    }
+  }
+
+  public List<PrivilegeEntity> getPrivileges() {
+      return privilegeRepository.findAll();
+  }
+
+  public List<RoleEntity> getRoles() {
+    return roleRepository.findAll();
+  }
+
+  public boolean createRole(RoleRequest roleRequest) {
+
+    String name = roleRequest.getName();
+    RoleEntity role = roleRepository.findByName(name);
+
+    if (role == null) {
+      role = new RoleEntity();
+      role.setName(name);
+      role.setPrivileges(roleRequest.getPrivileges());
+      roleRepository.save(role);
+      return true;
+    } else {
+      return false;
     }
   }
 }

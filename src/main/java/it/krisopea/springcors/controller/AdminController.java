@@ -1,6 +1,7 @@
 package it.krisopea.springcors.controller;
 
 import it.krisopea.springcors.controller.model.request.AdminUpdateRequest;
+import it.krisopea.springcors.controller.model.request.RoleRequest;
 import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.AdminService;
@@ -8,6 +9,7 @@ import it.krisopea.springcors.service.dto.request.AdminUpdateRequestDto;
 import it.krisopea.springcors.service.mapper.MapperUserDto;
 import it.krisopea.springcors.util.constant.PathConstants;
 import it.krisopea.springcors.util.constant.PathMappingConstants;
+import it.krisopea.springcors.util.constant.RoleConstants;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -84,5 +86,80 @@ public class AdminController {
     model.addAttribute("users", users);
 
     return "admin";
+  }
+
+  /* -- ROLE PAGE-- */
+
+  @GetMapping("/role")
+  @PreAuthorize("hasAuthority('WRITE')")
+  public String getRolePage(ModelMap model) {
+    List<RoleEntity> roles = adminService.getRoles();
+    model.addAttribute("roles", roles);
+    return "role";
+  }
+
+  @GetMapping("/role/update/{" + PathMappingConstants.ROLE_NAME + "}")
+  @PreAuthorize("hasAuthority('WRITE')")
+  public String getRoleUpdatePage(@PathVariable String name, ModelMap model) {
+
+    RoleRequest roleRequest = new RoleRequest();
+    roleRequest.setName(name);
+    model.addAttribute("roleRequest", roleRequest);
+    model.addAttribute("privileges", adminService.getPrivileges());
+    return "role-update";
+  }
+
+  @PostMapping("/role/update")
+  @PreAuthorize("hasAuthority('WRITE')")
+  public String roleUpdate(@ModelAttribute("roleRequest") RoleRequest roleRequest, ModelMap model) {
+    adminService.updateRole(roleRequest);
+    log.info("Admin updated the role with name: {}", roleRequest.getName());
+    List<RoleEntity> roles = adminService.getRoles();
+    model.addAttribute("roles", roles);
+    return "role";
+  }
+
+  @GetMapping("/role/delete/{" + PathMappingConstants.ROLE_NAME + "}")
+  @PreAuthorize("hasAuthority('DELETE')")
+  public String deleteRole(@PathVariable String name, ModelMap model) {
+    if (name.equals(RoleConstants.ROLE_USER)
+            || name.equals(RoleConstants.ROLE_ADMIN)
+            || name.equals(RoleConstants.ROLE_FOUNDER)) {
+      List<RoleEntity> roles = adminService.getRoles();
+      model.addAttribute("error", true);
+      model.addAttribute("roles", roles);
+      return "role";
+    }
+    adminService.deleteRole(name);
+    log.info("Admin deleted the role with name: {}", name);
+    List<RoleEntity> roles = adminService.getRoles();
+    model.addAttribute("roles", roles);
+    return "role";
+  }
+
+  /* -- NEW ROLE -- */
+
+  @GetMapping("/new-role")
+  @PreAuthorize("hasAuthority('WRITE')")
+  public String getNewRolePage(ModelMap model) {
+    model.addAttribute("role", new RoleRequest());
+    model.addAttribute("privileges", adminService.getPrivileges());
+    return "new-role";
+  }
+
+  @PostMapping("/new-role")
+  @PreAuthorize("hasAuthority('WRITE')")
+  public String addRole(@ModelAttribute("role") RoleRequest roleRequest, ModelMap model) {
+    boolean role = adminService.createRole(roleRequest);
+    if (!role){
+      model.addAttribute("privileges", adminService.getPrivileges());
+      model.addAttribute("error", true);
+      return "new-role";
+    }
+
+    List<RoleEntity> roles = adminService.getRoles();
+    model.addAttribute("roles", roles);
+
+    return "role";
   }
 }

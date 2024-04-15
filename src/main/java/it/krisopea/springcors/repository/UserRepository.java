@@ -19,6 +19,9 @@ public interface UserRepository
   @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.name = 'USER'")
   List<UserEntity> findAllUsers();
 
+  @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.name = :name")
+  List<UserEntity> findUsersByRoleName(String name);
+
   @Query(
       "SELECT u FROM UserEntity u WHERE NOT EXISTS (SELECT r FROM u.roles r WHERE r.name ="
           + " 'FOUNDER')")
