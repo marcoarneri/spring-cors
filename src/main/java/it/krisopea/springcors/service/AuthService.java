@@ -18,6 +18,8 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -45,8 +47,8 @@ public class AuthService {
   @Value("${verification.maxAttempts}")
   private int maxAttempts;
 
-  @Value("${verification.link}")
-  private String baseUrl;
+  //  @Value("${verification.link}")
+  //  private String baseUrl;
 
   public Boolean register(UserRegistrationRequestDto userRegistrationRequestDto) {
 
@@ -56,26 +58,24 @@ public class AuthService {
     }
 
     UserEntity userEntity = mapperUserEntity.toUserEntity(userRegistrationRequestDto);
-    RoleEntity adminRole = roleRepository.findByName(RoleConstants.ROLE_USER);
-    userEntity.setRoles(Collections.singletonList(adminRole));
-    userEntity.setEnabled(Boolean.TRUE);
+    RoleEntity userRole = roleRepository.findByName(RoleConstants.ROLE_USER);
+    userEntity.setRoles(Collections.singletonList(userRole));
+    userEntity.setEnabled(Boolean.FALSE);
     userRepository.saveAndFlush(userEntity);
+    setupVerification(userEntity);
     sendRegistrationEmail(userEntity.getUsername());
     return true;
   }
 
-  // FIXME
-  //
-  //  public void setupVerification(UserEntity userEntity) {
-  //    UUID token = UUID.randomUUID();
-  //    VerificationEntity verificationEntity = new VerificationEntity();
-  //    verificationEntity.setUserEntity(userEntity);
-  //    verificationEntity.setToken(token);
-  //    verificationEntity.setAttempts(0);
-  //
-  //    verificationRepository.saveAndFlush(verificationEntity);
-  //    sendEmail(userEntity, EmailEnum.VERIFY);
-  //  }
+    private void setupVerification(UserEntity userEntity) {
+      UUID token = UUID.randomUUID();
+      VerificationEntity verificationEntity = new VerificationEntity();
+      verificationEntity.setUserEntity(userEntity);
+      verificationEntity.setToken(token);
+      verificationEntity.setAttempts(0);
+
+      verificationRepository.saveAndFlush(verificationEntity);
+    }
 
   public Integer sendRegistrationEmail(String username) {
     UserEntity userEntity =

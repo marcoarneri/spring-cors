@@ -64,7 +64,7 @@
                 </div>
             </div>
             <div sec:authorize="hasAuthority('USER')">
-                <form th:action="@{/verification}">
+                <form th:action="@{/sendVerification}" method="post">
                     <button type="submit" class="btn btn-link" style="color: #007bff; text-decoration: underline;">
                         Click here to send another verification email
                     </button>

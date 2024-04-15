@@ -14,8 +14,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public abstract class MapperUserEntity {
 
   @Mapping(target = "password", source = "password", qualifiedByName = "encodePassword")
-  @Mapping(target = "enabled", ignore = true)
   @Mapping(target = "roles", ignore = true)
+  @Mapping(target = "enabled", constant = "false")
+  @Mapping(target = "accountNonExpired", constant = "false")
+  @Mapping(target = "credentialsNonExpired", constant = "false")
+  @Mapping(target = "accountNonLocked", constant = "false")
   public abstract UserEntity toUserEntity(UserRegistrationRequestDto request);
 
   @Mapping(target = "oldPassword", source = "password")

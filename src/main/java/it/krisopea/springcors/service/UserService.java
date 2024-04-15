@@ -119,7 +119,9 @@ public class UserService {
       throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
     }
 
+    userEntity.setEnabled(Boolean.TRUE);
     verificationRepository.delete(verificationEntity);
+    userRepository.saveAndFlush(userEntity);
     return true;
   }
 

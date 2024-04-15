@@ -35,9 +35,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         user.getUsername(),
         user.getPassword(),
         user.isEnabled(),
-        true,
-        true,
-        true,
+        user.isAccountNonExpired(),
+        user.isCredentialsNonExpired(),
+        user.isAccountNonLocked(),
         getAuthorities(user.getRoles()));
   }
 

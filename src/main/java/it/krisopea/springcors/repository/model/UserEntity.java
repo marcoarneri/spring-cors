@@ -45,6 +45,15 @@ public class UserEntity {
   @Column(name = "ENABLED", nullable = false)
   private boolean enabled;
 
+  @Column(name = "ACCOUNT_NON_EXPIRED", nullable = false)
+  private boolean accountNonExpired;
+
+  @Column(name = "CREDENTIALS_NON_EXPIRED", nullable = false)
+  private boolean credentialsNonExpired;
+
+  @Column(name = "ACCOUNT_NON_LOCKED", nullable = false)
+  private boolean accountNonLocked;
+
   @CreationTimestamp
   @Column(name = "CREATE_ON")
   private Instant createOn;
