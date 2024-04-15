@@ -30,6 +30,7 @@ public class AdminController {
   private final MapperUserDto mapperUserDto;
 
   @GetMapping()
+  @PreAuthorize("hasAuthority('WRITE')")
   public String getAdminPage(ModelMap model) {
     List<UserEntity> users = adminService.getUsersByRole();
     model.addAttribute("users", users);

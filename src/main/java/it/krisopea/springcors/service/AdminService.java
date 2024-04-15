@@ -69,6 +69,7 @@ public class AdminService {
     userRepository.delete(userEntity);
   }
 
+  @PreAuthorize("hasAuthority('WRITE')")
   public List<UserEntity> getUsersByRole() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     boolean isAdmin =
@@ -81,6 +82,7 @@ public class AdminService {
     }
   }
 
+  @PreAuthorize("hasAuthority('WRITE')")
   public Pair<List<RoleEntity>, AdminUpdateRequest> getAdminAttributes(String username) {
     UserEntity user =
         userRepository

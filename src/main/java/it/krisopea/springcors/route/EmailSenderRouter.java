@@ -1,13 +1,8 @@
 package it.krisopea.springcors.route;
 
-import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
-import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.VerificationRepository;
-import it.krisopea.springcors.repository.model.UserEntity;
-import it.krisopea.springcors.repository.model.VerificationEntity;
 import it.krisopea.springcors.util.GlobalEmailResources;
-import it.krisopea.springcors.util.UuidUtil;
 import it.krisopea.springcors.util.constant.EmailEnum;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
@@ -30,84 +25,94 @@ public class EmailSenderRouter extends RouteBuilder {
         .routeId("sendEmailRoute")
         .choice()
         .when(header("topic").isEqualTo(EmailEnum.REGISTRATION))
-        .setHeader("subject", constant("Welcome!"))
-        .setBody(simple("Hi, thank you for registering to our service!"))
-        .process(
-            exchange -> {
-              globalEmailResources.incrementEmailCounter();
-              globalEmailResources.incrementRegistrationEmailCounter();
-            })
+        .to("direct:sendRegistrationEmail")
         .when(header("topic").isEqualTo(EmailEnum.UPDATE))
-        .setHeader("subject", constant("Update Notification"))
-        .setBody(
-            simple(
-                "We would like to notify you about the update of one or more fields of your"
-                    + " account."))
-        .process(
-            exchange -> {
-              globalEmailResources.incrementEmailCounter();
-              globalEmailResources.incrementUpdateEmailCounter();
-            })
+        .to("direct:sendUpdateEmail")
         .when(header("topic").isEqualTo(EmailEnum.DELETE))
-        .choice()
-        .when(header("isAdmin").isEqualTo(Boolean.TRUE.toString()))
-        .setHeader("subject", constant("Cancellation Notification"))
-        .setBody(
-            simple(
-                "We want to notify you of the cancellation of your account by an administrator."))
-        .otherwise()
-        .setHeader("subject", constant("Cancellation Notification"))
-        .setBody(
-            simple(
-                "We want to notify you of the cancellation of your account. We hope to see you"
-                    + " again soon!"))
-        .process(
-            exchange -> {
-              globalEmailResources.incrementEmailCounter();
-              globalEmailResources.incrementDeleteEmailCounter();
-            })
+        .to("direct:sendDeleteEmail")
         .when(header("topic").isEqualTo(EmailEnum.LOGIN))
-        .setHeader("subject", constant("Login Notification"))
-        .setBody(simple("You have successfully logged in at ${header.loginTime}."))
-        .process(
-            exchange -> {
-              globalEmailResources.incrementEmailCounter();
-              globalEmailResources.incrementLoginEmailCounter();
-            })
+        .to("direct:sendLoginEmail")
         .when(header("topic").isEqualTo(EmailEnum.VERIFY))
-        .setHeader("subject", constant("Account Verification"))
-        .process(
-            exchange -> {
-              String email = exchange.getIn().getHeader("to", String.class);
-              UserEntity userEntity = userRepository.findByEmail(email);
-              VerificationEntity verificationEntity =
-                  verificationRepository
-                      .findByUserUsername(userEntity.getUsername())
-                      .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
-              String tokenString =
-                  UuidUtil.removeDashesFromUuidString(verificationEntity.getToken().toString());
-              String verificationLinkBase =
-                  getContext().resolvePropertyPlaceholders("{{verification.link}}");
-              exchange
-                  .getIn()
-                  .setBody(
-                      simple(
-                          "Thank you for registering to our service. Please click the following"
-                              + " link to verify your account: "
-                              + verificationLinkBase
-                              + "\n Verification code: "
-                              + tokenString));
-              globalEmailResources.incrementEmailCounter();
-              globalEmailResources.incrementVerificationEmailCounter();
-            })
-        .endChoice()
-        .setHeader("to", simple("${header.to}"))
-        .toD(
-            "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
-                + "&password={{spring.mail.password}}&mail.smtp.auth=true"
-                + "&mail.smtp.starttls.enable=true")
-        .log(
-            "\"${header.topic}\" email successfully sent to ${header.to} and counters"
-                + " increased.");
+        .to("direct:sendVerificationEmail")
+        .end();
+
+//    from("direct:sendRegistrationEmail")
+//        .routeId("sendRegistrationEmailRoute")
+//        .setHeader("subject", constant("Welcome!"))
+//        .setBody(simple("Hi, thank you for registering to our service!"))
+//        .process(
+//            exchange -> {
+//              globalEmailResources.incrementRegistrationEmailCounter();
+//              AtomicInteger currentCount = globalEmailResources.getRegistrationEmailCounter();
+//              exchange.setProperty("registrationEmailCount", currentCount);
+//            });
+//
+//    from("direct:sendUpdateEmail")
+//        .routeId("sendUpdateEmailRoute")
+//        .routePolicy(routePolicy)
+//        .setHeader("subject", constant("Update Notification"))
+//        .setBody(
+//            simple(
+//                "We would like to notify you about the update of one or more fields of your"
+//                    + " account."))
+//        .process(exchange -> globalEmailResources.incrementUpdateEmailCounter());
+//
+//    from("direct:sendDeleteEmail")
+//        .routeId("sendDeleteEmailRoute")
+//        .routePolicy(routePolicy)
+//        .setHeader("subject", constant("Cancellation Notification"))
+//        .choice()
+//        .when(header("isAdmin").isEqualTo(Boolean.TRUE.toString()))
+//        .setBody(
+//            simple(
+//                "We want to notify you of the cancellation of your account by an administrator."))
+//        .otherwise()
+//        .setBody(
+//            simple(
+//                "We want to notify you of the cancellation of your account. We hope to see you"
+//                    + " again soon!"))
+//        .end()
+//        .process(exchange -> globalEmailResources.incrementDeleteEmailCounter())
+//        .to("direct:send");
+//
+//    from("direct:sendLoginEmail")
+//        .routeId("sendLoginEmailRoute")
+//        .routePolicy(routePolicy)
+//        .setHeader("subject", constant("Login Notification"))
+//        .setBody(simple("You have successfully logged in at ${header.loginTime}."))
+//        .process(exchange -> globalEmailResources.incrementLoginEmailCounter())
+//        .to("direct:send");
+//
+//    from("direct:sendVerificationEmail")
+//        .routeId("sendVerificationEmailRoute")
+//        .routePolicy(routePolicy)
+//        .setHeader("subject", constant("Account Verification"))
+//        .process(exchange -> globalEmailResources.incrementVerificationEmailCounter())
+//        .to("direct:send");
+//
+//    from("direct:send")
+//        .routeId("sendRoute")
+//        .setHeader("to", simple("${header.to}"))
+//        .toD(
+//            "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
+//                + "&password={{spring.mail.password}}&mail.smtp.auth=true"
+//                + "&mail.smtp.starttls.enable=true")
+//        .process(exchange -> globalEmailResources.incrementEmailCounter())
+//        .log(
+//            "\"${header.topic}\" email successfully sent to ${header.to} and counters"
+//                + " increased.");
   }
 }
+
+//class RoutePolicy extends RoutePolicySupport {
+//  private AtomicInteger counter = new AtomicInteger();
+//
+//  @Override
+//  public void onExchangeBegin(Route route, Exchange exchange) {
+//    exchange.setProperty("counter", counter);
+//  }
+//
+//  public int getCounter() {
+//    return counter.get();
+//  }
+//}

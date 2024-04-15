@@ -111,29 +111,29 @@ public class WebSecurityConfig {
     return new ProviderManager(authenticationProvider);
   }
 
-//  /* -- Role hierarchy -- */
-//  @Bean
-//  public RoleHierarchy roleHierarchy() {
-//    RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-//    String hierarchy =
-//        RoleConstants.ROLE_FOUNDER
-//            + ">"
-//            + RoleConstants.ROLE_ADMIN
-//            + "\n"
-//            + RoleConstants.ROLE_ADMIN
-//            + ">"
-//            + RoleConstants.ROLE_USER;
-//    roleHierarchy.setHierarchy(hierarchy);
-//    return roleHierarchy;
-//  }
-//
-//  @Bean
-//  public DefaultWebSecurityExpressionHandler customWebSecurityExpressionHandler() {
-//    DefaultWebSecurityExpressionHandler expressionHandler =
-//        new DefaultWebSecurityExpressionHandler();
-//    expressionHandler.setRoleHierarchy(roleHierarchy());
-//    return expressionHandler;
-//  }
+  //  /* -- Role hierarchy -- */
+  //  @Bean
+  //  public RoleHierarchy roleHierarchy() {
+  //    RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+  //    String hierarchy =
+  //        RoleConstants.ROLE_FOUNDER
+  //            + ">"
+  //            + RoleConstants.ROLE_ADMIN
+  //            + "\n"
+  //            + RoleConstants.ROLE_ADMIN
+  //            + ">"
+  //            + RoleConstants.ROLE_USER;
+  //    roleHierarchy.setHierarchy(hierarchy);
+  //    return roleHierarchy;
+  //  }
+  //
+  //  @Bean
+  //  public DefaultWebSecurityExpressionHandler customWebSecurityExpressionHandler() {
+  //    DefaultWebSecurityExpressionHandler expressionHandler =
+  //        new DefaultWebSecurityExpressionHandler();
+  //    expressionHandler.setRoleHierarchy(roleHierarchy());
+  //    return expressionHandler;
+  //  }
 
   @Bean
   public static ServletListenerRegistrationBean httpSessionEventPublisher() {
