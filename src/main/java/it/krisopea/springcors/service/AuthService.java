@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -67,15 +66,15 @@ public class AuthService {
     return true;
   }
 
-    private void setupVerification(UserEntity userEntity) {
-      UUID token = UUID.randomUUID();
-      VerificationEntity verificationEntity = new VerificationEntity();
-      verificationEntity.setUserEntity(userEntity);
-      verificationEntity.setToken(token);
-      verificationEntity.setAttempts(0);
+  private void setupVerification(UserEntity userEntity) {
+    UUID token = UUID.randomUUID();
+    VerificationEntity verificationEntity = new VerificationEntity();
+    verificationEntity.setUserEntity(userEntity);
+    verificationEntity.setToken(token);
+    verificationEntity.setAttempts(0);
 
-      verificationRepository.saveAndFlush(verificationEntity);
-    }
+    verificationRepository.saveAndFlush(verificationEntity);
+  }
 
   public Integer sendRegistrationEmail(String username) {
     UserEntity userEntity =

@@ -112,13 +112,11 @@ public class UserService {
 
     RoleEntity roleEntity = roleRepository.findByName(RoleConstants.ROLE_VERIFIED);
     UserEntity userEntity = verificationEntity.getUserEntity();
-    if (userEntity != null) {
-      userEntity.setRoles(Collections.singletonList(roleEntity));
-      userRepository.saveAndFlush(userEntity);
-    } else {
+    if (userEntity == null) {
       throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
     }
 
+    userEntity.setRoles(Collections.singletonList(roleEntity));
     userEntity.setEnabled(Boolean.TRUE);
     verificationRepository.delete(verificationEntity);
     userRepository.saveAndFlush(userEntity);
