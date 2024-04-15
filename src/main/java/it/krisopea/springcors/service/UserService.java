@@ -100,7 +100,7 @@ public class UserService {
     String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 
     Optional<VerificationEntity> optionalVerificationEntity =
-        verificationRepository.findByUserUsername(currentUsername);
+        verificationRepository.findByUsername(currentUsername);
     if (optionalVerificationEntity.isEmpty()) {
       return false;
     }

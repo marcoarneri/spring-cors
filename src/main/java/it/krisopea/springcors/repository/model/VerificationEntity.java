@@ -2,6 +2,7 @@ package it.krisopea.springcors.repository.model;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import java.time.Instant;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,4 +27,7 @@ public class VerificationEntity {
   @OneToOne
   @JoinColumn(name = "USERNAME", referencedColumnName = "USERNAME")
   private UserEntity userEntity;
+
+  @Column(name = "LAST_SENT")
+  private Instant lastSent;
 }

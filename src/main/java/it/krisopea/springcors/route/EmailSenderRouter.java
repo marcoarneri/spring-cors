@@ -32,79 +32,76 @@ public class EmailSenderRouter extends RouteBuilder {
         .to("direct:sendDeleteEmail")
         .when(header("topic").isEqualTo(EmailEnum.LOGIN))
         .to("direct:sendLoginEmail")
-        .when(header("topic").isEqualTo(EmailEnum.VERIFY))
-        .to("direct:sendVerificationEmail")
         .end();
 
-//    from("direct:sendRegistrationEmail")
-//        .routeId("sendRegistrationEmailRoute")
-//        .setHeader("subject", constant("Welcome!"))
-//        .setBody(simple("Hi, thank you for registering to our service!"))
-//        .process(
-//            exchange -> {
-//              globalEmailResources.incrementRegistrationEmailCounter();
-//              AtomicInteger currentCount = globalEmailResources.getRegistrationEmailCounter();
-//              exchange.setProperty("registrationEmailCount", currentCount);
-//            });
-//
-//    from("direct:sendUpdateEmail")
-//        .routeId("sendUpdateEmailRoute")
-//        .routePolicy(routePolicy)
-//        .setHeader("subject", constant("Update Notification"))
-//        .setBody(
-//            simple(
-//                "We would like to notify you about the update of one or more fields of your"
-//                    + " account."))
-//        .process(exchange -> globalEmailResources.incrementUpdateEmailCounter());
-//
-//    from("direct:sendDeleteEmail")
-//        .routeId("sendDeleteEmailRoute")
-//        .routePolicy(routePolicy)
-//        .setHeader("subject", constant("Cancellation Notification"))
-//        .choice()
-//        .when(header("isAdmin").isEqualTo(Boolean.TRUE.toString()))
-//        .setBody(
-//            simple(
-//                "We want to notify you of the cancellation of your account by an administrator."))
-//        .otherwise()
-//        .setBody(
-//            simple(
-//                "We want to notify you of the cancellation of your account. We hope to see you"
-//                    + " again soon!"))
-//        .end()
-//        .process(exchange -> globalEmailResources.incrementDeleteEmailCounter())
-//        .to("direct:send");
-//
-//    from("direct:sendLoginEmail")
-//        .routeId("sendLoginEmailRoute")
-//        .routePolicy(routePolicy)
-//        .setHeader("subject", constant("Login Notification"))
-//        .setBody(simple("You have successfully logged in at ${header.loginTime}."))
-//        .process(exchange -> globalEmailResources.incrementLoginEmailCounter())
-//        .to("direct:send");
-//
-//    from("direct:sendVerificationEmail")
-//        .routeId("sendVerificationEmailRoute")
-//        .routePolicy(routePolicy)
-//        .setHeader("subject", constant("Account Verification"))
-//        .process(exchange -> globalEmailResources.incrementVerificationEmailCounter())
-//        .to("direct:send");
-//
-//    from("direct:send")
-//        .routeId("sendRoute")
-//        .setHeader("to", simple("${header.to}"))
-//        .toD(
-//            "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
-//                + "&password={{spring.mail.password}}&mail.smtp.auth=true"
-//                + "&mail.smtp.starttls.enable=true")
-//        .process(exchange -> globalEmailResources.incrementEmailCounter())
-//        .log(
-//            "\"${header.topic}\" email successfully sent to ${header.to} and counters"
-//                + " increased.");
+    //    from("direct:sendRegistrationEmail")
+    //        .routeId("sendRegistrationEmailRoute")
+    //        .setHeader("subject", constant("Welcome!"))
+    //        .setBody(simple("Hi, thank you for registering to our service!"))
+    //        .process(
+    //            exchange -> {
+    //              globalEmailResources.incrementRegistrationEmailCounter();
+    //              AtomicInteger currentCount = globalEmailResources.getRegistrationEmailCounter();
+    //              exchange.setProperty("registrationEmailCount", currentCount);
+    //            });
+    //
+    //    from("direct:sendUpdateEmail")
+    //        .routeId("sendUpdateEmailRoute")
+    //        .setHeader("subject", constant("Update Notification"))
+    //        .setBody(
+    //            simple(
+    //                "We would like to notify you about the update of one or more fields of your"
+    //                    + " account."))
+    //        .process(exchange -> globalEmailResources.incrementUpdateEmailCounter());
+    //
+    //    from("direct:sendDeleteEmail")
+    //        .routeId("sendDeleteEmailRoute")
+    //        .setHeader("subject", constant("Cancellation Notification"))
+    //        .choice()
+    //        .when(header("isAdmin").isEqualTo(Boolean.TRUE.toString()))
+    //        .setBody(
+    //            simple(
+    //                "We want to notify you of the cancellation of your account by an
+    // administrator."))
+    //        .otherwise()
+    //        .setBody(
+    //            simple(
+    //                "We want to notify you of the cancellation of your account. We hope to see
+    // you"
+    //                    + " again soon!"))
+    //        .end()
+    //        .process(exchange -> globalEmailResources.incrementDeleteEmailCounter())
+    //        .to("direct:send");
+    //
+    //    from("direct:sendLoginEmail")
+    //        .routeId("sendLoginEmailRoute")
+    //        .setHeader("subject", constant("Login Notification"))
+    //        .setBody(simple("You have successfully logged in at ${header.loginTime}."))
+    //        .process(exchange -> globalEmailResources.incrementLoginEmailCounter())
+    //        .to("direct:send");
+    //
+    //    from("direct:sendVerificationEmail")
+    //        .routeId("sendVerificationEmailRoute")
+    //        .setHeader("subject", constant("Account Verification"))
+    //        .process(exchange -> globalEmailResources.incrementVerificationEmailCounter())
+    //        .to("direct:send");
+    //
+    //    from("direct:send")
+    //        .routeId("sendRoute")
+    //        .setHeader("to", simple("${header.to}"))
+    //        .toD(
+    //
+    // "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
+    //                + "&password={{spring.mail.password}}&mail.smtp.auth=true"
+    //                + "&mail.smtp.starttls.enable=true")
+    //        .process(exchange -> globalEmailResources.incrementEmailCounter())
+    //        .log(
+    //            "\"${header.topic}\" email successfully sent to ${header.to} and counters"
+    //                + " increased.");
   }
 }
 
-//class RoutePolicy extends RoutePolicySupport {
+// class RoutePolicy extends RoutePolicySupport {
 //  private AtomicInteger counter = new AtomicInteger();
 //
 //  @Override
@@ -115,4 +112,4 @@ public class EmailSenderRouter extends RouteBuilder {
 //  public int getCounter() {
 //    return counter.get();
 //  }
-//}
+// }

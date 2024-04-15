@@ -62,7 +62,7 @@ public class AdminService {
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
 
     Optional<VerificationEntity> verificationEntity =
-        verificationRepository.findByUserUsername(username);
+        verificationRepository.findByUsername(username);
 
     verificationEntity.ifPresent(verificationRepository::delete);
 
@@ -108,14 +108,15 @@ public class AdminService {
   private void checkRoles(String username, UserEntity entity, List<RoleEntity> roles) {
     String roleName = roles.get(0).getName();
     Optional<VerificationEntity> verificationEntity =
-        verificationRepository.findByUserUsername(username);
+        verificationRepository.findByUsername(username);
 
     if (roleName.equals(RoleConstants.ROLE_VERIFIED)
         || roleName.equals(RoleConstants.ROLE_ADMIN)
         || roleName.equals(RoleConstants.ROLE_FOUNDER)) {
       verificationEntity.ifPresent(verificationRepository::delete);
     } else if (roleName.equals(RoleConstants.ROLE_USER) && (verificationEntity.isEmpty())) {
-      authService.setupVerification(entity);
+      // FIXME
+      // authService.setupVerification(entity);
     }
   }
 }

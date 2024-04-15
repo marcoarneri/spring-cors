@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VerificationRepository extends JpaRepository<VerificationEntity, UUID> {
   @Query("SELECT v FROM VerificationEntity v WHERE v.userEntity.username = :username")
-  Optional<VerificationEntity> findByUserUsername(String username);
+  Optional<VerificationEntity> findByUsername(String username);
 }

@@ -13,11 +13,11 @@ import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
 import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
 import it.krisopea.springcors.util.constant.EmailEnum;
 import it.krisopea.springcors.util.constant.RoleConstants;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -45,6 +45,9 @@ public class AuthService {
   @Value("${verification.maxAttempts}")
   private int maxAttempts;
 
+  @Value("${verification.link}")
+  private String baseUrl;
+
   public Boolean register(UserRegistrationRequestDto userRegistrationRequestDto) {
 
     if (userRepository.findByUsername(userRegistrationRequestDto.getUsername()).isPresent()) {
@@ -57,37 +60,52 @@ public class AuthService {
     userEntity.setRoles(Collections.singletonList(adminRole));
     userEntity.setEnabled(Boolean.TRUE);
     userRepository.saveAndFlush(userEntity);
-    sendEmail(userEntity, EmailEnum.REGISTRATION);
-    setupVerification(userEntity);
+    sendRegistrationEmail(userEntity.getUsername());
     return true;
   }
 
-  public void setupVerification(UserEntity userEntity) {
-    UUID token = UUID.randomUUID();
-    VerificationEntity verificationEntity = new VerificationEntity();
-    verificationEntity.setUserEntity(userEntity);
-    verificationEntity.setToken(token);
-    verificationEntity.setAttempts(0);
+  // FIXME
+  //
+  //  public void setupVerification(UserEntity userEntity) {
+  //    UUID token = UUID.randomUUID();
+  //    VerificationEntity verificationEntity = new VerificationEntity();
+  //    verificationEntity.setUserEntity(userEntity);
+  //    verificationEntity.setToken(token);
+  //    verificationEntity.setAttempts(0);
+  //
+  //    verificationRepository.saveAndFlush(verificationEntity);
+  //    sendEmail(userEntity, EmailEnum.VERIFY);
+  //  }
 
-    verificationRepository.saveAndFlush(verificationEntity);
-    sendEmail(userEntity, EmailEnum.VERIFY);
-  }
-
-  public Integer sendVerificationEmail(String username) {
+  public Integer sendRegistrationEmail(String username) {
     UserEntity userEntity =
         userRepository
             .findByUsername(username)
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
     VerificationEntity verificationEntity =
         verificationRepository
-            .findByUserUsername(userEntity.getUsername())
+            .findByUsername(userEntity.getUsername())
             .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
+
+    if (verificationEntity.getLastSent() != null
+        && Duration.between(verificationEntity.getLastSent(), Instant.now()).toHours() >= 24) {
+      verificationEntity.setAttempts(0);
+    }
+
     int count = verificationEntity.getAttempts();
     if (count >= 5) {
       return -1;
     }
-    verificationEntity.setAttempts(++count);
-    sendEmail(userEntity, EmailEnum.VERIFY);
+
+    count++;
+    if (verificationEntity.getLastSent() != null
+        && Duration.between(verificationEntity.getLastSent(), Instant.now()).toMinutes()
+            < 10L * count) {
+      return -2;
+    }
+
+    verificationEntity.setAttempts(count);
+    sendEmail(userEntity, EmailEnum.REGISTRATION);
     verificationRepository.saveAndFlush(verificationEntity);
     return maxAttempts - verificationEntity.getAttempts();
   }
@@ -125,8 +143,6 @@ public class AuthService {
     } else if (action == EmailEnum.LOGIN) {
       headers.put("loginTime", Instant.now().toString());
       headers.put("topic", EmailEnum.LOGIN);
-    } else if (action == EmailEnum.VERIFY) {
-      headers.put("topic", EmailEnum.VERIFY);
     }
     producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
   }

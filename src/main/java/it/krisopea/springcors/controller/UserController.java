@@ -83,15 +83,15 @@ public class UserController {
       log.warn("Verification failed.");
       model.addAttribute("error", true);
     }
-    return "verification";
+    return "home";
   }
 
   @PostMapping("/sendVerification")
   public String sendVerificationEmail(ModelMap model) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     log.info("Sending another verification email to: {}", username);
-    Integer remainingAttempts = authService.sendVerificationEmail(username);
-    model.addAttribute("warning", remainingAttempts);
-    return "verification";
+    //    Integer remainingAttempts = authService.sendVerificationEmail(username);
+    SecurityContextHolder.clearContext();
+    return "login";
   }
 }
