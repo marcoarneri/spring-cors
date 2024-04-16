@@ -149,7 +149,7 @@ public class AdminService {
   }
 
   public List<PrivilegeEntity> getPrivileges() {
-      return privilegeRepository.findAll();
+    return privilegeRepository.findAll();
   }
 
   public List<RoleEntity> getRoles() {

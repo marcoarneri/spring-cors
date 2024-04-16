@@ -5,13 +5,14 @@ import it.krisopea.springcors.controller.model.request.UserLoginRequest;
 import it.krisopea.springcors.controller.model.request.UserUpdateRequest;
 import it.krisopea.springcors.service.AuthService;
 import it.krisopea.springcors.service.UserService;
+import it.krisopea.springcors.service.VerificationService;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.service.mapper.MapperUserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,11 +29,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
   private final UserService userService;
   private final AuthService authService;
+  private final VerificationService verificationService;
   private final MapperUserDto userMapperDto;
   private final MapperUserDto mapperUserDto;
-
-  @Value("${verification.maxAttempts}")
-  private int maxAttempts;
 
   @PostMapping("/update")
   @PreAuthorize("hasAuthority('UPDATE')")
@@ -86,12 +85,14 @@ public class UserController {
   }
 
   @PostMapping("/sendVerification")
-  public String sendVerificationEmail(@RequestParam("username") String username, @RequestParam("email") String email, ModelMap model) {
-    log.info("Sending another verification email to: {}", username);
+  public String sendVerificationEmail(@RequestParam("id") String id, ModelMap model) {
+    String username = verificationService.getUsernameById(id);
+    log.info("Another verification email attempt of: {}", username);
 
-    authService.resendEmail(username, email);
-    model.addAttribute("username", username);
-    model.addAttribute("success", true);
-    return "verification";
+    Pair<Integer, Long> result = authService.sendRegistrationEmail(username);
+    model.addAttribute("remainingAttempts", result.getLeft());
+    model.addAttribute("id", id);
+    model.addAttribute("delayUntilNextAttempt", result.getRight());
+    return "redirect:/anon-page?id=" + id;
   }
 }

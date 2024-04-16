@@ -16,11 +16,11 @@ import it.krisopea.springcors.util.constant.RoleConstants;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,54 +60,71 @@ public class AuthService {
     userRoles.add(role);
     userEntity.setRoles(userRoles);
     userEntity.setEnabled(Boolean.FALSE);
-    UserEntity userEntitySaved = userRepository.save(userEntity);
-    String token = setupVerification(userEntity);
-    sendRegistrationEmail(userEntitySaved, token);
+    UserEntity userEntitySaved = userRepository.saveAndFlush(userEntity);
+    setupVerification(userEntity);
+    sendRegistrationEmail(userEntitySaved.getUsername());
     return true;
   }
 
-  private String setupVerification(UserEntity userEntity) {
+  private void setupVerification(UserEntity userEntity) {
     String token = RandomStringUtils.random(6, Boolean.TRUE, Boolean.TRUE);
     VerificationEntity verificationEntity = new VerificationEntity();
     verificationEntity.setUserEntity(userEntity);
     verificationEntity.setToken(token);
     verificationEntity.setAttempts(0);
-
-    verificationRepository.save(verificationEntity);
-    return token;
+    verificationRepository.saveAndFlush(verificationEntity);
   }
 
-  public Integer sendRegistrationEmail(UserEntity userEntity, String token) {
+  public Pair<Integer, Long> sendRegistrationEmail(String username) {
+    UserEntity userEntity =
+        userRepository
+            .findByUsername(username)
+            .orElseThrow(
+                () -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST, "User not found"));
+
     VerificationEntity verificationEntity =
         verificationRepository
-            .findByUsername(userEntity.getUsername())
-            .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
+            .findByUsername(username)
+            .orElseThrow(
+                () ->
+                    new AppException(
+                        AppErrorCodeMessageEnum.BAD_REQUEST, "Verification details not found"));
 
-    if (verificationEntity.getLastSent() != null
-        && Duration.between(verificationEntity.getLastSent(), Instant.now()).toHours() >= 24) {
+    long exactMinutesSinceLastSent =
+        verificationEntity.getLastSent() != null
+            ? Duration.between(verificationEntity.getLastSent(), Instant.now()).toMinutes()
+            : Long.MAX_VALUE;
+    if (exactMinutesSinceLastSent >= 1440) {
       verificationEntity.setAttempts(0);
+      verificationRepository.save(verificationEntity);
     }
 
     int count = verificationEntity.getAttempts();
     if (count >= 5) {
-      return -1;
+      long minutesUntilReset = 1440 - exactMinutesSinceLastSent;
+      minutesUntilReset = Math.max(minutesUntilReset, 0);
+      return Pair.of(-1, minutesUntilReset);
     }
 
-    count++;
-    if (verificationEntity.getLastSent() != null
-        && Duration.between(verificationEntity.getLastSent(), Instant.now()).toMinutes()
-            < 10L * count) {
-      return -2;
+    long delayInMinutes = 2L * (count + 1);
+    long minutesRemaining = delayInMinutes - exactMinutesSinceLastSent;
+    if (minutesRemaining <= 0) {
+      log.info("Sending another verification email to: {}", username);
+      sendEmail(userEntity, EmailEnum.REGISTRATION, verificationEntity.getToken());
+      verificationEntity.setAttempts(count + 1);
+      verificationEntity.setLastSent(Instant.now());
+      verificationRepository.saveAndFlush(verificationEntity);
+
+      minutesRemaining = 2L * (verificationEntity.getAttempts() + 1);
+      minutesRemaining -=
+          Duration.between(verificationEntity.getLastSent(), Instant.now()).toMinutes();
+      minutesRemaining = Math.max(minutesRemaining, 0);
     }
 
-    verificationEntity.setAttempts(count);
-    sendEmail(userEntity, EmailEnum.REGISTRATION, token);
-    verificationRepository.saveAndFlush(verificationEntity);
-    return maxAttempts - verificationEntity.getAttempts();
+    return Pair.of(maxAttempts - verificationEntity.getAttempts(), minutesRemaining);
   }
 
   public void login(UserLoginRequestDto userLoginRequestDto) {
-
     UserEntity userEntity =
         userRepository.findByUsername(userLoginRequestDto.getUsername()).orElse(null);
 
@@ -121,7 +138,7 @@ public class AuthService {
       return;
     }
     authenticate(userLoginRequestDto.getUsername(), userLoginRequestDto.getPassword());
-//    sendEmail(userEntity, EmailEnum.LOGIN);
+    //    sendEmail(userEntity, EmailEnum.LOGIN);
   }
 
   public void authenticate(String username, String password) {
@@ -144,11 +161,50 @@ public class AuthService {
     producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
   }
 
-  public void resendEmail(String username, String email) {
-    Optional<UserEntity> userEntity = userRepository.findByUsername(username);
-    userEntity.get().setEmail(email);
-    userRepository.save(userEntity.get());
-    Optional<VerificationEntity> verificationEntity = verificationRepository.findByUsername(username);
-    sendRegistrationEmail(userEntity.get(), verificationEntity.get().getToken());
+  public Pair<Integer, Long> getAttemptsInfo(String username) {
+    userRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST, "User not found"));
+
+    VerificationEntity verificationEntity =
+        verificationRepository
+            .findByUsername(username)
+            .orElseThrow(
+                () ->
+                    new AppException(
+                        AppErrorCodeMessageEnum.BAD_REQUEST,
+                        "Verification details not found for user"));
+
+    if (verificationEntity.getLastSent() == null) {
+      return Pair.of(maxAttempts, 0L);
+    }
+
+    long exactMinutesSinceLastSent =
+        Duration.between(verificationEntity.getLastSent(), Instant.now()).toMinutes();
+    if (Duration.between(verificationEntity.getLastSent(), Instant.now()).toHours() >= 24) {
+      verificationEntity.setAttempts(0);
+      verificationRepository.save(verificationEntity);
+      return Pair.of(maxAttempts, 0L);
+    }
+
+    int count = verificationEntity.getAttempts();
+    if (count >= 5) {
+      long minutesUntilReset = 1440 - exactMinutesSinceLastSent;
+      return Pair.of(-1, minutesUntilReset);
+    }
+
+    long delayInMinutes = 10L * count;
+    long minutesRemaining = delayInMinutes - exactMinutesSinceLastSent;
+    return Pair.of(maxAttempts - count, minutesRemaining);
   }
+
+  // Utile?
+  //  public void resendEmail(String username, String email) {
+  //    Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+  //    userEntity.get().setEmail(email);
+  //    userRepository.save(userEntity.get());
+  //    Optional<VerificationEntity> verificationEntity =
+  //        verificationRepository.findByUsername(username);
+  //    sendRegistrationEmail(userEntity.get(), verificationEntity.get().getToken());
+  //  }
 }

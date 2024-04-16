@@ -123,8 +123,8 @@ public class AdminController {
   @PreAuthorize("hasAuthority('DELETE')")
   public String deleteRole(@PathVariable String name, ModelMap model) {
     if (name.equals(RoleConstants.ROLE_USER)
-            || name.equals(RoleConstants.ROLE_ADMIN)
-            || name.equals(RoleConstants.ROLE_FOUNDER)) {
+        || name.equals(RoleConstants.ROLE_ADMIN)
+        || name.equals(RoleConstants.ROLE_FOUNDER)) {
       List<RoleEntity> roles = adminService.getRoles();
       model.addAttribute("error", true);
       model.addAttribute("roles", roles);
@@ -151,7 +151,7 @@ public class AdminController {
   @PreAuthorize("hasAuthority('WRITE')")
   public String addRole(@ModelAttribute("role") RoleRequest roleRequest, ModelMap model) {
     boolean role = adminService.createRole(roleRequest);
-    if (!role){
+    if (!role) {
       model.addAttribute("privileges", adminService.getPrivileges());
       model.addAttribute("error", true);
       return "new-role";

@@ -3,6 +3,7 @@ package it.krisopea.springcors.controller;
 import it.krisopea.springcors.controller.model.request.UserLoginRequest;
 import it.krisopea.springcors.controller.model.request.UserRegistrationRequest;
 import it.krisopea.springcors.service.AuthService;
+import it.krisopea.springcors.service.VerificationService;
 import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
 import it.krisopea.springcors.service.mapper.MapperUserDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,9 +25,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AuthController {
   private final AuthService authService;
   private final MapperUserDto userMapperDto;
+  private final VerificationService verificationService;
 
   @PostMapping("/login")
-  public void loginUser(
+  public String loginUser(
       @ModelAttribute("userLoginRequest") @Valid UserLoginRequest userLoginRequest) {
     log.info("Login request for username: {}.", userLoginRequest.getUsername());
 
@@ -34,7 +36,12 @@ public class AuthController {
 
     authService.login(userLoginRequestDto);
 
+    String id = verificationService.getIdByUsername(userLoginRequestDto.getUsername());
+    if (id != null) {
+      return "redirect:/anon-page?" + id;
+    }
     log.info("Login completed successfully.");
+    return "home";
   }
 
   @PostMapping("/register")
@@ -55,10 +62,10 @@ public class AuthController {
       model.addAttribute("registerError", true);
       return "register";
     }
+
     log.info("Registration completed successfully.");
-//    model.addAttribute("userLoginRequest", new UserLoginRequest());
-    model.addAttribute("username", userRegistrationRequest.getUsername());
-    return "verification";
+    return "redirect:/anon-page?id="
+        + verificationService.getIdByUsername(userRegistrationRequest.getUsername());
   }
 
   @GetMapping("/logout")

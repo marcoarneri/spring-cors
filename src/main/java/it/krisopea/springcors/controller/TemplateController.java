@@ -6,16 +6,21 @@ import it.krisopea.springcors.controller.model.request.UserUpdateRequest;
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.mapper.MapperUserEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
+import it.krisopea.springcors.service.AuthService;
+import it.krisopea.springcors.service.VerificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,7 +28,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TemplateController {
 
   private final UserRepository repository;
+  private final VerificationService verificationService;
   private final MapperUserEntity mapperUserEntity;
+  private final AuthService authService;
 
   @GetMapping("/login")
   public String showLoginPage(ModelMap model) {
@@ -73,5 +80,17 @@ public class TemplateController {
     }
     model.addAttribute("userRegistrationRequest", new UserRegistrationRequest());
     return "register";
+  }
+
+  @GetMapping("/anon-page")
+  public String showAnonymousPage(@RequestParam("id") String id, Model model) {
+    String username = verificationService.getUsernameById(id);
+    Pair<Integer, Long> attemptsInfo = authService.getAttemptsInfo(username);
+
+    model.addAttribute("username", username);
+    model.addAttribute("id", id);
+    model.addAttribute("remainingAttempts", attemptsInfo.getLeft());
+    model.addAttribute("delayUntilNextAttempt", attemptsInfo.getRight());
+    return "anon-home";
   }
 }

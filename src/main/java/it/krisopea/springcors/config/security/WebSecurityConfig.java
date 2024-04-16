@@ -43,7 +43,8 @@ public class WebSecurityConfig {
                     .hasAuthority(String.valueOf(PrivilegeEnum.WRITE))
                     .requestMatchers("/admin/delete/**")
                     .hasAuthority(String.valueOf(PrivilegeEnum.DELETE))
-                    .requestMatchers("/entry", "/register", "/verify", "/sendVerification")
+                    .requestMatchers(
+                        "/entry", "/register", "/verify", "/sendVerification", "/anon-page")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

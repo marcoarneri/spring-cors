@@ -10,7 +10,6 @@ import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.repository.model.VerificationEntity;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
-import it.krisopea.springcors.util.UuidUtil;
 import it.krisopea.springcors.util.constant.EmailEnum;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import java.time.Instant;

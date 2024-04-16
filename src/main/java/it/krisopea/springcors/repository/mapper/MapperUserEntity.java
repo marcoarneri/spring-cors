@@ -16,9 +16,9 @@ public abstract class MapperUserEntity {
   @Mapping(target = "password", source = "password", qualifiedByName = "encodePassword")
   @Mapping(target = "roles", ignore = true)
   @Mapping(target = "enabled", constant = "false")
-  @Mapping(target = "accountNonExpired", constant = "false")
-  @Mapping(target = "credentialsNonExpired", constant = "false")
-  @Mapping(target = "accountNonLocked", constant = "false")
+  @Mapping(target = "accountNonExpired", constant = "true")
+  @Mapping(target = "credentialsNonExpired", constant = "true")
+  @Mapping(target = "accountNonLocked", constant = "true")
   public abstract UserEntity toUserEntity(UserRegistrationRequestDto request);
 
   @Mapping(target = "oldPassword", source = "password")
