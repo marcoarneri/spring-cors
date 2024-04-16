@@ -137,6 +137,7 @@ public class AuthService {
     if (action == EmailEnum.REGISTRATION) {
       headers.put("topic", EmailEnum.REGISTRATION);
       headers.put("token", token);
+      headers.put("username", userEntity.getUsername());
     } else if (action == EmailEnum.LOGIN) {
       headers.put("loginTime", Instant.now().toString());
       headers.put("topic", EmailEnum.LOGIN);
