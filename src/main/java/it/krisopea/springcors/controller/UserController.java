@@ -91,6 +91,7 @@ public class UserController {
 
     authService.resendEmail(username, email);
     model.addAttribute("username", username);
+    model.addAttribute("success", true);
     return "verification";
   }
 }
