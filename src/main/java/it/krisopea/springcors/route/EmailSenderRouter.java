@@ -9,6 +9,8 @@ import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Component
 public class EmailSenderRouter extends RouteBuilder {
   @Autowired private GlobalEmailResources globalEmailResources;
@@ -25,7 +27,7 @@ public class EmailSenderRouter extends RouteBuilder {
         .routeId("sendEmailRoute")
         .choice()
         .when(header("topic").isEqualTo(EmailEnum.REGISTRATION))
-        .to("direct:sendRegistrationEmail")
+        .to("direct:send")
         .when(header("topic").isEqualTo(EmailEnum.UPDATE))
         .to("direct:sendUpdateEmail")
         .when(header("topic").isEqualTo(EmailEnum.DELETE))
@@ -34,17 +36,17 @@ public class EmailSenderRouter extends RouteBuilder {
         .to("direct:sendLoginEmail")
         .end();
 
-    //    from("direct:sendRegistrationEmail")
-    //        .routeId("sendRegistrationEmailRoute")
-    //        .setHeader("subject", constant("Welcome!"))
-    //        .setBody(simple("Hi, thank you for registering to our service!"))
-    //        .process(
-    //            exchange -> {
-    //              globalEmailResources.incrementRegistrationEmailCounter();
-    //              AtomicInteger currentCount = globalEmailResources.getRegistrationEmailCounter();
-    //              exchange.setProperty("registrationEmailCount", currentCount);
-    //            });
-    //
+//        from("direct:sendRegistrationEmail")
+//            .routeId("sendRegistrationEmailRoute")
+//            .setHeader("subject", constant("Welcome!"))
+//            .setBody(simple("Hi, thank you for registering to our service!"))
+//            .process(
+//                exchange -> {
+//                  globalEmailResources.incrementRegistrationEmailCounter();
+//                  AtomicInteger currentCount = globalEmailResources.getRegistrationEmailCounter();
+//                  exchange.setProperty("registrationEmailCount", currentCount);
+//                });
+
     //    from("direct:sendUpdateEmail")
     //        .routeId("sendUpdateEmailRoute")
     //        .setHeader("subject", constant("Update Notification"))
@@ -86,18 +88,19 @@ public class EmailSenderRouter extends RouteBuilder {
     //        .process(exchange -> globalEmailResources.incrementVerificationEmailCounter())
     //        .to("direct:send");
     //
-    //    from("direct:send")
-    //        .routeId("sendRoute")
-    //        .setHeader("to", simple("${header.to}"))
-    //        .toD(
-    //
-    // "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
-    //                + "&password={{spring.mail.password}}&mail.smtp.auth=true"
-    //                + "&mail.smtp.starttls.enable=true")
-    //        .process(exchange -> globalEmailResources.incrementEmailCounter())
-    //        .log(
-    //            "\"${header.topic}\" email successfully sent to ${header.to} and counters"
-    //                + " increased.");
+        from("direct:send")
+            .routeId("sendRoute")
+            .setHeader("to", simple("${header.to}"))
+                .setBody(simple("Inserisci il token nella pagina di verificazione: ${header.token}"))
+            .toD(
+
+     "smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
+                    + "&password={{spring.mail.password}}&mail.smtp.auth=true"
+                    + "&mail.smtp.starttls.enable=true")
+            .process(exchange -> globalEmailResources.incrementEmailCounter())
+            .log(
+                "\"${header.topic}\" email successfully sent to ${header.to} and counters"
+                    + " increased.");
   }
 }
 

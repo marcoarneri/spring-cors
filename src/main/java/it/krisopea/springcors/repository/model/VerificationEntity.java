@@ -22,7 +22,7 @@ public class VerificationEntity {
   private Integer attempts;
 
   @Column(name = "TOKEN")
-  private UUID token;
+  private String token;
 
   @OneToOne
   @JoinColumn(name = "USERNAME", referencedColumnName = "USERNAME")

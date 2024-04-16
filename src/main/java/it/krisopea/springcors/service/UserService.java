@@ -97,16 +97,15 @@ public class UserService {
   }
 
   public Boolean verifyUser(String tokenString) {
-    UUID providedToken = UuidUtil.formatToken(tokenString);
 
     Optional<VerificationEntity> optionalVerificationEntity =
-        verificationRepository.findByToken(providedToken);
+        verificationRepository.findByToken(tokenString);
     if (optionalVerificationEntity.isEmpty()) {
       return false;
     }
 
     VerificationEntity verificationEntity = optionalVerificationEntity.get();
-    if (!providedToken.equals(verificationEntity.getToken())) {
+    if (!tokenString.equals(verificationEntity.getToken())) {
       return false;
     }
 
@@ -115,11 +114,15 @@ public class UserService {
     if (userEntity == null) {
       throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
     }
-
-    userEntity.setRoles(Collections.singletonList(roleEntity));
+    List<RoleEntity> userRoles = new ArrayList<>();
+    userRoles.add(roleEntity);
+    userEntity.setRoles(userRoles);
     userEntity.setEnabled(Boolean.TRUE);
+    userEntity.setAccountNonExpired(Boolean.TRUE);
+    userEntity.setAccountNonLocked(Boolean.TRUE);
+    userEntity.setCredentialsNonExpired(Boolean.TRUE);
     verificationRepository.delete(verificationEntity);
-    userRepository.saveAndFlush(userEntity);
+    userRepository.save(userEntity);
     return true;
   }
 

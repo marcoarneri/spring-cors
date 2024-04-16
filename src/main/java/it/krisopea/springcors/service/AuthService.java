@@ -15,13 +15,12 @@ import it.krisopea.springcors.util.constant.EmailEnum;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,32 +54,30 @@ public class AuthService {
       log.error("Registration failed: {}", AppErrorCodeMessageEnum.USER_EXISTS);
       return false;
     }
-
+    List<RoleEntity> userRoles = new ArrayList<>();
     UserEntity userEntity = mapperUserEntity.toUserEntity(userRegistrationRequestDto);
-    RoleEntity userRole = roleRepository.findByName(RoleConstants.ROLE_USER);
-    userEntity.setRoles(Collections.singletonList(userRole));
+    RoleEntity role = roleRepository.findByName(RoleConstants.ROLE_USER);
+    userRoles.add(role);
+    userEntity.setRoles(userRoles);
     userEntity.setEnabled(Boolean.FALSE);
-    userRepository.saveAndFlush(userEntity);
-    setupVerification(userEntity);
-    sendRegistrationEmail(userEntity.getUsername());
+    UserEntity userEntitySaved = userRepository.save(userEntity);
+    String token = setupVerification(userEntity);
+    sendRegistrationEmail(userEntitySaved, token);
     return true;
   }
 
-  private void setupVerification(UserEntity userEntity) {
-    UUID token = UUID.randomUUID();
+  private String setupVerification(UserEntity userEntity) {
+    String token = RandomStringUtils.random(6, Boolean.TRUE, Boolean.TRUE);
     VerificationEntity verificationEntity = new VerificationEntity();
     verificationEntity.setUserEntity(userEntity);
     verificationEntity.setToken(token);
     verificationEntity.setAttempts(0);
 
-    verificationRepository.saveAndFlush(verificationEntity);
+    verificationRepository.save(verificationEntity);
+    return token;
   }
 
-  public Integer sendRegistrationEmail(String username) {
-    UserEntity userEntity =
-        userRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new AppException(AppErrorCodeMessageEnum.BAD_REQUEST));
+  public Integer sendRegistrationEmail(UserEntity userEntity, String token) {
     VerificationEntity verificationEntity =
         verificationRepository
             .findByUsername(userEntity.getUsername())
@@ -104,7 +101,7 @@ public class AuthService {
     }
 
     verificationEntity.setAttempts(count);
-    sendEmail(userEntity, EmailEnum.REGISTRATION);
+    sendEmail(userEntity, EmailEnum.REGISTRATION, token);
     verificationRepository.saveAndFlush(verificationEntity);
     return maxAttempts - verificationEntity.getAttempts();
   }
@@ -124,7 +121,7 @@ public class AuthService {
       return;
     }
     authenticate(userLoginRequestDto.getUsername(), userLoginRequestDto.getPassword());
-    sendEmail(userEntity, EmailEnum.LOGIN);
+//    sendEmail(userEntity, EmailEnum.LOGIN);
   }
 
   public void authenticate(String username, String password) {
@@ -134,15 +131,24 @@ public class AuthService {
     SecurityContextHolder.getContext().setAuthentication(authentication);
   }
 
-  public void sendEmail(UserEntity userEntity, EmailEnum action) {
+  public void sendEmail(UserEntity userEntity, EmailEnum action, String token) {
     Map<String, Object> headers = new HashMap<>();
     headers.put("to", userEntity.getEmail());
     if (action == EmailEnum.REGISTRATION) {
       headers.put("topic", EmailEnum.REGISTRATION);
+      headers.put("token", token);
     } else if (action == EmailEnum.LOGIN) {
       headers.put("loginTime", Instant.now().toString());
       headers.put("topic", EmailEnum.LOGIN);
     }
     producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
+  }
+
+  public void resendEmail(String username, String email) {
+    Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+    userEntity.get().setEmail(email);
+    userRepository.save(userEntity.get());
+    Optional<VerificationEntity> verificationEntity = verificationRepository.findByUsername(username);
+    sendRegistrationEmail(userEntity.get(), verificationEntity.get().getToken());
   }
 }

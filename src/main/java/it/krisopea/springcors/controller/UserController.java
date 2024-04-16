@@ -78,21 +78,19 @@ public class UserController {
 
     if (userService.verifyUser(tokenString).equals(Boolean.TRUE)) {
       log.info("User verified successfully.");
-      model.addAttribute("success", true);
     } else {
       log.warn("Verification failed.");
-      model.addAttribute("error", true);
     }
-    return "home";
+    model.addAttribute("userLoginRequest", new UserLoginRequest());
+    return "login";
   }
 
   @PostMapping("/sendVerification")
-  public String sendVerificationEmail() {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+  public String sendVerificationEmail(@RequestParam("username") String username, @RequestParam("email") String email, ModelMap model) {
     log.info("Sending another verification email to: {}", username);
-    //    Integer remainingAttempts = authService.sendVerificationEmail(username);
-    // TODO mettere in caso di errore modelmap con cooldown
-    SecurityContextHolder.clearContext();
-    return "home";
+
+    authService.resendEmail(username, email);
+    model.addAttribute("username", username);
+    return "verification";
   }
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VerificationRepository extends JpaRepository<VerificationEntity, UUID> {
-  Optional<VerificationEntity> findByToken(UUID token);
+  Optional<VerificationEntity> findByToken(String token);
 
   @Query("SELECT v FROM VerificationEntity v WHERE v.userEntity.username = :username")
   Optional<VerificationEntity> findByUsername(String username);
