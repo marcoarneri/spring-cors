@@ -51,7 +51,7 @@
                                     </ul>
                                 </td>
                                 <td>
-                                    <div class="btn-group" th:if="${role.name !='USER' and role.name != 'ADMIN' and role.name != 'FOUNDER'}">
+                                    <div class="btn-group" th:if="${role.name !='USER' and role.name != 'VERIFIED' and role.name != 'ADMIN' and role.name != 'FOUNDER'}">
                                             <a th:href="@{'/admin/role/update/' + ${role.name}}" class="btn btn-primary btn-sm mx-2">Update</a>
                                         <div sec:authorize="hasAuthority('DELETE')">
                                             <a th:href="@{'/admin/role/delete/' + ${role.name}}" class="btn btn-danger btn-sm">Delete</a>

@@ -54,8 +54,8 @@ public class EmailSenderRouter extends RouteBuilder {
     from("direct:send")
             .routeId("sendRoute")
             .setHeader("to", simple("${header.to}"))
-            .setHeader("subject", constant("Welcome!"))
-            .setBody(simple("Click on link to verify your email: http://localhost:{{server.port}}/linkVerify?username=${header.username}&token=${header.token}"))
+            .setHeader("subject", constant("Verify your E-mail!"))
+            .setBody(simple("Click on link to verify your email: http://localhost:{{server.port}}/linkVerify?token=${header.token}"))
             .toD("smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
                             + "&password={{spring.mail.password}}&mail.smtp.auth=true"
                             + "&mail.smtp.starttls.enable=true")

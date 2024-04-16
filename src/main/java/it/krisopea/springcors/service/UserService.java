@@ -76,7 +76,7 @@ public class UserService {
       return true;
     }
 
-    sendEmail(userEntity, EmailEnum.UPDATE);
+//    sendEmail(userEntity, EmailEnum.UPDATE);
     return false;
   }
 
@@ -93,7 +93,7 @@ public class UserService {
     }
 
     userRepository.delete(userEntity);
-    sendEmail(userEntity, EmailEnum.DELETE);
+//    sendEmail(userEntity, EmailEnum.DELETE);
   }
 
   public Boolean verifyUser(String tokenString) {

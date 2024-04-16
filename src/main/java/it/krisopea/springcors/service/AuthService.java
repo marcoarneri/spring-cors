@@ -137,7 +137,6 @@ public class AuthService {
     if (action == EmailEnum.REGISTRATION) {
       headers.put("topic", EmailEnum.REGISTRATION);
       headers.put("token", token);
-      headers.put("username", userEntity.getUsername());
     } else if (action == EmailEnum.LOGIN) {
       headers.put("loginTime", Instant.now().toString());
       headers.put("topic", EmailEnum.LOGIN);
@@ -145,11 +144,15 @@ public class AuthService {
     producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
   }
 
-  public void resendEmail(String username, String email) {
+  public boolean resendEmail(String username, String email) {
     Optional<UserEntity> userEntity = userRepository.findByUsername(username);
     userEntity.get().setEmail(email);
     userRepository.save(userEntity.get());
     Optional<VerificationEntity> verificationEntity = verificationRepository.findByUsername(username);
+    if (verificationEntity.isEmpty()) {
+      return false;
+    }
     sendRegistrationEmail(userEntity.get(), verificationEntity.get().getToken());
+    return true;
   }
 }

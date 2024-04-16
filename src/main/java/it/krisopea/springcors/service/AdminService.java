@@ -87,7 +87,7 @@ public class AdminService {
     if (!findUsers.isEmpty()) {
       for (UserEntity user : findUsers) {
         List<RoleEntity> roles = new ArrayList<>();
-        RoleEntity role = roleRepository.findByName(RoleConstants.ROLE_USER);
+        RoleEntity role = roleRepository.findByName(RoleConstants.ROLE_VERIFIED);
         roles.add(role);
         user.setRoles(roles);
         userRepository.save(user);

@@ -27,5 +27,5 @@ public interface UserRepository
           + " 'FOUNDER')")
   List<UserEntity> findAllNotFounder();
 
-  UserEntity findByEmail(String email);
+  Optional<UserEntity> findByEmail(String email);
 }

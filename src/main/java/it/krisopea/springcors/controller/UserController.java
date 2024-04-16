@@ -85,11 +85,33 @@ public class UserController {
     return "login";
   }
 
+  @GetMapping("/linkVerify")
+  public String linkVerify(
+          @RequestParam(name = "token") String token,
+          ModelMap model) {
+
+    log.info("Verifying user with token: {}", token);
+
+    if (userService.verifyUser(token).equals(Boolean.TRUE)) {
+      log.info("User verified successfully.");
+    } else {
+      log.warn("Verification failed.");
+    }
+    model.addAttribute("userLoginRequest", new UserLoginRequest());
+    model.addAttribute("verified", true);
+    return "login";
+  }
+
   @PostMapping("/sendVerification")
   public String sendVerificationEmail(@RequestParam("username") String username, @RequestParam("email") String email, ModelMap model) {
     log.info("Sending another verification email to: {}", username);
 
-    authService.resendEmail(username, email);
+    boolean flag = authService.resendEmail(username, email);
+
+    if (!flag) {
+      model.addAttribute("already", true);
+      return "login";
+    }
     model.addAttribute("username", username);
     model.addAttribute("success", true);
     return "verification";
