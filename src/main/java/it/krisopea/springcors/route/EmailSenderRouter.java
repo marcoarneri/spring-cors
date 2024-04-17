@@ -2,18 +2,15 @@ package it.krisopea.springcors.route;
 
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.VerificationRepository;
-import it.krisopea.springcors.util.GlobalEmailResources;
 import it.krisopea.springcors.util.constant.EmailEnum;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 @Component
 public class EmailSenderRouter extends RouteBuilder {
-  @Autowired private GlobalEmailResources globalEmailResources;
+
   @Autowired private UserRepository userRepository;
   @Autowired private VerificationRepository verificationRepository;
 
@@ -59,7 +56,6 @@ public class EmailSenderRouter extends RouteBuilder {
             .toD("smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
                             + "&password={{spring.mail.password}}&mail.smtp.auth=true"
                             + "&mail.smtp.starttls.enable=true")
-            .process(exchange -> globalEmailResources.incrementEmailCounter())
             .log("\"${header.topic}\" email successfully sent to ${header.to} and counters"
                             + " increased.");
   }

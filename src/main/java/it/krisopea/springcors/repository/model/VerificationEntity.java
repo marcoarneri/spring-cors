@@ -30,4 +30,8 @@ public class VerificationEntity {
 
   @Column(name = "LAST_SENT")
   private Instant lastSent;
+
+  @CreationTimestamp
+  @Column(name = "CREATE_ON")
+  private Instant createOn;
 }
