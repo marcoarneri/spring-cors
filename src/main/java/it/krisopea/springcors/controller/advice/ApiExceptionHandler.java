@@ -4,6 +4,7 @@ import it.krisopea.springcors.controller.advice.model.ApiErrorResponse;
 import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
 import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.util.AppErrorUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
@@ -56,29 +58,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ApiErrorResponse> handleException(Exception ex) {
-    log.error(String.format("ExceptionHandler: %s", ex.getMessage()), ex);
-
-    AppException appEx = new AppException(ex, AppErrorCodeMessageEnum.ERROR);
-    // errorId viene usato solo per i casi di eccezioni non gestite
-    String errorId = UUID.randomUUID().toString();
-    Pair<HttpStatus, ApiErrorResponse> httpStatusApiErrorResponsePair =
-        appErrorUtil.buildApiErrorResponse(appEx, errorId, null);
-    return ResponseEntity.status(httpStatusApiErrorResponsePair.getLeft())
-        .body(httpStatusApiErrorResponsePair.getRight());
+  public ModelAndView handleException(HttpServletRequest request, Exception ex) {
+    ModelAndView modelAndView = new ModelAndView("error");
+    modelAndView.addObject("errorMessage", ex.getMessage());
+    return modelAndView;
   }
 
-  @ExceptionHandler(ConstraintViolationException.class)
-  public final ResponseEntity<ApiErrorResponse> handleConstraintViolation(
-      ConstraintViolationException ex, WebRequest request) {
-    List<ApiErrorResponse.ErrorMessage> errorMessages =
-        ex.getConstraintViolations().stream()
-            .map(oe -> ApiErrorResponse.ErrorMessage.builder().message(oe.toString()).build())
-            .collect(Collectors.toList());
-    AppException appEx = new AppException(ex, AppErrorCodeMessageEnum.BAD_REQUEST);
-    Pair<HttpStatus, ApiErrorResponse> httpStatusApiErrorResponsePair =
-        appErrorUtil.buildApiErrorResponse(appEx, null, errorMessages);
-    return ResponseEntity.status(httpStatusApiErrorResponsePair.getLeft())
-        .body(httpStatusApiErrorResponsePair.getRight());
-  }
 }
