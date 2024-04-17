@@ -49,18 +49,22 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         .body(httpStatusApiErrorResponsePair.getRight());
   }
 
-  @ExceptionHandler(AppException.class)
-  public ResponseEntity<ApiErrorResponse> handleAppException(AppException appEx) {
-    Pair<HttpStatus, ApiErrorResponse> httpStatusApiErrorResponsePair =
-        appErrorUtil.buildApiErrorResponse(appEx, null, null);
-    return ResponseEntity.status(httpStatusApiErrorResponsePair.getLeft())
-        .body(httpStatusApiErrorResponsePair.getRight());
-  }
+//  @ExceptionHandler(AppException.class)
+//  public ResponseEntity<ApiErrorResponse> handleAppException(AppException appEx) {
+//    Pair<HttpStatus, ApiErrorResponse> httpStatusApiErrorResponsePair =
+//        appErrorUtil.buildApiErrorResponse(appEx, null, null);
+//    return ResponseEntity.status(httpStatusApiErrorResponsePair.getLeft())
+//        .body(httpStatusApiErrorResponsePair.getRight());
+//  }
 
-  @ExceptionHandler(Exception.class)
-  public ModelAndView handleException(HttpServletRequest request, Exception ex) {
+  @ExceptionHandler(AppException.class)
+  public ModelAndView handleException(HttpServletRequest request, AppException ex) {
     ModelAndView modelAndView = new ModelAndView("error");
-    modelAndView.addObject("errorMessage", ex.getMessage());
+    Pair<HttpStatus, ApiErrorResponse> httpStatusApiErrorResponsePair =
+        appErrorUtil.buildApiErrorResponse(ex, null, null);
+    modelAndView.addObject("errorMessage", httpStatusApiErrorResponsePair.getRight().getMessage());
+    modelAndView.addObject("errorCause", ex.getCodeMessage());
+    modelAndView.addObject("errorCode", httpStatusApiErrorResponsePair.getLeft().value());
     return modelAndView;
   }
 

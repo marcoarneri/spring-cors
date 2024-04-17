@@ -49,7 +49,10 @@ public class AuthService {
   //  private String baseUrl;
 
   public Boolean register(UserRegistrationRequestDto userRegistrationRequestDto) {
-
+    if (userRepository.findByEmail(userRegistrationRequestDto.getEmail()).isPresent()){
+      log.error("Registration failed: {}", AppErrorCodeMessageEnum.EMAIL_ALREDY_EXIST);
+      throw new AppException(AppErrorCodeMessageEnum.EMAIL_ALREDY_EXIST);
+    }
     if (userRepository.findByUsername(userRegistrationRequestDto.getUsername()).isPresent()) {
       log.error("Registration failed: {}", AppErrorCodeMessageEnum.USER_EXISTS);
       return false;

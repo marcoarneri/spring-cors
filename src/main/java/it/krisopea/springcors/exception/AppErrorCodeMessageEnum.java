@@ -8,6 +8,7 @@ public enum AppErrorCodeMessageEnum {
   ERROR("0500", "system.error", HttpStatus.INTERNAL_SERVER_ERROR),
   BAD_REQUEST("0400", "bad.request", HttpStatus.BAD_REQUEST),
   PASSWORD_MISMATCH("1401", "password.mismatch", HttpStatus.UNAUTHORIZED),
+  EMAIL_ALREDY_EXIST("1402", "email.already.exist", HttpStatus.BAD_REQUEST),
   USER_EXISTS("1409", "user.exists", HttpStatus.CONFLICT);
 
   private final String errorCode;
