@@ -65,6 +65,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     modelAndView.addObject("errorMessage", httpStatusApiErrorResponsePair.getRight().getMessage());
     modelAndView.addObject("errorCause", ex.getCodeMessage());
     modelAndView.addObject("errorCode", httpStatusApiErrorResponsePair.getLeft().value());
+    modelAndView.addObject("appErrorCode", httpStatusApiErrorResponsePair.getRight().getAppErrorCode());
     return modelAndView;
   }
 
