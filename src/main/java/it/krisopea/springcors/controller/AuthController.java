@@ -56,7 +56,6 @@ public class AuthController {
       return "register";
     }
     log.info("Registration completed successfully.");
-//    model.addAttribute("userLoginRequest", new UserLoginRequest());
     model.addAttribute("username", userRegistrationRequest.getUsername());
     return "verification";
   }

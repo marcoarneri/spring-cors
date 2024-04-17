@@ -15,9 +15,6 @@ import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.repository.model.VerificationEntity;
 import it.krisopea.springcors.service.dto.request.AdminUpdateRequestDto;
 import it.krisopea.springcors.util.constant.RoleConstants;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,11 +24,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AdminService {
-  private final AuthService authService;
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final PrivilegeRepository privilegeRepository;

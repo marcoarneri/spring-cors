@@ -4,9 +4,6 @@ import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.model.PrivilegeEntity;
 import it.krisopea.springcors.repository.model.RoleEntity;
 import it.krisopea.springcors.repository.model.UserEntity;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +13,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Service("userDetailsService")
 @Transactional

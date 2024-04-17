@@ -1,7 +1,6 @@
 package it.krisopea.springcors.controller.model.request;
 
 import it.krisopea.springcors.repository.model.PrivilegeEntity;
-import it.krisopea.springcors.repository.model.RoleEntity;
 import lombok.Getter;
 import lombok.Setter;
 
