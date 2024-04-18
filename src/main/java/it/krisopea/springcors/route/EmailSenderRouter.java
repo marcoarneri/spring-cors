@@ -18,7 +18,10 @@ public class EmailSenderRouter extends RouteBuilder {
   public void configure() {
     onException(Exception.class)
             .handled(true)
-            .log(LoggingLevel.ERROR, "Error while sending the email: ${exception.message}");
+            .log(LoggingLevel.ERROR, "Error while sending the email: ${exception.message}")
+            .process(exchange -> {
+              throw new Exception("Error while sending the email");
+            });
 
     from("direct:sendEmail")
             .routeId("sendEmailRoute")

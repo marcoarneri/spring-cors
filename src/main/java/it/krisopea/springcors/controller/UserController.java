@@ -124,7 +124,12 @@ public class UserController {
   public String sendChangePassword(@RequestParam("email") String email, ModelMap model) {
     log.info("Sending email to change password: {}", email);
 
-    userService.sendEmailToChangePassword(email);
+    boolean success = userService.sendEmailToChangePassword(email);
+
+    if (!success){
+      model.addAttribute("error", true);
+      return "forgotPassword";
+    }
 
     model.addAttribute("success", true);
     return "forgotPassword";

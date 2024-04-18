@@ -128,21 +128,26 @@ public class UserService {
     return true;
   }
 
-  public void sendEmail(UserEntity userEntity) {
+  public boolean sendEmail(UserEntity userEntity) {
     Map<String, Object> headers = new HashMap<>();
     headers.put("to", userEntity.getEmail());
     headers.put("topic", EmailEnum.CHANGE_PASSWORD);
     headers.put("id", userEntity.getId());
 
-    producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
+    try {
+      producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
+    }catch(Exception e){
+      return false;
+    }
+    return true;
   }
 
-  public void sendEmailToChangePassword(String email) {
+  public boolean sendEmailToChangePassword(String email) {
     Optional<UserEntity> userEntity = userRepository.findByEmail(email);
     if (userEntity.isEmpty()){
       throw new AppException(AppErrorCodeMessageEnum.EMAIL_NOT_EXIST);
     }
-    sendEmail(userEntity.get());
+    return sendEmail(userEntity.get());
   }
 
   public UserEntity verifyUserId(String id) {
