@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.time.Instant;
 import java.util.*;
 
@@ -126,17 +127,42 @@ public class UserService {
     return true;
   }
 
-  public void sendEmail(UserEntity userEntity, EmailEnum action) {
+  public void sendEmail(UserEntity userEntity) {
     Map<String, Object> headers = new HashMap<>();
     headers.put("to", userEntity.getEmail());
-    if (action == EmailEnum.UPDATE) {
-      headers.put("updateTime", Instant.now().toString());
-      headers.put("topic", EmailEnum.UPDATE);
-    } else if (action == EmailEnum.DELETE) {
-      headers.put("deleteTime", Instant.now().toString());
-      headers.put("isAdmin", Boolean.TRUE.toString());
-      headers.put("topic", EmailEnum.DELETE);
-    }
+    headers.put("topic", EmailEnum.CHANGE_PASSWORD);
+    headers.put("id", userEntity.getId());
+
     producerTemplate.sendBodyAndHeaders("direct:sendEmail", null, headers);
+  }
+
+  public void sendEmailToChangePassword(String email) {
+    Optional<UserEntity> userEntity = userRepository.findByEmail(email);
+    if (userEntity.isEmpty()){
+      throw new AppException(AppErrorCodeMessageEnum.EMAIL_NOT_EXIST);
+    }
+    sendEmail(userEntity.get());
+  }
+
+  public UserEntity verifyUserId(String id) {
+    Optional<UserEntity> userEntity = userRepository.findById(UUID.fromString(id));
+    if (userEntity.isEmpty()){
+      throw new AppException(AppErrorCodeMessageEnum.ACCESS_DENIED);
+    }
+    return userEntity.get();
+  }
+
+  public boolean verifyPasswordMatch(String password1, String password2) {
+      return password1.equals(password2);
+  }
+
+  public void updatePassword(String password1, String username) {
+    Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+    if (userEntity.isEmpty()){
+      throw new AppException(AppErrorCodeMessageEnum.USER_NOT_EXISTS);
+    }
+    userEntity.get().setPassword(passwordEncoder.encode(password1));
+    userRepository.save(userEntity.get());
+    log.info("user: {}, update his password!", username);
   }
 }

@@ -154,4 +154,5 @@ public class AuthService {
     sendRegistrationEmail(userEntity.get(), verificationEntity.get().getToken());
     return true;
   }
+
 }

@@ -3,6 +3,7 @@ package it.krisopea.springcors.controller;
 import it.krisopea.springcors.controller.model.request.UserDeleteRequest;
 import it.krisopea.springcors.controller.model.request.UserLoginRequest;
 import it.krisopea.springcors.controller.model.request.UserUpdateRequest;
+import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.service.AuthService;
 import it.krisopea.springcors.service.UserService;
 import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
@@ -61,6 +62,7 @@ public class UserController {
   }
 
   @DeleteMapping("/delete")
+  @PreAuthorize("hasAuthority('DELETE')")
   public ResponseEntity<Void> deleteUser(@Valid @RequestBody UserDeleteRequest deleteUserRequest) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     log.info("Delete request with username: {}", username);
@@ -115,5 +117,49 @@ public class UserController {
     model.addAttribute("username", username);
     model.addAttribute("success", true);
     return "verification";
+  }
+
+  @PostMapping("/sendChangePassword")
+  public String sendChangePassword(@RequestParam("email") String email, ModelMap model) {
+    log.info("Sending email to change password: {}", email);
+
+    userService.sendEmailToChangePassword(email);
+
+    model.addAttribute("success", true);
+    return "forgotPassword";
+  }
+
+  @GetMapping("/changePassword")
+  public String getChangePassword(@RequestParam("id") String id, ModelMap model) {
+    log.info("change password with id: {}", id);
+
+    UserEntity userEntity = userService.verifyUserId(id);
+    model.addAttribute("username", userEntity.getUsername());
+
+    return "changePassword";
+  }
+
+  @GetMapping("/forgotPassword")
+  public String forgotPassword(ModelMap model) {
+    log.info("redirect to forgot password page");
+
+    return "forgotPassword";
+  }
+
+  @PostMapping("/updatePassword")
+  public String updatePassword(@RequestParam("password1") String password1, @RequestParam("password2") String password2, @RequestParam("username") String username, ModelMap model) {
+
+    boolean passwordMatch = userService.verifyPasswordMatch(password1, password2);
+    if (!passwordMatch){
+      model.addAttribute("username", username);
+      model.addAttribute("passwordError", true);
+      return "changePassword";
+    }
+
+    userService.updatePassword(password1, username);
+
+    model.addAttribute("successChangePassword", true);
+    model.addAttribute("userLoginRequest", new UserLoginRequest());
+    return "login";
   }
 }

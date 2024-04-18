@@ -9,7 +9,10 @@ public enum AppErrorCodeMessageEnum {
   BAD_REQUEST("0400", "bad.request", HttpStatus.BAD_REQUEST),
   PASSWORD_MISMATCH("1401", "password.mismatch", HttpStatus.UNAUTHORIZED),
   EMAIL_ALREDY_EXIST("1402", "email.already.exist", HttpStatus.BAD_REQUEST),
-  USER_EXISTS("1409", "user.exists", HttpStatus.CONFLICT);
+  EMAIL_NOT_EXIST("1403", "email.not.exist", HttpStatus.BAD_REQUEST),
+  ACCESS_DENIED("1404", "access.denied", HttpStatus.FORBIDDEN),
+  USER_EXISTS("1409", "user.exists", HttpStatus.CONFLICT),
+  USER_NOT_EXISTS("1410", "user.not.exists", HttpStatus.BAD_REQUEST);
 
   private final String errorCode;
   private final String errorMessageKey;

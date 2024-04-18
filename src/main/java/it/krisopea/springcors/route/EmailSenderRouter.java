@@ -29,6 +29,8 @@ public class EmailSenderRouter extends RouteBuilder {
             .to("direct:sendUpdateEmail")
             .when(header("topic").isEqualTo(EmailEnum.DELETE))
             .to("direct:sendDeleteEmail")
+            .when(header("topic").isEqualTo(EmailEnum.CHANGE_PASSWORD))
+            .to("direct:changePassword")
             .end();
 
 
@@ -54,6 +56,16 @@ public class EmailSenderRouter extends RouteBuilder {
             .toD("smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
                             + "&password={{spring.mail.password}}&mail.smtp.auth=true"
                             + "&mail.smtp.starttls.enable=true")
+            .log("\"${header.topic}\" email successfully sent to ${header.to}");
+
+    from("direct:changePassword")
+            .routeId("changePassword")
+            .setHeader("to", simple("${header.to}"))
+            .setHeader("subject", constant("Change your password!"))
+            .setBody(simple("Click on link to change your password: http://localhost:{{server.port}}/changePassword?id=${header.id}"))
+            .toD("smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
+                    + "&password={{spring.mail.password}}&mail.smtp.auth=true"
+                    + "&mail.smtp.starttls.enable=true")
             .log("\"${header.topic}\" email successfully sent to ${header.to}");
   }
 }

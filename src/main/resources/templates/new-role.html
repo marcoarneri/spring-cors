@@ -57,7 +57,7 @@
                             <div class="mb-3">
                                 <div th:each="privilege : ${privileges}">
                                     <div class="checkbox">
-                                        <input type="checkbox"  th:field="*{privileges}" th:value="${privilege.id}" th:text="${privilege.name}" id="privileges" /><br>
+                                        <label for="privileges"></label><input type="checkbox" th:field="*{privileges}" th:value="${privilege.id}" th:text="${privilege.name}" id="privileges" /><br>
                                     </div>
                                 </div>
                             </div>
