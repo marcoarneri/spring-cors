@@ -13,6 +13,9 @@ import it.krisopea.springcors.service.dto.request.UserLoginRequestDto;
 import it.krisopea.springcors.service.dto.request.UserRegistrationRequestDto;
 import it.krisopea.springcors.util.constant.EmailEnum;
 import it.krisopea.springcors.util.constant.RoleConstants;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -24,10 +27,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +45,7 @@ public class AuthService {
   private int maxAttempts;
 
   public Boolean register(UserRegistrationRequestDto userRegistrationRequestDto) {
-    if (userRepository.findByEmail(userRegistrationRequestDto.getEmail()).isPresent()){
+    if (userRepository.findByEmail(userRegistrationRequestDto.getEmail()).isPresent()) {
       log.error("Registration failed: {}", AppErrorCodeMessageEnum.EMAIL_ALREDY_EXIST);
       throw new AppException(AppErrorCodeMessageEnum.EMAIL_ALREDY_EXIST);
     }
@@ -147,12 +146,12 @@ public class AuthService {
     Optional<UserEntity> userEntity = userRepository.findByUsername(username);
     userEntity.get().setEmail(email);
     userRepository.save(userEntity.get());
-    Optional<VerificationEntity> verificationEntity = verificationRepository.findByUsername(username);
+    Optional<VerificationEntity> verificationEntity =
+        verificationRepository.findByUsername(username);
     if (verificationEntity.isEmpty()) {
       return false;
     }
     sendRegistrationEmail(userEntity.get(), verificationEntity.get().getToken());
     return true;
   }
-
 }

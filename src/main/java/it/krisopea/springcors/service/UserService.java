@@ -12,6 +12,7 @@ import it.krisopea.springcors.service.dto.request.UserDeleteRequestDto;
 import it.krisopea.springcors.service.dto.request.UserUpdateRequestDto;
 import it.krisopea.springcors.util.constant.EmailEnum;
 import it.krisopea.springcors.util.constant.RoleConstants;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -19,10 +20,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.nio.file.AccessDeniedException;
-import java.time.Instant;
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -78,7 +75,7 @@ public class UserService {
       return true;
     }
 
-//    sendEmail(userEntity, EmailEnum.UPDATE);
+    //    sendEmail(userEntity, EmailEnum.UPDATE);
     return false;
   }
 
@@ -95,7 +92,7 @@ public class UserService {
     }
 
     userRepository.delete(userEntity);
-//    sendEmail(userEntity, EmailEnum.DELETE);
+    //    sendEmail(userEntity, EmailEnum.DELETE);
   }
 
   public Boolean verifyUser(String tokenString) {
@@ -139,7 +136,7 @@ public class UserService {
 
   public void sendEmailToChangePassword(String email) {
     Optional<UserEntity> userEntity = userRepository.findByEmail(email);
-    if (userEntity.isEmpty()){
+    if (userEntity.isEmpty()) {
       throw new AppException(AppErrorCodeMessageEnum.EMAIL_NOT_EXIST);
     }
     sendEmail(userEntity.get());
@@ -147,14 +144,14 @@ public class UserService {
 
   public UserEntity verifyUserId(String id) {
     Optional<UserEntity> userEntity = userRepository.findById(UUID.fromString(id));
-    if (userEntity.isEmpty()){
+    if (userEntity.isEmpty()) {
       throw new AppException(AppErrorCodeMessageEnum.ACCESS_DENIED);
     }
     return userEntity.get();
   }
 
   public boolean verifyPasswordMatch(String password1, String password2) {
-      return password1.equals(password2);
+    return password1.equals(password2);
   }
 
   public void updatePassword(String password1, UserEntity userEntity) {
@@ -165,10 +162,10 @@ public class UserService {
 
   public Pair<Boolean, UserEntity> isPasswordOld(String password1, String username) {
     Optional<UserEntity> userEntity = userRepository.findByUsername(username);
-    if (userEntity.isEmpty()){
+    if (userEntity.isEmpty()) {
       throw new AppException(AppErrorCodeMessageEnum.USER_NOT_EXISTS);
     }
-    if (passwordEncoder.matches(password1, userEntity.get().getPassword())){
+    if (passwordEncoder.matches(password1, userEntity.get().getPassword())) {
       return Pair.of(Boolean.FALSE, null);
     }
     return Pair.of(Boolean.TRUE, userEntity.get());
