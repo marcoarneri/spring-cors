@@ -12,6 +12,7 @@ import it.krisopea.springcors.service.mapper.MapperUserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -156,7 +157,14 @@ public class UserController {
       return "changePassword";
     }
 
-    userService.updatePassword(password1, username);
+    Pair<Boolean, UserEntity> pairUserEntity = userService.isPasswordOld(password1, username);
+    if (!pairUserEntity.getLeft()){
+      model.addAttribute("username", username);
+      model.addAttribute("isPasswordOld", true);
+      return "changePassword";
+    }
+
+    userService.updatePassword(password1, pairUserEntity.getRight());
 
     model.addAttribute("successChangePassword", true);
     model.addAttribute("userLoginRequest", new UserLoginRequest());

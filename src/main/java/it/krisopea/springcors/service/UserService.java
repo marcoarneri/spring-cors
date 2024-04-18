@@ -15,6 +15,7 @@ import it.krisopea.springcors.util.constant.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -156,13 +157,20 @@ public class UserService {
       return password1.equals(password2);
   }
 
-  public void updatePassword(String password1, String username) {
+  public void updatePassword(String password1, UserEntity userEntity) {
+    userEntity.setPassword(passwordEncoder.encode(password1));
+    userRepository.save(userEntity);
+    log.info("user: {}, update his password!", userEntity.getUsername());
+  }
+
+  public Pair<Boolean, UserEntity> isPasswordOld(String password1, String username) {
     Optional<UserEntity> userEntity = userRepository.findByUsername(username);
     if (userEntity.isEmpty()){
       throw new AppException(AppErrorCodeMessageEnum.USER_NOT_EXISTS);
     }
-    userEntity.get().setPassword(passwordEncoder.encode(password1));
-    userRepository.save(userEntity.get());
-    log.info("user: {}, update his password!", username);
+    if (passwordEncoder.matches(password1, userEntity.get().getPassword())){
+      return Pair.of(Boolean.FALSE, null);
+    }
+    return Pair.of(Boolean.TRUE, userEntity.get());
   }
 }

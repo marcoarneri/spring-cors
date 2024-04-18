@@ -2,12 +2,15 @@ package it.krisopea.springcors.config;
 
 import it.krisopea.springcors.repository.PrivilegeRepository;
 import it.krisopea.springcors.repository.RoleRepository;
+import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.model.PrivilegeEntity;
 import it.krisopea.springcors.repository.model.RoleEntity;
+import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -25,8 +28,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
   private final RoleRepository roleRepository;
   private final PrivilegeRepository privilegeRepository;
 
-//    private final PasswordEncoder passwordEncoder;
-//    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -50,16 +53,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
 //        RoleEntity founderRole = roleRepository.findByName(RoleConstants.ROLE_FOUNDER);
 //        UserEntity user = new UserEntity();
-//        user.setName("Andrea");
-//        user.setSurname("Rossi");
-//        user.setUsername("rossian");
+//        user.setName("Marco");
+//        user.setSurname("Arneri");
+//        user.setUsername("arnerim");
 //        user.setPassword(passwordEncoder.encode("password"));
-//        user.setEmail("andrea.rossi@test.com");
+//        user.setEmail("marco.arneri@test.com");
 //        user.setRoles(Collections.singletonList(founderRole));
 //        user.setEnabled(true);
-//        user.setAccountNonLocked(false);
-//        user.setAccountNonExpired(false);
-//        user.setCredentialsNonExpired(false);
+//        user.setAccountNonLocked(true);
+//        user.setAccountNonExpired(true);
+//        user.setCredentialsNonExpired(true);
 //        userRepository.save(user);
     alreadySetup = true;
   }
