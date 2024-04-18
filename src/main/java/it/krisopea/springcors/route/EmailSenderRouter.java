@@ -29,8 +29,6 @@ public class EmailSenderRouter extends RouteBuilder {
             .to("direct:sendUpdateEmail")
             .when(header("topic").isEqualTo(EmailEnum.DELETE))
             .to("direct:sendDeleteEmail")
-            .when(header("topic").isEqualTo(EmailEnum.LOGIN))
-            .to("direct:sendLoginEmail")
             .end();
 
 
@@ -56,7 +54,6 @@ public class EmailSenderRouter extends RouteBuilder {
             .toD("smtps://{{spring.mail.host}}:{{spring.mail.port}}?username={{spring.mail.username}}"
                             + "&password={{spring.mail.password}}&mail.smtp.auth=true"
                             + "&mail.smtp.starttls.enable=true")
-            .log("\"${header.topic}\" email successfully sent to ${header.to} and counters"
-                            + " increased.");
+            .log("\"${header.topic}\" email successfully sent to ${header.to}");
   }
 }
