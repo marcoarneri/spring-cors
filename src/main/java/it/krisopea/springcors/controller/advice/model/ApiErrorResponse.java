@@ -3,10 +3,9 @@ package it.krisopea.springcors.controller.advice.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.*;
-
 import java.time.Instant;
 import java.util.List;
+import lombok.*;
 
 @Getter
 @Builder

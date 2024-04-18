@@ -1,24 +1,22 @@
 package it.krisopea.springcors.config;
 
+import static it.krisopea.springcors.util.constant.PrivilegeEnum.*;
+
 import it.krisopea.springcors.repository.PrivilegeRepository;
 import it.krisopea.springcors.repository.RoleRepository;
 import it.krisopea.springcors.repository.UserRepository;
 import it.krisopea.springcors.repository.model.PrivilegeEntity;
 import it.krisopea.springcors.repository.model.RoleEntity;
-import it.krisopea.springcors.repository.model.UserEntity;
 import it.krisopea.springcors.util.constant.RoleConstants;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import static it.krisopea.springcors.util.constant.PrivilegeEnum.*;
 
 @Component
 @RequiredArgsConstructor

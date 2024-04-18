@@ -89,9 +89,7 @@ public class UserController {
   }
 
   @GetMapping("/linkVerify")
-  public String linkVerify(
-          @RequestParam(name = "token") String token,
-          ModelMap model) {
+  public String linkVerify(@RequestParam(name = "token") String token, ModelMap model) {
 
     log.info("Verifying user with token: {}", token);
 
@@ -106,7 +104,10 @@ public class UserController {
   }
 
   @PostMapping("/sendVerification")
-  public String sendVerificationEmail(@RequestParam("username") String username, @RequestParam("email") String email, ModelMap model) {
+  public String sendVerificationEmail(
+      @RequestParam("username") String username,
+      @RequestParam("email") String email,
+      ModelMap model) {
     log.info("Sending another verification email to: {}", username);
 
     boolean flag = authService.resendEmail(username, email);
@@ -153,17 +154,21 @@ public class UserController {
   }
 
   @PostMapping("/updatePassword")
-  public String updatePassword(@RequestParam("password1") String password1, @RequestParam("password2") String password2, @RequestParam("username") String username, ModelMap model) {
+  public String updatePassword(
+      @RequestParam("password1") String password1,
+      @RequestParam("password2") String password2,
+      @RequestParam("username") String username,
+      ModelMap model) {
 
     boolean passwordMatch = userService.verifyPasswordMatch(password1, password2);
-    if (!passwordMatch){
+    if (!passwordMatch) {
       model.addAttribute("username", username);
       model.addAttribute("passwordError", true);
       return "changePassword";
     }
 
     Pair<Boolean, UserEntity> pairUserEntity = userService.isPasswordOld(password1, username);
-    if (!pairUserEntity.getLeft()){
+    if (!pairUserEntity.getLeft()) {
       model.addAttribute("username", username);
       model.addAttribute("isPasswordOld", true);
       return "changePassword";

@@ -11,6 +11,7 @@ import it.krisopea.springcors.util.constant.PathConstants;
 import it.krisopea.springcors.util.constant.PathMappingConstants;
 import it.krisopea.springcors.util.constant.RoleConstants;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,8 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -124,8 +123,8 @@ public class AdminController {
   @PreAuthorize("hasAuthority('DELETE')")
   public String deleteRole(@PathVariable String name, ModelMap model) {
     if (name.equals(RoleConstants.ROLE_USER)
-            || name.equals(RoleConstants.ROLE_ADMIN)
-            || name.equals(RoleConstants.ROLE_FOUNDER)) {
+        || name.equals(RoleConstants.ROLE_ADMIN)
+        || name.equals(RoleConstants.ROLE_FOUNDER)) {
       List<RoleEntity> roles = adminService.getRoles();
       model.addAttribute("error", true);
       model.addAttribute("roles", roles);
@@ -152,7 +151,7 @@ public class AdminController {
   @PreAuthorize("hasAuthority('WRITE')")
   public String addRole(@ModelAttribute("role") RoleRequest roleRequest, ModelMap model) {
     boolean role = adminService.createRole(roleRequest);
-    if (!role){
+    if (!role) {
       model.addAttribute("privileges", adminService.getPrivileges());
       model.addAttribute("error", true);
       return "new-role";
