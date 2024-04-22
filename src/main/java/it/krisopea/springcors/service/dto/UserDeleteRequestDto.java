@@ -1,4 +1,4 @@
-package it.krisopea.springcors.service.dto.request;
+package it.krisopea.springcors.service.dto;
 
 import lombok.Getter;
 import lombok.Setter;

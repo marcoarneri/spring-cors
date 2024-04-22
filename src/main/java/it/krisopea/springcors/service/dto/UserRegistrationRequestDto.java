@@ -1,20 +1,18 @@
-package it.krisopea.springcors.service.dto.request;
+package it.krisopea.springcors.service.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserUpdateRequestDto {
+public class UserRegistrationRequestDto {
   private String name;
 
   private String surname;
 
   private String username;
 
-  private String email;
-
   private String password;
 
-  private String oldPassword;
+  private String email;
 }

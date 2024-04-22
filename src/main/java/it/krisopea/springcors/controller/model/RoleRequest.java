@@ -1,4 +1,4 @@
-package it.krisopea.springcors.controller.model.request;
+package it.krisopea.springcors.controller.model;
 
 import it.krisopea.springcors.repository.model.PrivilegeEntity;
 import java.util.List;

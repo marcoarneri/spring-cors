@@ -1,4 +1,4 @@
-package it.krisopea.springcors.service.dto.request;
+package it.krisopea.springcors.service.dto;
 
 import it.krisopea.springcors.repository.model.RoleEntity;
 import java.util.List;

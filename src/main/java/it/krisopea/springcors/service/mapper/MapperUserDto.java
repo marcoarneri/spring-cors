@@ -1,7 +1,7 @@
 package it.krisopea.springcors.service.mapper;
 
-import it.krisopea.springcors.controller.model.request.*;
-import it.krisopea.springcors.service.dto.request.*;
+import it.krisopea.springcors.controller.model.*;
+import it.krisopea.springcors.service.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
