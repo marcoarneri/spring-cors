@@ -1,6 +1,7 @@
 package it.krisopea.springcors.util.constant;
 
 public interface PathConstants {
-  String USER_PATH = "/user";
-  String ADMIN_PATH = "/admin";
+  String CLIENT_PATH = "/clients";
+  String GET_CLIENTS = "/get";
+  String ADD_CLIENT = "/add";
 }

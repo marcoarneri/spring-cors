@@ -5,6 +5,7 @@ import it.krisopea.springcors.controller.model.AngularClientResponse;
 import it.krisopea.springcors.service.AngularService;
 import it.krisopea.springcors.service.dto.AngularClientResponseDto;
 import it.krisopea.springcors.service.mapper.MapperAngularClientDto;
+import it.krisopea.springcors.util.constant.PathConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/clients")
+@RequestMapping(PathConstants.CLIENT_PATH)
 @RequiredArgsConstructor
 @Slf4j
 @Validated
@@ -23,14 +24,14 @@ public class AngularController {
     private final AngularService angularService;
     private final MapperAngularClientDto mapperAngularClientDto;
 
-    @GetMapping("/get")
+    @GetMapping(PathConstants.GET_CLIENTS)
     public List<AngularClientResponse> getClients() {
         List<AngularClientResponseDto> usersDto = angularService.getClients();
         List<AngularClientResponse> users = mapperAngularClientDto.toClientResponse(usersDto);
         return users;
     }
 
-    @PostMapping("/add")
+    @PostMapping(PathConstants.ADD_CLIENT)
     void addClient(@RequestBody AngularClientRequest request) {
         angularService.save(request);
     }
