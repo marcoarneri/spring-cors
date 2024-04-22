@@ -36,4 +36,9 @@ public class AngularController {
         angularService.save(request);
     }
 
+    @PutMapping(PathConstants.UPDATE_CLIENT)
+    void updateClient(@RequestBody AngularClientRequest request){
+        angularService.save(request);
+    }
+
 }
