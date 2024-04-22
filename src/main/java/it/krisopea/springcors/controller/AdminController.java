@@ -123,6 +123,7 @@ public class AdminController {
   @PreAuthorize("hasAuthority('DELETE')")
   public String deleteRole(@PathVariable String name, ModelMap model) {
     if (name.equals(RoleConstants.ROLE_USER)
+        || name.equals(RoleConstants.ROLE_VERIFIED)
         || name.equals(RoleConstants.ROLE_ADMIN)
         || name.equals(RoleConstants.ROLE_FOUNDER)) {
       List<RoleEntity> roles = adminService.getRoles();
