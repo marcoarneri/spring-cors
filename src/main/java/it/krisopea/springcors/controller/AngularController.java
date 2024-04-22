@@ -41,4 +41,9 @@ public class AngularController {
         angularService.save(request);
     }
 
+    @DeleteMapping("/delete/{id}")
+    void deleteClient(@PathVariable("id") Long id) {
+        angularService.delete(id);
+    }
+
 }

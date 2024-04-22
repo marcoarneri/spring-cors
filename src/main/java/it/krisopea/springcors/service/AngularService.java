@@ -31,6 +31,12 @@ public class AngularService {
 
     public void save(AngularClientRequest client) {
         AngularClientEntity angularUserEntity = mapperAngularClientDto.toAngularClientEntity(client);
-        angularClientRepository.save(angularUserEntity);
+        AngularClientEntity entitySaved = angularClientRepository.save(angularUserEntity);
+        log.info("Successfully updated cliente with id: {}", entitySaved.getId());
+    }
+
+    public void delete(Long id) {
+        angularClientRepository.deleteById(id);
+        log.info("Successfully deleted cliente with id: {}", id);
     }
 }
