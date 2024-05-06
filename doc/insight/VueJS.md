@@ -93,15 +93,17 @@ import MyComponent from './MyComponent.vue';
 ## DOM in Vue.js
 
 ### Cos'è
-Il Document Object Model (DOM) è una rappresentazione ad albero della struttura di un documento HTML o XML, che consente agli sviluppatori web di manipolare dinamicamente gli elementi e il contenuto di una pagina web utilizzando JavaScript.
+Il `Document Object Model` (DOM) è una rappresentazione ad albero della struttura di un documento HTML o XML, che consente agli sviluppatori web di manipolare dinamicamente gli elementi e il contenuto di una pagina web utilizzando JavaScript.
 
 ### In Vue.js
-In Vue.js, il DOM è una parte fondamentale della sua architettura reattiva. Quando si utilizza Vue.js, si definiscono le interfacce utente utilizzando un template HTML che contiene le direttive di Vue.js. Durante l'esecuzione dell'applicazione, Vue.js traduce questi template in un vero e proprio albero DOM virtuale, che rappresenta la struttura dell'interfaccia utente.
+In Vue.js, il `DOM` è una parte fondamentale della sua architettura reattiva. Quando si utilizza Vue.js, si definiscono le interfacce utente utilizzando un template HTML che contiene le direttive di Vue.js. Durante l'esecuzione dell'applicazione, Vue.js traduce questi template in un vero e proprio albero DOM virtuale, che rappresenta la struttura dell'interfaccia utente.
 
-- **Creazione del DOM virtuale:** Quando si definisce un componente Vue.js, si definiscono anche i relativi template HTML, che contengono direttive Vue.js e interpolazioni di dati. Durante l'esecuzione dell'applicazione, Vue.js converte questi template in un albero DOM virtuale.
+- **Creazione del DOM virtuale:** Quando si definisce un componente Vue.js, si definiscono anche i relativi template HTML, che contengono direttive Vue.js e interpolazioni di dati. Durante l'esecuzione dell'applicazione, Vue.js converte questi template in un albero `DOM virtuale`.
 - **Rendering del DOM virtuale:** Dopo la creazione del DOM virtuale, Vue.js utilizza il suo motore di rendering per trasformare il DOM virtuale in un vero e proprio DOM del browser. Durante questo processo, Vue.js aggiorna dinamicamente il DOM per riflettere qualsiasi cambiamento nello stato dell'applicazione o nei dati.
 - **Reattività del DOM:** Una delle caratteristiche distintive di Vue.js è la sua reattività, che consente di aggiornare automaticamente il DOM quando cambia lo stato dell'applicazione o dei dati. Quando si modificano i dati all'interno di un componente Vue.js, Vue.js rileva automaticamente questi cambiamenti e aggiorna il DOM di conseguenza, garantendo una UI sempre sincronizzata con lo stato dell'applicazione.
 - **Efficienza del DOM virtuale:** Vue.js utilizza un DOM virtuale per migliorare le prestazioni e l'efficienza nell'aggiornamento del DOM. Il DOM virtuale consente a Vue.js di eseguire operazioni di confronto e aggiornamento in modo efficiente, riducendo al minimo il numero di operazioni di manipolazione del DOM effettivamente eseguite sul browser.
+
+<img height="300" src="C:\Users\rossian\Projects\spring-cors\src\main\resources\img\virtualDOM.png" width="550"/>
 
 ***
 
@@ -118,7 +120,6 @@ In Vue.js, il DOM è una parte fondamentale della sua architettura reattiva. Qua
 - **Scalabilità:** A differenza di Angular, Vue.js potrebbe non essere la scelta migliore per applicazioni di grandi dimensioni e complesse.
 - **Supporto aziendale limitato:** Anche se Vue.js è supportato da diverse aziende, potrebbe non avere lo stesso livello di supporto e risorse disponibili come Angular o React.
 - **Meno strumenti e librerie:** Anche se l'ecosistema di Vue.js è in crescita, potrebbe non essere altrettanto maturo e completo come quello di Angular o React, con meno strumenti e librerie disponibili per determinate esigenze di sviluppo.
-
 
 
 
