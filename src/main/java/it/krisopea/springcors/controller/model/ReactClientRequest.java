@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class AngularClientRequest {
+public class ReactClientRequest {
 
     private Long id;
 

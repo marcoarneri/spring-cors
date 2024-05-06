@@ -2,12 +2,11 @@ package it.krisopea.springcors.repository.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.UuidGenerator;
 
 @Data
 @Entity
 @Table(name = "ANGULAR_CLIENT_ENTITY")
-public class AngularClientEntity {
+public class ReactClientEntity {
 
     @Id
     @GeneratedValue

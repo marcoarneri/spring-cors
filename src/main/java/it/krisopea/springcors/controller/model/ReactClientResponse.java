@@ -3,7 +3,7 @@ package it.krisopea.springcors.controller.model;
 import lombok.Data;
 
 @Data
-public class AngularClientResponse {
+public class ReactClientResponse {
 
     private Long id;
 
