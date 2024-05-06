@@ -3,7 +3,7 @@ package it.krisopea.springcors.service.dto;
 import lombok.Data;
 
 @Data
-public class AngularClientResponseDto {
+public class VueClientResponseDto {
 
     private Long id;
 

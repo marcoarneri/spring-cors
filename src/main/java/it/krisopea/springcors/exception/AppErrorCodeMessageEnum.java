@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 public enum AppErrorCodeMessageEnum {
   ERROR("0500", "system.error", HttpStatus.INTERNAL_SERVER_ERROR),
   BAD_REQUEST("0400", "bad.request", HttpStatus.BAD_REQUEST),
-  USER_EXISTS("1409", "user.exists", HttpStatus.CONFLICT),
   USER_NOT_EXISTS("1410", "user.not.exists", HttpStatus.BAD_REQUEST);
 
   private final String errorCode;
