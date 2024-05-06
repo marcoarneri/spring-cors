@@ -21,6 +21,8 @@ public class ReactClientRequest {
     @Size(min = 3, max = 50)
     private String username;
 
+    @NotBlank
     private Long eta;
 
+    private String imgUrl;
 }

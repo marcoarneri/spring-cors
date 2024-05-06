@@ -14,4 +14,6 @@ public class ReactClientResponseDto {
     private String username;
 
     private Long eta;
+
+    private String imgUrl;
 }

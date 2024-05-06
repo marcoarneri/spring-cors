@@ -26,11 +26,25 @@ public class ReactController {
     private final MapperAngularClientDto mapperAngularClientDto;
 
     @GetMapping(PathConstants.GET_CLIENTS)
-    public ResponseEntity<List<ReactClientResponse>> getClients() {
-        List<ReactClientResponseDto> usersDto = reactService.getClients();
+    public ResponseEntity<List<ReactClientResponse>> getClients(@RequestParam(defaultValue = "0", required = false) int page, @RequestParam(defaultValue = "4", required = false) int limit) {
+        int currentPage = page - 1;
+        List<ReactClientResponseDto> usersDto = reactService.getClients(currentPage, limit);
         List<ReactClientResponse> users = mapperAngularClientDto.toClientResponse(usersDto);
         return ResponseEntity.ok().body(users);
     }
+
+    @GetMapping(PathConstants.GET_CLIENTS_SIZE)
+    public ResponseEntity<Integer> getClientsSize() {
+        Integer clientsSize = reactService.getClientsSize();
+        return ResponseEntity.ok().body(clientsSize);
+    }
+
+//    @GetMapping(PathConstants.GET_CLIENTS)
+//    public ResponseEntity<List<ReactClientResponse>> getClients() {
+//        List<ReactClientResponseDto> usersDto = reactService.getClients();
+//        List<ReactClientResponse> users = mapperAngularClientDto.toClientResponse(usersDto);
+//        return ResponseEntity.ok().body(users);
+//    }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<ReactClientResponse> getClient(@PathVariable("id") Long id) {

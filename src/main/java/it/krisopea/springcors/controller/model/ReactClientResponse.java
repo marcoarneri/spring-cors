@@ -15,4 +15,6 @@ public class ReactClientResponse {
 
     private Long eta;
 
+    private String imgUrl;
+
 }

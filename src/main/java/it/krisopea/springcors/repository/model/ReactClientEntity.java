@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "ANGULAR_CLIENT_ENTITY")
+@Table(name = "REACT_CLIENT_ENTITY")
 public class ReactClientEntity {
 
     @Id
@@ -24,4 +24,7 @@ public class ReactClientEntity {
 
     @Column(name = "ETA", nullable = false)
     private Long eta;
+
+    @Column(name = "IMG_URL")
+    private String imgUrl;
 }
