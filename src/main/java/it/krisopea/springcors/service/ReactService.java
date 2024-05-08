@@ -9,6 +9,7 @@ import it.krisopea.springcors.service.dto.ReactClientResponseDto;
 import it.krisopea.springcors.service.mapper.MapperAngularClientDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,27 +26,20 @@ public class ReactService {
     private final ReactClientRepository reactClientRepository;
     private final MapperAngularClientDto mapperAngularClientDto;
 
-    public List<ReactClientResponseDto> getClients(int page, int limit){
+    public Pair<List<ReactClientResponseDto>, Integer> getClients(int page, int limit){
+        Integer clientsSize = reactClientRepository.countAllClients();
         Pageable pageable = PageRequest.of(page, limit);
         Page<ReactClientEntity> usersEntity = reactClientRepository.findAll(pageable);
         if (usersEntity.isEmpty()){
             throw new AppException(AppErrorCodeMessageEnum.USER_NOT_EXISTS);
         }
-        return mapperAngularClientDto.toClientResponseDto(usersEntity.getContent());
+        return Pair.of(mapperAngularClientDto.toClientResponseDto(usersEntity.getContent()), clientsSize);
     }
 
-//    public List<ReactClientResponseDto> getClients(){
-//        List<ReactClientEntity> usersEntity = reactClientRepository.findAll();
-//        if (usersEntity.isEmpty()){
-//            throw new AppException(AppErrorCodeMessageEnum.USER_NOT_EXISTS);
-//        }
-//        return mapperAngularClientDto.toClientResponseDto(usersEntity);
-//    }
-
     public void save(ReactClientRequest client) {
-        ReactClientEntity angularUserEntity = mapperAngularClientDto.toAngularClientEntity(client);
-        angularUserEntity.setImgUrl("https://picsum.photos/400/200");
-        ReactClientEntity entitySaved = reactClientRepository.save(angularUserEntity);
+        ReactClientEntity reactUserEntity = mapperAngularClientDto.toAngularClientEntity(client);
+        reactUserEntity.setImgUrl("https://picsum.photos/400/200");
+        ReactClientEntity entitySaved = reactClientRepository.save(reactUserEntity);
         log.info("Successfully saved cliente with id: {}", entitySaved.getId());
     }
 
@@ -60,9 +54,5 @@ public class ReactService {
             throw new AppException(AppErrorCodeMessageEnum.USER_NOT_EXISTS);
         }
         return mapperAngularClientDto.toClientResponseDto(usersEntity.get());
-    }
-
-    public Integer getClientsSize() {
-        return reactClientRepository.countAllClients();
     }
 }

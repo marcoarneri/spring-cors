@@ -2,12 +2,16 @@ package it.krisopea.springcors.controller;
 
 import it.krisopea.springcors.controller.model.ReactClientRequest;
 import it.krisopea.springcors.controller.model.ReactClientResponse;
+import it.krisopea.springcors.exception.AppErrorCodeMessageEnum;
+import it.krisopea.springcors.exception.AppException;
 import it.krisopea.springcors.service.ReactService;
 import it.krisopea.springcors.service.dto.ReactClientResponseDto;
 import it.krisopea.springcors.service.mapper.MapperAngularClientDto;
 import it.krisopea.springcors.util.constant.PathConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-@CrossOrigin(origins = "*")
 public class ReactController {
 
     private final ReactService reactService;
@@ -28,23 +31,14 @@ public class ReactController {
     @GetMapping(PathConstants.GET_CLIENTS)
     public ResponseEntity<List<ReactClientResponse>> getClients(@RequestParam(defaultValue = "0", required = false) int page, @RequestParam(defaultValue = "4", required = false) int limit) {
         int currentPage = page - 1;
-        List<ReactClientResponseDto> usersDto = reactService.getClients(currentPage, limit);
-        List<ReactClientResponse> users = mapperAngularClientDto.toClientResponse(usersDto);
-        return ResponseEntity.ok().body(users);
+        Pair<List<ReactClientResponseDto>, Integer> getClientsResponseDto = reactService.getClients(currentPage, limit);
+        Integer clientsSize = getClientsResponseDto.getRight();
+        List<ReactClientResponse> users = mapperAngularClientDto.toClientResponse(getClientsResponseDto.getLeft());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("clientsSize", String.valueOf(clientsSize));
+        log.info("header clientsSize: [{}]", clientsSize);
+        return ResponseEntity.ok().headers(headers).body(users);
     }
-
-    @GetMapping(PathConstants.GET_CLIENTS_SIZE)
-    public ResponseEntity<Integer> getClientsSize() {
-        Integer clientsSize = reactService.getClientsSize();
-        return ResponseEntity.ok().body(clientsSize);
-    }
-
-//    @GetMapping(PathConstants.GET_CLIENTS)
-//    public ResponseEntity<List<ReactClientResponse>> getClients() {
-//        List<ReactClientResponseDto> usersDto = reactService.getClients();
-//        List<ReactClientResponse> users = mapperAngularClientDto.toClientResponse(usersDto);
-//        return ResponseEntity.ok().body(users);
-//    }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<ReactClientResponse> getClient(@PathVariable("id") Long id) {
@@ -54,8 +48,10 @@ public class ReactController {
     }
 
     @PostMapping(PathConstants.ADD_CLIENT)
-    public ResponseEntity<Void> addClient(@RequestBody ReactClientRequest request) {
+    public ResponseEntity<Void> addClient(@RequestBody ReactClientRequest request) throws InterruptedException {
         reactService.save(request);
+        Thread.sleep(2500); //Per testare la progress lato frontend
+//        throw new AppException(AppErrorCodeMessageEnum.ERROR); //Per testare l'alert di errore lato frontend
         return ResponseEntity.ok().build();
     }
 
