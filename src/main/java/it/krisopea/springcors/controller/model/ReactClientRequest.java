@@ -1,6 +1,7 @@
 package it.krisopea.springcors.controller.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -9,19 +10,19 @@ public class ReactClientRequest {
 
     private Long id;
 
-    @NotBlank
-    @Size(min = 3, max = 50)
+    @NotBlank(message = "{nome.notBlank}")
+    @Size(min = 3, max = 50, message = "{nome.size}")
     private String nome;
 
-    @NotBlank
-    @Size(min = 3, max = 50)
+    @NotBlank(message = "{cognome.notBlank}")
+    @Size(min = 3, max = 50, message = "{cognome.size}")
     private String cognome;
 
-    @NotBlank
-    @Size(min = 3, max = 50)
+    @NotBlank(message = "{username.notBlank}")
+    @Size(min = 3, max = 50, message = "{username.size}")
     private String username;
 
-    @NotBlank
+    @NotNull(message = "{eta.notNull}")
     private Long eta;
 
     private String imgUrl;

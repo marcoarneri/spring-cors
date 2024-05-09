@@ -13,6 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,14 +27,25 @@ public class ReactService {
     private final ReactClientRepository reactClientRepository;
     private final MapperAngularClientDto mapperAngularClientDto;
 
-    public Pair<List<ReactClientResponseDto>, Integer> getClients(int page, int limit){
+    public Pair<List<ReactClientResponseDto>, Integer> getClients(int page, int limit, String orderBy, String order){
         Integer clientsSize = reactClientRepository.countAllClients();
-        Pageable pageable = PageRequest.of(page, limit);
+        Sort.Direction sortDirection = Sort.Direction.fromString(order);
+        Sort sort = Sort.by(sortDirection, orderBy);
+        Pageable pageable = PageRequest.of(page, limit, sort);
         Page<ReactClientEntity> usersEntity = reactClientRepository.findAll(pageable);
         if (usersEntity.isEmpty()){
             throw new AppException(AppErrorCodeMessageEnum.USER_NOT_EXISTS);
         }
         return Pair.of(mapperAngularClientDto.toClientResponseDto(usersEntity.getContent()), clientsSize);
+    }
+
+    public Pair<List<ReactClientResponseDto>, Integer> getClients(){
+        Integer clientsSize = reactClientRepository.countAllClients();
+        List<ReactClientEntity> usersEntity = reactClientRepository.findAll();
+        if (usersEntity.isEmpty()){
+            throw new AppException(AppErrorCodeMessageEnum.USER_NOT_EXISTS);
+        }
+        return Pair.of(mapperAngularClientDto.toClientResponseDto(usersEntity), clientsSize);
     }
 
     public void save(ReactClientRequest client) {
